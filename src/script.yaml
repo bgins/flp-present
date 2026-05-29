@@ -266,6 +266,54 @@ scenes:
       - { stage: 7, verb: deliver, target: "m2" }        # p1 receives, sends m5
 
   # ──────────────────────────────────────────────────────────────
+  # SCENE — the correctness conditions (the goalposts).
+  # What it MEANS for a protocol to solve consensus: agreement +
+  # both outcomes possible + termination under one fault. This is
+  # exactly the bar Theorem 1 (next) proves unreachable. Same
+  # stage-7 canvas as the neighbours — attention rides the quote.
+  # ──────────────────────────────────────────────────────────────
+  - id: correctness
+    head: { section: "§ 2", topic: "correctness conditions" }
+    cite: "paper §2"
+    quote: |
+      A consensus protocol is partially correct if it satisfies two
+      conditions: (1) No accessible configuration has more than one
+      decision value. (2) For each v ∈ {0, 1}, some accessible
+      configuration has decision value v. … A consensus protocol P
+      is totally correct in spite of one fault if it is partially
+      correct, and every admissible run is a deciding run.
+    note:
+      marker: "▸"
+      body: |
+        the goalposts. (1) is agreement — no two processes ever
+        decide differently. (2) is non-triviality — a protocol that
+        always answers 0 is useless, so both outcomes must stay
+        reachable. "Totally correct in spite of one fault" then adds
+        termination: every admissible run must actually decide, even
+        with one process down. "Decide" = some y register goes from
+        `b` to a value. Theorem 1 says no protocol can hold all
+        three at once.
+
+    chrome: { stage: 7, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    buffer:
+      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+      - { id: m4, from: p2, to: p1, payload: "echo m1" }
+      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
+      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
+      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
+      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
+      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
+      - { stage: 6, verb: deliver, target: "m1" }        # p2 receives, sends m4
+      - { stage: 7, verb: deliver, target: "m2" }        # p1 receives, sends m5
+
+  # ──────────────────────────────────────────────────────────────
   # SCENE 7 — valency, defined.
   # The proof's central concept. Badge stays on `bivalent`.
   # ──────────────────────────────────────────────────────────────

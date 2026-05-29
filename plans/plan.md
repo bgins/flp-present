@@ -253,6 +253,7 @@ scenes:
 | `buffer`                     | `canvas` |
 | `null_event`                 | `canvas` |
 | `admissible`                 | `canvas` |
+| `correctness`                | `canvas` |
 | `valency_def`                | `valency-tree` |
 | `valency_intuition`          | `valency-tree` |
 | `lemma2`                     | `lemma2-sxs` |
@@ -312,7 +313,7 @@ trades flexibility for a tighter talk.
 
 ## Pedagogical arc — locked in `script.yaml`
 
-Sixteen scenes covering the punchline arc and the §4 contrast:
+Seventeen scenes covering the punchline arc and the §4 contrast:
 
 1.  **result** — §1 abstract
 2.  **slow_vs_dead** — §1 indistinguishability
@@ -321,15 +322,17 @@ Sixteen scenes covering the punchline arc and the §4 contrast:
 5.  **buffer** — §2 multiset
 6.  **null_event** — §2 (p, ∅) (can return ∅ even when buffer has (p, m))
 7.  **admissible** — §2 both clauses (p3 turns faulty here)
-8.  **valency_def** — §3 V definition (bivalent + univalent)
-9.  **valency_intuition** — Robinson's "undecided yet"
-10. **lemma2** — §3 bivalent initial exists
-11. **lemma1_commutativity** — §2 disjoint schedules commute
-12. **lemma3** — §3 preservation (the hero stage-12 state)
-13. **construction** — §3 stage / queue rule
-14. **punchline** — §3 stage 99, still bivalent
-15. **window_of_vulnerability** — §1 the folklore vindicated
-16. **section_4_positive_result** — §4 same authors, immediate
+8.  **correctness** — §2 the goalposts: agreement + both outcomes
+    reachable + termination under one fault
+9.  **valency_def** — §3 V definition (bivalent + univalent)
+10. **valency_intuition** — Robinson's "undecided yet"
+11. **lemma2** — §3 bivalent initial exists
+12. **lemma1_commutativity** — §2 disjoint schedules commute
+13. **lemma3** — §3 preservation (the hero stage-12 state)
+14. **construction** — §3 stage / queue rule
+15. **punchline** — §3 stage 99, still bivalent
+16. **window_of_vulnerability** — §1 the folklore vindicated
+17. **section_4_positive_result** — §4 same authors, immediate
     contrast: weaken the fault model by one knob, consensus
     returns
 
