@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local design scratch — rejected iterations, kept on disk but
+# not part of the public repo. See plan.md "Source-control policy".
+archive/
+
+# Source paper — © ACM, not ours to redistribute. flp.txt is a
+# full-text extract of the same work. Kept locally only; cite the
+# canonical source instead (see analysis.md Sources).
+flp.pdf
+flp.txt
+
+# macOS
+.DS_Store

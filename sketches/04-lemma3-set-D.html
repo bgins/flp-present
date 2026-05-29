@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FLP — sketch :: lemma 3, the set 𝒟 (scene 10)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f3e9;
+      --bg-raised: #fefdf8;
+      --ink: #181818;
+      --ink-muted: #5a5550;
+      --ink-faint: #a8a39c;
+      --bivalent: #3030dd;
+      --univalent-0: #0a7a3a;
+      --univalent-1: #b8650a;
+      --accent-decide: #a51818;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--bg); color: var(--ink); font-feature-settings: "ss01" on, "ss02" on; }
+    body::before { content: ""; position: fixed; inset: 0; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.55'/></svg>"); opacity: 0.06; pointer-events: none; z-index: 100; }
+
+    .shell { position: relative; display: grid; grid-template-rows: auto 1fr auto; height: 100vh; overflow: hidden; }
+    .chrome { display: flex; align-items: baseline; gap: 1.5rem; padding: 0.95rem 2rem 0.75rem; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: inset 0 -1px 0 rgba(24, 24, 24, 0.12); }
+    .brand { font-weight: 700; letter-spacing: 0.15em; }
+    .centaur-sigil {
+      position: absolute; bottom: 64px; right: 24px;
+      width: 80px; height: 20px;
+      color: var(--ink-faint); opacity: 0.5;
+      pointer-events: none; z-index: 50;
+    }
+    .chrome-stat { color: var(--ink-muted); }
+    .chrome-stat strong { color: var(--ink); font-weight: 600; }
+    .chrome .sep { color: var(--ink-faint); }
+    .valency-badge { margin-left: auto; padding: 0.22rem 0.65rem; border: 1.5px solid currentColor; font-weight: 700; font-size: 14px; letter-spacing: 0.12em; }
+    .valency-bivalent { color: var(--bivalent); }
+
+    .stage { display: grid; grid-template-columns: 33fr 52fr 15fr; min-height: 0; overflow: hidden; }
+    .essay { overflow-y: auto; padding: 3rem 2.5rem 6rem; scroll-behavior: smooth; box-shadow: inset -1px 0 0 rgba(24, 24, 24, 0.08); }
+    .essay::-webkit-scrollbar { width: 0; }
+    .scene { max-width: 32rem; margin: 0 auto 5rem; opacity: 0.28; transition: opacity 200ms ease; }
+    .scene:last-child { margin-bottom: 50vh; }
+    .scene.active { opacity: 1; }
+    .scene-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 1.4rem; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-muted); }
+    .scene-head .sep { color: var(--ink-faint); }
+    .scene-head .topic { color: var(--ink); }
+    .scene.active .scene-head::before { content: "▸"; color: var(--bivalent); margin-right: 0.4rem; font-size: 14px; }
+    .quote { position: relative; font-style: italic; font-size: 19px; line-height: 1.65; color: var(--ink); letter-spacing: -0.005em; }
+    .quote::before { content: "»"; position: absolute; left: -1.5rem; top: -0.1rem; font-style: normal; font-weight: 600; color: var(--bivalent); opacity: 0.55; font-size: 22px; }
+    .quote::after { content: " «"; font-style: normal; font-weight: 600; color: var(--bivalent); opacity: 0.55; }
+    .quote .em { font-weight: 600; font-style: italic; }
+    .cite { margin-top: 0.8rem; font-size: 13px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-muted); }
+    .note { margin-top: 1.3rem; padding-left: 1.1rem; border-left: 2px solid rgba(48, 48, 221, 0.25); font-size: 15px; line-height: 1.6; color: var(--ink-muted); }
+    .note .src { font-weight: 600; color: var(--ink); }
+    .note .em { color: var(--ink); font-weight: 600; font-style: italic; }
+
+    .canvas { position: relative; min-width: 0; min-height: 0; padding: 1rem 1.5rem; box-shadow: inset -1px 0 0 rgba(24, 24, 24, 0.08); }
+    .canvas svg { width: 100%; height: 100%; display: block; }
+
+    .rail { overflow-y: auto; padding: 1.5rem 1.25rem 4rem; min-height: 0; }
+    .rail::-webkit-scrollbar { width: 0; }
+    .rail-head { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-muted); margin: 1.6rem 0 0.7rem; display: flex; align-items: baseline; gap: 0.4rem; }
+    .rail-head:first-child { margin-top: 0; }
+    .rail-head .prefix { color: var(--ink-faint); }
+    .rail-head .count { color: var(--ink); margin-left: auto; font-variant-numeric: tabular-nums; }
+    .rail-note { font-size: 13px; line-height: 1.55; color: var(--ink-muted); margin-bottom: 0.6rem; }
+    .rail-note .em { color: var(--ink); font-weight: 600; }
+    .rail-defs { font-size: 12px; line-height: 1.6; color: var(--ink); }
+    .rail-defs .term { color: var(--bivalent); font-weight: 700; }
+    .rail-defs .muted { color: var(--ink-muted); }
+
+    .controls { display: flex; align-items: center; gap: 0.6rem; padding: 0.8rem 2rem; font-size: 14px; box-shadow: inset 0 1px 0 rgba(24, 24, 24, 0.12); }
+    .ctrl { padding: 0.4rem 0.9rem; border: 1px solid var(--ink); background: transparent; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0.05em; color: var(--ink); }
+    .ctrl:hover { background: var(--ink); color: var(--bg); }
+    .ctrl-spacer { flex: 1; }
+    .hint { color: var(--ink-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; }
+    .hint .scene-counter { color: var(--ink); font-weight: 600; }
+
+    /* ============================================================
+       LEMMA 3 :: SET 𝒟  — canvas treatment for scene 10.
+       C bivalent at top. 𝒞 = configs reachable from C without
+       applying e. 𝒟 = e(𝒞). The lemma claims 𝒟 contains a bivalent
+       configuration — highlighted as the adversary's chosen branch.
+       ============================================================ */
+    .l3-config rect { fill: var(--bg-raised); stroke: var(--bivalent); stroke-width: 2.4; }
+    .l3-config text { font-family: "Geist Mono", monospace; fill: var(--ink); text-anchor: middle; dominant-baseline: middle; }
+    .l3-config .label { font-size: 16px; font-weight: 700; }
+    .l3-config .badge { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; fill: var(--bivalent); }
+
+    .l3-region-frame {
+      fill: var(--bg-raised); fill-opacity: 0.4;
+      stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 2 3;
+    }
+    .l3-region-label {
+      font-family: "Geist Mono", monospace;
+      font-size: 14px; font-weight: 700;
+      fill: var(--ink);
+      dominant-baseline: middle;
+      letter-spacing: 0.04em;
+    }
+    .l3-region-label .pre { fill: var(--ink-faint); font-weight: 400; }
+    .l3-region-sub {
+      font-family: "Geist Mono", monospace;
+      font-size: 10px; fill: var(--ink-muted);
+      dominant-baseline: middle;
+      text-transform: uppercase; letter-spacing: 0.16em;
+    }
+
+    .l3-fan-line { fill: none; stroke: var(--ink); stroke-width: 0.8; opacity: 0.18; }
+
+    .l3-dot { stroke-width: 1.4; }
+    .l3-dot.zero { fill: var(--univalent-0); stroke: var(--univalent-0); }
+    .l3-dot.one  { fill: var(--univalent-1); stroke: var(--univalent-1); }
+    .l3-dot.bivalent {
+      fill: var(--bg-raised); stroke: var(--bivalent); stroke-width: 2.2;
+    }
+    .l3-dot.bivalent-claim {
+      fill: var(--bg-raised); stroke: var(--bivalent); stroke-width: 3;
+    }
+    .l3-dot-aura {
+      fill: none; stroke: var(--bivalent); stroke-width: 1.2; stroke-dasharray: 3 2; opacity: 0.6;
+    }
+
+    .l3-map-arrow { stroke: var(--ink); stroke-width: 1.6; fill: none; marker-end: url(#l3map); }
+    .l3-map-label {
+      font-family: "Geist Mono", monospace;
+      font-size: 13px; font-weight: 700;
+      fill: var(--ink);
+      text-anchor: middle; dominant-baseline: middle;
+      letter-spacing: 0.08em;
+      paint-order: stroke fill; stroke: var(--bg); stroke-width: 4;
+    }
+    .l3-map-label .em { fill: var(--bivalent); }
+    .l3-map-sub {
+      font-family: "Geist Mono", monospace;
+      font-size: 11px; fill: var(--ink-muted);
+      text-anchor: middle; dominant-baseline: middle;
+      text-transform: uppercase; letter-spacing: 0.16em;
+    }
+
+    .l3-claim-callout {
+      font-family: "Geist Mono", monospace;
+      font-size: 11px; font-weight: 700;
+      fill: var(--bivalent);
+      dominant-baseline: middle;
+      text-transform: uppercase; letter-spacing: 0.18em;
+      paint-order: stroke fill; stroke: var(--bg); stroke-width: 3;
+    }
+    .l3-claim-arrow {
+      fill: none; stroke: var(--bivalent); stroke-width: 1.4;
+      marker-end: url(#l3claim);
+    }
+
+    .l3-legend {
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+      fill: var(--ink-muted);
+      dominant-baseline: middle;
+      letter-spacing: 0.06em;
+    }
+    .l3-legend .zero { fill: var(--univalent-0); font-weight: 700; }
+    .l3-legend .one  { fill: var(--univalent-1); font-weight: 700; }
+    .l3-legend .biv  { fill: var(--bivalent); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <header class="chrome">
+      <span class="brand">:: FLP ::</span>
+      <span class="chrome-stat">lemma <strong>3</strong></span>
+      <span class="sep">::</span>
+      <span class="chrome-stat">e = (p, m)</span>
+      <span class="valency-badge valency-bivalent">bivalent</span>
+    </header>
+
+    <div class="stage">
+
+      <!-- ESSAY -->
+      <main class="essay">
+        <section class="scene">
+          <div class="scene-head">
+            <span>§ 3</span><span class="sep">::</span><span class="topic">lemma 2 · bivalent initial</span>
+          </div>
+          <p class="quote">
+            P has a bivalent initial configuration.
+          </p>
+          <div class="cite">[ paper §3 ]</div>
+        </section>
+
+        <section class="scene active">
+          <div class="scene-head">
+            <span>§ 3</span><span class="sep">::</span><span class="topic">lemma 3 · preservation</span>
+          </div>
+          <p class="quote">
+            Let C be a bivalent configuration of P, and let <span class="em">e = (p, m)</span> be an event that is applicable to C. Let <span class="em">𝒞</span> be the set of configurations reachable from C without applying e, and let <span class="em">𝒟 = e(𝒞)</span> = {e(E) | E ∈ 𝒞 and e is applicable to E}. Then, <span class="em">𝒟</span> contains a bivalent configuration.
+          </p>
+          <div class="cite">[ paper §3 ]</div>
+          <div class="note">
+            <span class="src">— Aspnes:</span> "if the adversary can keep the protocol in a bivalent configuration forever, it can prevent the processes from ever deciding."
+          </div>
+        </section>
+
+        <section class="scene">
+          <div class="scene-head">
+            <span>§ 3</span><span class="sep">::</span><span class="topic">the construction</span>
+          </div>
+          <p class="quote">
+            Each stage consists of one or more process steps. The stage ends with the first process in the process queue taking a step…
+          </p>
+          <div class="cite">[ paper §3 ]</div>
+        </section>
+      </main>
+
+      <!-- CANVAS — C, 𝒞, apply e, 𝒟 -->
+      <div class="canvas">
+        <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+
+          <defs>
+            <marker id="l3map" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+              <path d="M 0,0 L 8,4.5 L 0,9 z" fill="#181818" />
+            </marker>
+            <marker id="l3claim" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+              <path d="M 0,0 L 8,4.5 L 0,9 z" fill="#3030dd" />
+            </marker>
+          </defs>
+
+          <!-- ROOT: C (bivalent) -->
+          <g class="l3-config" transform="translate(400, 38)">
+            <rect x="-72" y="-22" width="144" height="44" rx="2" />
+            <text class="label" y="-4">C</text>
+            <text class="badge" y="12">[ BIVALENT ]</text>
+          </g>
+
+          <!-- Faint fan lines from C into 𝒞. Endpoints match the
+               top-row dot positions (post-shift). -->
+          <path class="l3-fan-line" d="M 400,62 L 130,145" />
+          <path class="l3-fan-line" d="M 400,62 L 220,155" />
+          <path class="l3-fan-line" d="M 400,62 L 290,175" />
+          <path class="l3-fan-line" d="M 400,62 L 360,145" />
+          <path class="l3-fan-line" d="M 400,62 L 430,185" />
+          <path class="l3-fan-line" d="M 400,62 L 500,155" />
+          <path class="l3-fan-line" d="M 400,62 L 570,175" />
+          <path class="l3-fan-line" d="M 400,62 L 640,145" />
+          <path class="l3-fan-line" d="M 400,62 L 700,185" />
+
+          <!-- ====== 𝒞 region ====== -->
+          <rect class="l3-region-frame" x="60" y="105" width="680" height="170" rx="3" />
+          <!-- Label sits at the bottom of the region so the fan lines
+               descending from C don't strike through it. -->
+          <text class="l3-region-label" x="78" y="265">𝒞  <tspan class="pre">·  reachable from C  ·  e not yet applied</tspan></text>
+
+          <!-- 𝒞 dots — assorted valencies. Shifted up within the
+               region so the bottom row leaves ~40px of clearance for
+               the label below. Each maps 1:1 to a 𝒟 dot at the same x. -->
+          <circle class="l3-dot zero"     cx="130" cy="145" r="8" />
+          <circle class="l3-dot one"      cx="220" cy="155" r="8" />
+          <circle class="l3-dot zero"     cx="290" cy="175" r="8" />
+          <circle class="l3-dot bivalent" cx="360" cy="145" r="8" />
+          <circle class="l3-dot one"      cx="430" cy="185" r="8" />
+          <circle class="l3-dot zero"     cx="500" cy="155" r="8" />
+          <circle class="l3-dot one"      cx="570" cy="175" r="8" />
+          <circle class="l3-dot bivalent" cx="640" cy="145" r="8" />
+          <circle class="l3-dot zero"     cx="700" cy="185" r="8" />
+
+          <circle class="l3-dot one"      cx="170" cy="215" r="8" />
+          <circle class="l3-dot zero"     cx="250" cy="225" r="8" />
+          <circle class="l3-dot bivalent" cx="330" cy="215" r="8" />
+          <circle class="l3-dot one"      cx="410" cy="223" r="8" />
+          <circle class="l3-dot zero"     cx="490" cy="215" r="8" />
+          <circle class="l3-dot one"      cx="570" cy="223" r="8" />
+          <circle class="l3-dot zero"     cx="660" cy="215" r="8" />
+
+          <!-- ====== MAP band: apply e ======
+               Twin arrows flanking the labels so the heavy stroke
+               doesn't run through the text. -->
+          <line class="l3-map-arrow" x1="200" y1="293" x2="200" y2="343" />
+          <line class="l3-map-arrow" x1="600" y1="293" x2="600" y2="343" />
+          <text class="l3-map-label" x="400" y="313">apply  <tspan class="em">e = (p, m)</tspan>  to each</text>
+          <text class="l3-map-sub"   x="400" y="335">𝒟 := e(𝒞)</text>
+
+          <!-- ====== 𝒟 region ====== -->
+          <rect class="l3-region-frame" x="60" y="350" width="680" height="170" rx="3" />
+          <!-- 𝒟 label at bottom to mirror 𝒞 above. -->
+          <text class="l3-region-label" x="78" y="510">𝒟 = e(𝒞)  <tspan class="pre">·  result of applying e to each member</tspan></text>
+
+          <!-- 𝒟 dots — same x positions as 𝒞 above to suggest mapping.
+               Shifted up within the region (mirroring 𝒞) so the label
+               at the bottom has clearance from the dots. Most univalent
+               (assume-for-contradiction); ONE bivalent — the claim. -->
+          <circle class="l3-dot zero"     cx="130" cy="385" r="8" />
+          <circle class="l3-dot one"      cx="220" cy="395" r="8" />
+          <circle class="l3-dot zero"     cx="290" cy="415" r="8" />
+          <circle class="l3-dot one"      cx="360" cy="385" r="8" />
+          <circle class="l3-dot zero"     cx="430" cy="425" r="8" />
+          <circle class="l3-dot one"      cx="500" cy="395" r="8" />
+
+          <!-- THE bivalent member — the punchline -->
+          <circle class="l3-dot-aura"           cx="570" cy="415" r="16" />
+          <circle class="l3-dot bivalent-claim" cx="570" cy="415" r="9" />
+
+          <circle class="l3-dot zero"     cx="640" cy="385" r="8" />
+          <circle class="l3-dot one"      cx="700" cy="425" r="8" />
+
+          <circle class="l3-dot one"      cx="170" cy="455" r="8" />
+          <circle class="l3-dot zero"     cx="250" cy="465" r="8" />
+          <circle class="l3-dot one"      cx="330" cy="455" r="8" />
+          <circle class="l3-dot zero"     cx="410" cy="463" r="8" />
+          <circle class="l3-dot one"      cx="490" cy="455" r="8" />
+          <circle class="l3-dot zero"     cx="570" cy="463" r="8" />
+          <circle class="l3-dot one"      cx="660" cy="455" r="8" />
+
+          <!-- Claim callout pointing at the bivalent member of 𝒟.
+               Callout sits directly above the highlighted dot; short
+               arrow drops to the aura ring, avoiding all neighbors. -->
+          <text class="l3-claim-callout" x="570" y="367" text-anchor="middle">∃ bivalent ∈ 𝒟</text>
+          <path class="l3-claim-arrow" d="M 570,378 L 570,397" />
+
+          <!-- Legend at bottom -->
+          <text class="l3-legend" x="80" y="548">legend ::</text>
+          <circle class="l3-dot zero"     cx="160" cy="548" r="6" />
+          <text class="l3-legend" x="174" y="548">  <tspan class="zero">0-VALENT</tspan></text>
+          <circle class="l3-dot one"      cx="280" cy="548" r="6" />
+          <text class="l3-legend" x="294" y="548">  <tspan class="one">1-VALENT</tspan></text>
+          <circle class="l3-dot bivalent" cx="400" cy="548" r="6" />
+          <text class="l3-legend" x="414" y="548">  <tspan class="biv">BIVALENT</tspan></text>
+
+          <!-- Adversary annotation on its own line, centered, so it
+               doesn't hang off the right edge. -->
+          <text class="l3-legend" x="400" y="574" text-anchor="middle">
+            <tspan class="biv">▸</tspan>  adversary's move :: pick the schedule landing in the bivalent member
+          </text>
+
+          <!-- A subtle bottom rule -->
+          <line x1="60" y1="592" x2="740" y2="592" stroke="#a8a39c" stroke-width="0.5" opacity="0.5" />
+
+        </svg>
+      </div>
+
+      <!-- RAIL — proof anatomy -->
+      <aside class="rail">
+        <div class="rail-head"><span class="prefix">//</span><span>definitions</span></div>
+        <div class="rail-defs">
+          <p><span class="term">C</span> <span class="muted">— bivalent config</span></p>
+          <p><span class="term">e</span> <span class="muted">= (p, m), applicable to C</span></p>
+          <p><span class="term">𝒞</span> <span class="muted">— configs reachable from C without applying e</span></p>
+          <p><span class="term">𝒟</span> <span class="muted">= e(𝒞)</span></p>
+        </div>
+
+        <div class="rail-head"><span class="prefix">//</span><span>claim</span></div>
+        <div class="rail-note">
+          <span class="em">𝒟</span> contains a <span class="em">bivalent</span> configuration.
+        </div>
+
+        <div class="rail-head"><span class="prefix">//</span><span>why</span></div>
+        <div class="rail-note">
+          assume not. Then every D ∈ 𝒟 is univalent, with both 0-valent and 1-valent members. Pick neighbors C₀, C₁ ∈ 𝒞 whose images differ in valency — Lemma 1 commutativity (Case 1) or a deciding-run argument (Case 2) gives a contradiction.
+        </div>
+
+        <div class="rail-head"><span class="prefix">//</span><span>consequence</span></div>
+        <div class="rail-note">
+          the adversary can <span class="em">defer e</span> through a schedule that lands in the bivalent member of 𝒟 — and the system stays undecided.
+        </div>
+      </aside>
+
+    </div>
+
+    <footer class="controls">
+      <button class="ctrl">◂ back</button>
+      <button class="ctrl">▸ forward</button>
+      <button class="ctrl">⏵ play</button>
+      <button class="ctrl">⟳ reset</button>
+      <div class="ctrl-spacer"></div>
+      <span class="hint">scene <span class="scene-counter">10 / 12</span> :: keys ← →</span>
+    </footer>
+
+    <!-- Centaur watermark, anchored to the shell's bottom-right. -->
+    <svg class="centaur-sigil" viewBox="0 0 80 20" role="img" aria-label="centaur"><g fill="currentColor"><rect x="56" y="2" width="10" height="2"/><rect x="10" y="6.5" width="60" height="2"/><rect x="6" y="11" width="68" height="2"/><rect x="12" y="15.5" width="2.5" height="2.5"/><rect x="20" y="15.5" width="2.5" height="2.5"/><rect x="56" y="15.5" width="2.5" height="2.5"/><rect x="64" y="15.5" width="2.5" height="2.5"/></g></svg>
+
+  </div>
+</body>
+</html>

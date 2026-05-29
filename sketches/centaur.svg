@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  centaur.svg - watermark mark for the FLP demo.
+
+  Forward-leaning slat silhouette: head + torso + saddle stacked
+  above two body slats, vertical legs below. Uniformly scales via
+  viewBox; aspect ~2.86:1.
+
+  Default tone: ink-faint at opacity 0.8 for visible standalone use.
+  For watermark contexts, override via consumer CSS:
+    .centaur-sigil { color: ...; opacity: ...; }
+  (fill resolves through currentColor.)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 28"
+     role="img" aria-label="centaur"
+     color="#a8a39c" opacity="0.8">
+  <g fill="currentColor">
+    <rect x="60" y="2"    width="6"   height="2"/>
+    <rect x="55" y="5.5"  width="14"  height="2"/>
+    <rect x="47" y="9"    width="26"  height="2"/>
+    <rect x="10" y="12.5" width="60"  height="2"/>
+    <rect x="6"  y="16"   width="68"  height="2"/>
+    <rect x="12" y="19.5" width="1.5" height="7"/>
+    <rect x="20" y="19.5" width="1.5" height="7"/>
+    <rect x="56" y="19.5" width="1.5" height="7"/>
+    <rect x="64" y="19.5" width="1.5" height="7"/>
+  </g>
+</svg>

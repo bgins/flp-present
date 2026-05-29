@@ -1,0 +1,616 @@
+# FLP — narration script
+#
+# Each scene is a self-contained world snapshot paired with a
+# passage from the paper. Advancing scenes drives both the essay
+# column (the quote) and the canvas (the network + buffer + trace
+# state) in lockstep.
+#
+# Schema per scene
+# ----------------
+#   id        : short slug, used by the app for routing / anchors
+#   head      : { section, topic }       displayed above the quote
+#   cite      : citation string          shown below the quote
+#   quote     : the paper passage        block scalar — keep verbatim
+#                                        from analysis.md when from
+#                                        the paper. Mark non-paper
+#                                        sources in `note.body`.
+#   note      : { marker, body }         optional presenter aside
+#
+#   chrome    : { stage, valency, faulty } chrome bar state
+#   processes : [{ id, x, y, pos, faulty? }]
+#   buffer    : [{ id, from, to, payload }]   multiset, no FIFO
+#   null_steps: [process_ids]            (p, ∅) options surfaced in
+#                                        the buffer panel
+#   trace     : [{ stage, verb, target }] verbs: deliver | delay | step
+#
+# Conventions
+# -----------
+# - Process positions: p1 (200, 180), p2 (600, 180), p3 (400, 500).
+#   Match sketch5.html's coordinates so the demo and the sketch
+#   stay visually identical.
+# - `b` is the blank output register value (paper §2 verbatim).
+# - `∅` is our rendering of the paper's null marker (paper uses
+#   the numeral 0 for it; we use ∅ to avoid confusion with the
+#   decision value 0). See analysis.md L72-75.
+# - `quote` is verbatim from the paper unless `note.body` cites
+#   another source (Robinson, Aspnes, synth, etc.).
+
+scenes:
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 1 — the result, stated cold.
+  # Canvas: initial config, nothing in flight, nobody faulty yet.
+  # ──────────────────────────────────────────────────────────────
+  - id: result
+    head: { section: "§ 1", topic: "the result" }
+    cite: "paper §1, abstract"
+    quote: |
+      [E]very protocol for this problem has the possibility of
+      nontermination, even with only one faulty process.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 2 — slow vs. dead indistinguishability.
+  # Same canvas — the result is the same; the paragraph reframes
+  # WHY the problem is hard. Keep state stable so attention rides
+  # on the quote.
+  # ──────────────────────────────────────────────────────────────
+  - id: slow_vs_dead
+    head: { section: "§ 1", topic: "slow vs. dead" }
+    cite: "paper §1"
+    quote: |
+      we do not postulate the ability to detect the death of
+      a process, so it is impossible for one process to tell
+      whether another has died (stopped entirely) or is just
+      running very slowly.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 3 — process registers.
+  # Canvas shows x and y for every process. Quote spells out what
+  # those registers mean.
+  # ──────────────────────────────────────────────────────────────
+  - id: process
+    head: { section: "§ 2", topic: "the process" }
+    cite: "paper §2"
+    quote: |
+      Each [process] has an input register x_p ∈ {0, 1}, an
+      output register y_p ∈ {b, 0, 1}, and unbounded internal
+      storage. The output register is "write-once".
+    note:
+      marker: "▸"
+      body: |
+        `b` is the blank initial value. `y_p` transitioning from
+        `b` to a value is the "decide" moment — the punchline we
+        prove can be deferred forever.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 4 — configuration, defined.
+  # Anchors the term that the rest of the talk leans on heavily.
+  # Same stage-0 snapshot as scene 1; nothing else has changed.
+  # ──────────────────────────────────────────────────────────────
+  - id: configuration
+    head: { section: "§ 2", topic: "configuration" }
+    cite: "paper §2"
+    quote: |
+      A configuration of the system consists of the internal
+      state of each process, together with the contents of the
+      message buffer. An initial configuration is one in which
+      each process starts at an initial state and the message
+      buffer is empty.
+    note:
+      marker: "▸"
+      body: |
+        the noun for the rest of the talk. A configuration is the
+        full system snapshot at one instant. Valency, bivalent,
+        univalent — these are properties of CONFIGURATIONS, not
+        of individual processes. The badge above the canvas is
+        labeling the current configuration, not p₁ or p₂ or p₃.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 5 — the buffer is a multiset.
+  # First scene with in-flight messages. Three pending pairs;
+  # adversary may pull any of them next.
+  #
+  # The three (pₙ, ∅) steps below are how m1/m2/m3 got into the
+  # buffer: each process woke up, receive returned ∅, and the
+  # step's Phase-2 send put one message into the buffer. Per
+  # paper §2, a single step can both receive and send.
+  # ──────────────────────────────────────────────────────────────
+  - id: buffer
+    head: { section: "§ 2", topic: "the buffer" }
+    cite: "paper §2"
+    quote: |
+      The message system maintains a multiset, called the message
+      buffer, of (destination, message) pairs sent but not yet
+      delivered.
+    note:
+      marker: "▸"
+      body: |
+        one pool — not a queue per channel. The adversary can
+        pull any pending pair in any order. (Many secondary
+        treatments draw per-channel queues — that's a stricter
+        model than FLP makes.)
+
+    chrome: { stage: 3, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer:
+      - { id: m1, from: p1, to: p2, payload: "vote 0" }
+      - { id: m2, from: p2, to: p1, payload: "vote 1" }
+      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 1, verb: step, target: "(p1, ∅)" }   # sends m1
+      - { stage: 2, verb: step, target: "(p2, ∅)" }   # sends m2
+      - { stage: 3, verb: step, target: "(p3, ∅)" }   # sends m3
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 5 — the ∅ event.
+  # The move the adversary can ALWAYS make. Trace shows a step
+  # entry where receive returned ∅.
+  # ──────────────────────────────────────────────────────────────
+  - id: null_event
+    head: { section: "§ 2", topic: "the ∅ event" }
+    cite: "paper §2"
+    quote: |
+      the event (p, ∅) can always be applied to C, so it is
+      always possible for a process to take another step.
+    note:
+      marker: "▸"
+      body: |
+        this is the slow / dead indistinguishability in primitive
+        form. Time passes for `p` without anything being
+        delivered — receive(p) returned the null marker. And per
+        paper §2: this can happen even when a message (p, m) is
+        in the buffer. The message system is allowed to withhold
+        delivery a finite number of times — silence isn't proof
+        the buffer is empty.
+
+        Notation: the paper writes this null marker as `0`; we
+        render it `∅` to keep it distinct from decision value 0.
+
+    chrome: { stage: 5, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer:
+      - { id: m1, from: p1, to: p2, payload: "vote 0" }
+      - { id: m2, from: p2, to: p1, payload: "vote 1" }
+      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 1, verb: step, target: "(p1, ∅)" }   # sends m1
+      - { stage: 2, verb: step, target: "(p2, ∅)" }   # sends m2
+      - { stage: 3, verb: step, target: "(p3, ∅)" }   # sends m3
+      - { stage: 4, verb: step, target: "(p2, ∅)" }   # idle — no send
+      - { stage: 5, verb: step, target: "(p3, ∅)" }   # idle — no send
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 6 — admissibility (the often-misquoted condition).
+  # p3 is now faulty — dashed circle on the canvas. (p3, ∅) is
+  # greyed in the buffer panel.
+  # ──────────────────────────────────────────────────────────────
+  - id: admissible
+    head: { section: "§ 2", topic: "admissibility" }
+    cite: "paper §2"
+    quote: |
+      A run is admissible provided that at most one process is
+      faulty and that all messages sent to nonfaulty processes
+      are eventually received.
+    note:
+      marker: "▸"
+      body: |
+        TWO clauses. "Admissible = at most one crash" forgets the
+        message-delivery half. The proof needs both: the adversary
+        gets one crash for free, but every message to nonfaulty
+        processes must eventually be delivered.
+
+    chrome: { stage: 7, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    # m3 stays in the buffer — p3 turned faulty before its vote
+    # was delivered. Admissibility still requires m3 to reach p1
+    # (the destination is nonfaulty).
+    buffer:
+      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+      - { id: m4, from: p2, to: p1, payload: "echo m1" }
+      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
+      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
+      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
+      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
+      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
+      - { stage: 6, verb: deliver, target: "m1" }        # p2 receives, sends m4
+      - { stage: 7, verb: deliver, target: "m2" }        # p1 receives, sends m5
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 7 — valency, defined.
+  # The proof's central concept. Badge stays on `bivalent`.
+  # ──────────────────────────────────────────────────────────────
+  - id: valency_def
+    head: { section: "§ 3", topic: "valency" }
+    cite: "paper §3"
+    quote: |
+      Let C be a configuration and let V be the set of decision
+      values of configurations reachable from C. C is bivalent
+      if |V| = 2. C is univalent if |V| = 1, let us say 0-valent
+      or 1-valent according to the corresponding decision value.
+
+    chrome: { stage: 7, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    buffer:
+      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+      - { id: m4, from: p2, to: p1, payload: "echo m1" }
+      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
+      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
+      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
+      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
+      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
+      - { stage: 6, verb: deliver, target: "m1" }        # → sends m4
+      - { stage: 7, verb: deliver, target: "m2" }        # → sends m5
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 8 — Robinson's translation. Not from the paper.
+  # Same canvas — secondary-source gloss on what bivalent means.
+  # ──────────────────────────────────────────────────────────────
+  - id: valency_intuition
+    head: { section: "§ 3", topic: "bivalent = undecided yet" }
+    cite: "Robinson, A Brief Tour of FLP Impossibility"
+    quote: |
+      read bivalent as "undecided yet"
+    note:
+      marker: "—"
+      body: |
+        a 0-valent config doesn't mean a process has DECIDED 0 —
+        it means every admissible continuation will eventually
+        decide 0. Univalent = future committed. Bivalent = the
+        future is structurally open, even when every `y_p` is
+        still blank.
+
+    chrome: { stage: 7, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    buffer:
+      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+      - { id: m4, from: p2, to: p1, payload: "echo m1" }
+      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
+      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
+      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
+      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
+      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
+      - { stage: 6, verb: deliver, target: "m1" }        # → sends m4
+      - { stage: 7, verb: deliver, target: "m2" }        # → sends m5
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 9 — Lemma 2. A bivalent initial config exists.
+  # Briefly rewind to stage 0 to show the initial config that
+  # Lemma 2 picks out.
+  # ──────────────────────────────────────────────────────────────
+  - id: lemma2
+    head: { section: "§ 3", topic: "lemma 2 · bivalent initial" }
+    cite: "paper §3"
+    quote: |
+      P has a bivalent initial configuration.
+    note:
+      marker: "▸"
+      body: |
+        proof by contradiction (paper §3): if every initial were
+        univalent, pick adjacent 0-valent and 1-valent initials
+        differing only in p's x_p, then crash p in a deciding run
+        — both runs reach the same decision, contradicting the
+        valency assignment. The proof uses exactly ONE crashed
+        process — the very fault model the theorem allows.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — Lemma 1, commutativity.
+  # Pedestrian but load-bearing: Lemma 3 Case 1 leans on it.
+  # Same stage-0 setup so it doesn't disturb the lemma 3 hero.
+  # ──────────────────────────────────────────────────────────────
+  - id: lemma1_commutativity
+    head: { section: "§ 2", topic: "lemma 1 · commutativity" }
+    cite: "paper §2"
+    quote: |
+      Suppose that from some configuration C, the schedules σ₁,
+      σ₂ lead to configurations C₁, C₂, respectively. If the sets
+      of processes taking steps in σ₁ and σ₂, respectively, are
+      disjoint, then σ₂ can be applied to C₁ and σ₁ can be
+      applied to C₂, and both lead to the same configuration C₃.
+    note:
+      marker: "▸"
+      body: |
+        when two schedules touch disjoint sets of processes, they
+        commute. Pedestrian on its own; load-bearing in Lemma 3.
+        Case 1 of that proof needs exactly this — an event for p
+        and an event for p' (p' ≠ p) can swap order without
+        changing the resulting configuration.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — Lemma 3. The hard one. The "preservation" lemma.
+  # Heroes back to our stage-12 canvas: 3 in-flight, p3 faulty,
+  # still bivalent.
+  # ──────────────────────────────────────────────────────────────
+  - id: lemma3
+    head: { section: "§ 3", topic: "lemma 3 · preservation" }
+    cite: "paper §3"
+    quote: |
+      Let C be a bivalent configuration of P, and let e = (p, m)
+      be an event that is applicable to C. Let 𝒞 be the set of
+      configurations reachable from C without applying e, and
+      let 𝒟 = e(𝒞) = {e(E) | E ∈ 𝒞 and e is applicable to E}.
+      Then, 𝒟 contains a bivalent configuration.
+    note:
+      marker: "— Aspnes:"
+      body: |
+        "if the adversary can keep the protocol in a bivalent
+        configuration forever, it can prevent the processes from
+        ever deciding."
+
+    chrome: { stage: 12, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    # Buffer ids advanced past scenes 6-8's {m3,m4,m5} so there's
+    # no id collision. m3 was delayed at stage 8, then admitted at
+    # stage 10 (admissibility requires delivery to nonfaulty p1).
+    buffer:
+      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+      - { id: m6, from: p2, to: p3, payload: "prop 0" }
+      - { id: m7, from: p1, to: p3, payload: "echo m3" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 6,  verb: deliver, target: "m1" }       # → sends m4
+      - { stage: 7,  verb: deliver, target: "m2" }       # → sends m5
+      - { stage: 8,  verb: delay,   target: "m3" }       # adversary defers
+      - { stage: 9,  verb: step,    target: "(p2, ∅)" }  # → sends m6
+      - { stage: 10, verb: deliver, target: "m3" }       # admissibility honored
+      - { stage: 11, verb: deliver, target: "m4" }       # → sends m7
+      - { stage: 12, verb: delay,   target: "m6" }       # the lemma 3 deferral
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 11 — the main construction.
+  # Same hero canvas state. Quote spells out the stage rule:
+  # head-of-queue process takes a step, receives its earliest
+  # pending message if any, rotates to the back.
+  # ──────────────────────────────────────────────────────────────
+  - id: construction
+    head: { section: "§ 3", topic: "the construction" }
+    cite: "paper §3"
+    quote: |
+      Each stage consists of one or more process steps. The
+      stage ends with the first process in the process queue
+      taking a step in which, if its message queue was not empty
+      at the start of the stage, its earliest message is
+      received. This process is then moved to the back of the
+      process queue.
+    note:
+      marker: "▸"
+      body: |
+        the queue + earliest-message rule is what makes the
+        infinite run ADMISSIBLE — every nonfaulty process takes
+        infinitely many steps, every message eventually gets
+        delivered. The adversary's freedom is in WHICH stage
+        each delivery lands.
+
+    chrome: { stage: 12, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    # Same hero stage-12 snapshot as scene 10 (lemma 3).
+    buffer:
+      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+      - { id: m6, from: p2, to: p3, payload: "prop 0" }
+      - { id: m7, from: p1, to: p3, payload: "echo m3" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 6,  verb: deliver, target: "m1" }       # → sends m4
+      - { stage: 7,  verb: deliver, target: "m2" }       # → sends m5
+      - { stage: 8,  verb: delay,   target: "m3" }       # adversary defers
+      - { stage: 9,  verb: step,    target: "(p2, ∅)" }  # → sends m6
+      - { stage: 10, verb: deliver, target: "m3" }       # admissibility honored
+      - { stage: 11, verb: deliver, target: "m4" }       # → sends m7
+      - { stage: 12, verb: delay,   target: "m6" }       # the lemma 3 deferral
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 12 — the punchline. Stage 99. Still bivalent.
+  # Trace is long; buffer never empties; nobody has decided. This
+  # is the visual proof: the badge has not budged.
+  # ──────────────────────────────────────────────────────────────
+  - id: punchline
+    head: { section: "§ 3", topic: "forever bivalent" }
+    cite: "paper §3"
+    quote: |
+      Since each stage ends in a bivalent configuration, every
+      stage in the construction of the infinite schedule
+      succeeds. The resulting run is admissible, and no decision
+      is ever reached. It follows that P is not totally correct.
+
+    chrome: { stage: 99, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    # Buffer is m84 + m87 (the two delays in the trace below) plus
+    # m96 (the newly-sent message from stage 96's ∅ step).
+    buffer:
+      - { id: m84, from: p2, to: p1, payload: "echo m83" }
+      - { id: m87, from: p1, to: p2, payload: "vote 1" }
+      - { id: m96, from: p2, to: p3, payload: "prop 0" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 93, verb: deliver, target: "m83" }       # historical
+      - { stage: 94, verb: delay,   target: "m84" }       # still in buffer
+      - { stage: 95, verb: deliver, target: "m85" }
+      - { stage: 96, verb: step,    target: "(p2, ∅)" }   # sends m96
+      - { stage: 97, verb: deliver, target: "m86" }
+      - { stage: 98, verb: delay,   target: "m87" }       # still in buffer
+      - { stage: 99, verb: deliver, target: "m88" }
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — window of vulnerability. The "so what" moment.
+  # Reuses the stage-99 punchline canvas — same picture, sharper
+  # framing. FLP isn't a bug in any one protocol; it's the
+  # structural fact behind the folklore.
+  # ──────────────────────────────────────────────────────────────
+  - id: window_of_vulnerability
+    head: { section: "§ 1", topic: "the folklore, vindicated" }
+    cite: "paper §1"
+    quote: |
+      The asynchronous commit protocols in current use all seem
+      to have a "window of vulnerability" — an interval of time
+      during the execution of the algorithm in which the delay
+      or inaccessibility of a single process can cause the
+      entire algorithm to wait indefinitely. It follows from
+      our impossibility result that every commit protocol has
+      such a "window," confirming a widely believed tenet in
+      the folklore.
+    note:
+      marker: "▸"
+      body: |
+        this is what the proof is FOR. Practitioners had long
+        suspected commit protocols were fragile to timing; FLP
+        showed it's a structural property of the problem, not a
+        bug in any one protocol. Every asynchronous commit
+        protocol — Paxos, Raft, two-phase commit — has a window.
+
+    chrome: { stage: 99, valency: bivalent, faulty: p3 }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+    buffer:
+      - { id: m84, from: p2, to: p1, payload: "echo m83" }
+      - { id: m87, from: p1, to: p2, payload: "vote 1" }
+      - { id: m96, from: p2, to: p3, payload: "prop 0" }
+    null_steps: [p1, p2, p3]
+    trace:
+      - { stage: 93, verb: deliver, target: "m83" }
+      - { stage: 94, verb: delay,   target: "m84" }
+      - { stage: 95, verb: deliver, target: "m85" }
+      - { stage: 96, verb: step,    target: "(p2, ∅)" }
+      - { stage: 97, verb: deliver, target: "m86" }
+      - { stage: 98, verb: delay,   target: "m87" }
+      - { stage: 99, verb: deliver, target: "m88" }
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — §4 positive result. The contrast.
+  # Same authors, same paper: consensus IS possible if no process
+  # crashes DURING the run (initially-dead-only fault model).
+  # The "during execution" weakening is exactly the FLP-blocking
+  # weakness — restore "initially dead only" and consensus is
+  # back. Needs a dedicated canvas treatment (TODO sketch).
+  # ──────────────────────────────────────────────────────────────
+  - id: section_4_positive_result
+    head: { section: "§ 4", topic: "consensus IS possible if…" }
+    cite: "paper §4"
+    quote: |
+      There is a partially correct consensus protocol in which
+      all nonfaulty processes always reach a decision, provided
+      no processes die during its execution and a strict majority
+      of the processes are alive initially.
+    note:
+      marker: "▸"
+      body: |
+        the same authors, in the same paper. Weaken the fault
+        model by exactly one knob — say "no NEW crashes after
+        the protocol begins" — and consensus is achievable. FLP
+        is sharp: it picks out the precise hostile fault model
+        and shows that's the cliff. Slightly less hostile and
+        you're back on solid ground.
+
+    chrome: { stage: 0, valency: bivalent, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: b, pos: [200, 180] }
+      - { id: p2, x: 1, y: b, pos: [600, 180] }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    buffer: []
+    null_steps: [p1, p2, p3]
+    trace: []
+    # NOTE: this scene currently falls back to the default canvas.
+    # A bespoke §4-protocol sketch (initial-clique digraph) would
+    # land better — see plan.md's optional sketch list.
+
+# ──────────────────────────────────────────────────────────────
+# Lemma 3 Case 2 (same-process case) is still a candidate extra
+# scene if depth allows. Kept here as a stub:
+#
+#  - id: lemma3_case2
+#    head: { section: "§ 3", topic: "lemma 3 · case p' = p" }
+#    cite: "paper §3"
+#    quote: |
+#      [the same-process case — A has both a 0-valent and a
+#      1-valent successor, so A is bivalent; but A is on a
+#      deciding run, so A is univalent. Contradiction.]
+# ──────────────────────────────────────────────────────────────
