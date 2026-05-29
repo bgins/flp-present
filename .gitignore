@@ -14,5 +14,8 @@ archive/
 flp.pdf
 flp.txt
 
+# Vite / local env
+*.local
+
 # macOS
 .DS_Store

@@ -32,6 +32,11 @@ forever.
 
 - **Svelte 5** for reactive bindings (process state ↔ SVG attrs).
 - **Vite** dev + build. Static bundle output.
+- **TypeScript** throughout — the scene-snapshot schema is a typed
+  data contract (`src/lib/types.ts`), validated at build.
+- **Build-time YAML** via `@rollup/plugin-yaml`: `src/script.yaml`
+  is imported and parsed at build into typed `Scene` objects, no
+  runtime fetch (`src/lib/script.ts`).
 - **SVG** for the network diagram (scales perfectly on projectors,
   every element is a DOM node we can attach handlers to).
 - **No fab, no Tauri.** Different project, different aesthetic
@@ -195,7 +200,7 @@ any concrete protocol's runtime behavior.
 algorithm for Scene A. Use abstract transitions; the proof
 argument is what's being visualized.")
 
-**Script format**: YAML. See `script.yaml`.
+**Script format**: YAML. See `src/script.yaml`.
 
 ```yaml
 scenes:
@@ -362,6 +367,9 @@ Uncomment if talk depth allows.
   scene→visual mapping table.
 - ~~Watermark / branding mark?~~ → **Resolved.** Centaur sigil,
   standalone `sketches/centaur.svg`. See the Watermark section.
+- ~~Script loader — build plugin or runtime fetch?~~ →
+  **Build-time** `@rollup/plugin-yaml`. `script.yaml` moved to
+  `src/`, parsed at build into typed `Scene` objects (see Stack).
 
 **Still open** (for the next thread):
 
@@ -407,7 +415,12 @@ sketches still carry the original (pre-bump) sizes. Apply the
 bumps as part of the build, or to the sketches first if we want
 to re-screenshot-verify.
 
-**Build phase: not started.** No Svelte project scaffolded yet.
+**Build phase: scaffolded.** Svelte 5 + Vite + TypeScript project in
+place under `src/`, with the build-time YAML pipeline parsing
+`src/script.yaml` into the typed `Scene` schema and a placeholder
+`App.svelte` rendering scene 1. `npm run check` and `npm run build`
+both pass. Next: the component tree (`AppShell` three-column shell →
+`visuals/Canvas` → scene navigation), per Pickup notes §4.
 
 ## Watermark — centaur sigil
 
@@ -506,8 +519,8 @@ flp-demo/
    which scenes use which canvas treatment.
 4. **Scaffold the Svelte 5 + Vite project**:
    - Single-page app.
-   - YAML loader (e.g. `@rollup/plugin-yaml` or runtime `js-yaml`
-     fetch — Vite handles either).
+   - YAML loader: build-time `@rollup/plugin-yaml` (chosen);
+     `src/script.yaml` parsed at build into typed `Scene` objects.
    - Components:
      - `AppShell.svelte` — chrome bar + 3-column stage + controls.
      - `Essay.svelte` — scrolling scene list, takes `scenes` and

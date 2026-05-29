@@ -1,0 +1,13 @@
+node_modules
+dist
+package-lock.json
+
+# Design reference — locked, hand-formatted; leave untouched.
+sketches
+archive
+
+# Authored docs + the narration script have hand-aligned formatting
+# (tables, aligned trailing comments) that Prettier would churn.
+plans
+*.md
+src/script.yaml
