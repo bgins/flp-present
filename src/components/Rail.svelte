@@ -4,6 +4,8 @@
 
   let { scene }: { scene: Scene } = $props()
 
+  const visual = $derived(scene.visual ?? 'canvas')
+
   // Newest trace entries on top.
   const traceRows = $derived([...scene.trace].reverse())
 
@@ -17,45 +19,87 @@
 </script>
 
 <aside class="rail">
-  <div class="rail-head">
-    <span class="prefix">//</span><span>buffer</span>
-    <span class="count">{scene.buffer.length}</span>
-  </div>
-  {#each scene.buffer as m (m.id)}
-    <div class="b-row">
-      <span class="id">[{sub(m.id)}]</span>
-      <span
-        ><span class="meta">→ {sub(m.to)}</span><span class="pl"
-          >{m.payload}</span
-        ></span
-      >
+  {#if visual === 'slow-vs-dead'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>world A</span>
     </div>
-  {/each}
+    <div class="rail-kv">
+      <span class="k">p₃</span><span class="v slow">alive · slow</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">future</span><span class="v">may speak again</span>
+    </div>
 
-  <div class="b-div">∅ steps</div>
-  {#each scene.null_steps as pid (pid)}
-    <div class="b-null" class:faulty={pid === scene.chrome.faulty}>
-      ({sub(pid)}, ∅){#if pid === scene.chrome.faulty}<span class="tag"
-          >faulty</span
-        >{/if}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>world B</span>
     </div>
-  {/each}
+    <div class="rail-kv">
+      <span class="k">p₃</span><span class="v dead">crashed</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">future</span><span class="v">will not speak</span>
+    </div>
 
-  <div class="rail-head">
-    <span class="prefix">//</span><span>trace</span>
-    <span class="count">{scene.chrome.stage}</span>
-  </div>
-  {#each traceRows as t (t.stage)}
-    <div class="t-row">
-      <span class="n">{t.stage}</span>
-      <span
-        class="v"
-        class:step={t.verb === 'step'}
-        style:color={verbColor(t.verb)}>{t.verb}</span
-      >
-      <span class="m">{formatTarget(t.target)}</span>
+    <div class="rail-head">
+      <span class="prefix">//</span><span>p₁'s view</span>
     </div>
-  {/each}
+    <div class="rail-kv">
+      <span class="k">inbox</span><span class="v same">identical</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">clock</span><span class="v same">identical</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">∴</span><span class="v same">same</span>
+    </div>
+
+    <div class="rail-head"><span class="prefix">//</span><span>note</span></div>
+    <div class="rail-note">
+      this is the practical intuition behind the impossibility. Every
+      <span class="em">safe</span> protocol can wait; FLP says some adversary makes
+      that wait infinite.
+    </div>
+  {:else}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>buffer</span>
+      <span class="count">{scene.buffer.length}</span>
+    </div>
+    {#each scene.buffer as m (m.id)}
+      <div class="b-row">
+        <span class="id">[{sub(m.id)}]</span>
+        <span
+          ><span class="meta">→ {sub(m.to)}</span><span class="pl"
+            >{m.payload}</span
+          ></span
+        >
+      </div>
+    {/each}
+
+    <div class="b-div">∅ steps</div>
+    {#each scene.null_steps as pid (pid)}
+      <div class="b-null" class:faulty={pid === scene.chrome.faulty}>
+        ({sub(pid)}, ∅){#if pid === scene.chrome.faulty}<span class="tag"
+            >faulty</span
+          >{/if}
+      </div>
+    {/each}
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>trace</span>
+      <span class="count">{scene.chrome.stage}</span>
+    </div>
+    {#each traceRows as t (t.stage)}
+      <div class="t-row">
+        <span class="n">{t.stage}</span>
+        <span
+          class="v"
+          class:step={t.verb === 'step'}
+          style:color={verbColor(t.verb)}>{t.verb}</span
+        >
+        <span class="m">{formatTarget(t.target)}</span>
+      </div>
+    {/each}
+  {/if}
 </aside>
 
 <style>
@@ -170,6 +214,50 @@
   }
   .t-row .m {
     color: var(--bivalent);
+    font-weight: 600;
+  }
+
+  /* slow-vs-dead comparison panel */
+  .rail-kv {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    column-gap: 0.4rem;
+    font-size: 13px;
+    padding: 0.18rem 0;
+    align-items: baseline;
+  }
+  .rail-kv .k {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+  }
+  .rail-kv .v {
+    color: var(--ink);
+  }
+  .rail-kv .v.slow {
+    color: var(--bivalent);
+    font-weight: 600;
+  }
+  .rail-kv .v.dead {
+    color: var(--accent-decide);
+    font-weight: 600;
+  }
+  .rail-kv .v.same {
+    color: var(--bivalent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+  }
+  .rail-note {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    margin-bottom: 0.6rem;
+  }
+  .rail-note .em {
+    color: var(--ink);
     font-weight: 600;
   }
 </style>

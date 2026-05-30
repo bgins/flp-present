@@ -59,9 +59,9 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 2 — slow vs. dead indistinguishability.
-  # Same canvas — the result is the same; the paragraph reframes
-  # WHY the problem is hard. Keep state stable so attention rides
-  # on the quote.
+  # Bespoke `slow-vs-dead` visual: two parallel networks (p₃ slow vs.
+  # p₃ dead) with a byte-identical p₁ observation box. The standard
+  # 3-process snapshot below still feeds the chrome bar.
   # ──────────────────────────────────────────────────────────────
   - id: slow_vs_dead
     head: { section: "§ 1", topic: "slow vs. dead" }
@@ -72,6 +72,7 @@ scenes:
       whether another has died (stopped entirely) or is just
       running very slowly.
 
+    visual: slow-vs-dead
     chrome: { stage: 0, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }

@@ -187,6 +187,19 @@ this document, so retiring a sketch's HTML loses nothing
 irreplaceable. `archive/` is gitignored: local scratch for rejected
 iterations, never part of the public repo.
 
+**Sketch fidelity — spacing.** The sketches define geometry, layout,
+palette, and type, but are not pixel-exact for *intra-text spacing*:
+raw SVG/HTML collapses runs of whitespace, so the sketches' padding
+spaces (column gaps, aligned colons) don't render as authored. The
+Svelte ports restore that intended alignment with `&#160;`
+(non-breaking space), which both Svelte and SVG preserve. Where this
+diverges from the sketch's *rendered* output, the build wins — it's
+the alignment the sketch source was reaching for. First instance:
+`SlowVsDead`'s p₁ observation boxes, where the `vote` column and the
+`clock :` colon now line up with the `from pₙ :` rows (the raw sketch
+flattened them). Verify ported text spacing with `element.textContent`,
+not by eye.
+
 ## Data model — script-driven snapshots
 
 The presentation is **scripted**, not simulated. Each scene is a

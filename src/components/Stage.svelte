@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Scene } from '../lib/types'
   import Canvas from '../visuals/Canvas.svelte'
+  import SlowVsDead from '../visuals/SlowVsDead.svelte'
 
   let { scene }: { scene: Scene } = $props()
 
@@ -10,6 +11,8 @@
 <div class="canvas">
   {#if visual === 'canvas'}
     <Canvas {scene} />
+  {:else if visual === 'slow-vs-dead'}
+    <SlowVsDead />
   {:else}
     <div class="placeholder">
       <span>:: {visual} ::</span>
