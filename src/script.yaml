@@ -316,7 +316,8 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 7 — valency, defined.
-  # The proof's central concept. Badge stays on `bivalent`.
+  # The proof's central concept. Badge stays on `bivalent`. Bespoke
+  # `valency-tree` visual: V rendered as a reachability tree.
   # ──────────────────────────────────────────────────────────────
   - id: valency_def
     head: { section: "§ 3", topic: "valency" }
@@ -327,6 +328,7 @@ scenes:
       if |V| = 2. C is univalent if |V| = 1, let us say 0-valent
       or 1-valent according to the corresponding decision value.
 
+    visual: valency-tree
     chrome: { stage: 7, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
@@ -348,7 +350,8 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 8 — Robinson's translation. Not from the paper.
-  # Same canvas — secondary-source gloss on what bivalent means.
+  # Same `valency-tree` visual as valency_def — a secondary-source
+  # gloss on what bivalent means.
   # ──────────────────────────────────────────────────────────────
   - id: valency_intuition
     head: { section: "§ 3", topic: "bivalent = undecided yet" }
@@ -364,6 +367,7 @@ scenes:
         future is structurally open, even when every `y_p` is
         still blank.
 
+    visual: valency-tree
     chrome: { stage: 7, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }

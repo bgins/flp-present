@@ -2,6 +2,7 @@
   import type { Scene } from '../lib/types'
   import Canvas from '../visuals/Canvas.svelte'
   import SlowVsDead from '../visuals/SlowVsDead.svelte'
+  import ValencyTree from '../visuals/ValencyTree.svelte'
 
   let { scene }: { scene: Scene } = $props()
 
@@ -13,6 +14,8 @@
     <Canvas {scene} />
   {:else if visual === 'slow-vs-dead'}
     <SlowVsDead />
+  {:else if visual === 'valency-tree'}
+    <ValencyTree />
   {:else}
     <div class="placeholder">
       <span>:: {visual} ::</span>
