@@ -200,6 +200,25 @@ the alignment the sketch source was reaching for. First instance:
 flattened them). Verify ported text spacing with `element.textContent`,
 not by eye.
 
+**Other intentional divergences from the sketches.** Small layout
+tweaks made during porting that the sketch didn't have:
+
+- `Lemma3SetD` — the 𝒞 / 𝒟 region-box labels are nudged up ~4px from
+  the frame's bottom edge for padding beneath (the sketch placed them
+  flush against the border).
+- `Lemma3SetD` — the adversary-takeaway line is a left-aligned bullet
+  whose `▸` is a **drawn triangle** (`<polygon>`), not a text glyph. The
+  sketch used a tiny centered text `▸` that read as a stray speck and (when
+  enlarged) baseline-aligned high; a drawn shape gives font-independent
+  size and vertical centering.
+- `Lemma3SetD` — the faint bottom rule is moved up to sit between the
+  diagram and the legend/takeaway footer, as a real section divider; the
+  sketch left it at the canvas bottom with nothing below it.
+- `Lemma3SetD` — the "apply e = (p, m) to each" label uses an alphabetic
+  baseline so the styled `e = (p, m)` run aligns with the rest; under the
+  sketch's middle baseline Chrome renders that run raised (superscript-ish),
+  even though it's the same font.
+
 ## Data model — script-driven snapshots
 
 The presentation is **scripted**, not simulated. Each scene is a

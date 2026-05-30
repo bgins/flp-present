@@ -110,6 +110,48 @@
     <div class="rail-kv">
       <span class="k"></span><span class="v contra">∴ ⊥</span>
     </div>
+  {:else if visual === 'lemma3-set-D'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>definitions</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">C</span> <span class="muted">— bivalent config</span>
+      </p>
+      <p>
+        <span class="term">e</span>
+        <span class="muted">= (p, m), applicable to C</span>
+      </p>
+      <p>
+        <span class="term">𝒞</span>
+        <span class="muted">— configs reachable from C without applying e</span>
+      </p>
+      <p><span class="term">𝒟</span> <span class="muted">= e(𝒞)</span></p>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>claim</span>
+    </div>
+    <div class="rail-note">
+      <span class="em">𝒟</span> contains a <span class="em">bivalent</span>
+      configuration.
+    </div>
+
+    <div class="rail-head"><span class="prefix">//</span><span>why</span></div>
+    <div class="rail-note">
+      assume not. Then every D ∈ 𝒟 is univalent, with both 0-valent and 1-valent
+      members. Pick neighbors C₀, C₁ ∈ 𝒞 whose images differ in valency — Lemma
+      1 commutativity (Case 1) or a deciding-run argument (Case 2) gives a
+      contradiction.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>consequence</span>
+    </div>
+    <div class="rail-note">
+      the adversary can <span class="em">defer e</span> through a schedule that lands
+      in the bivalent member of 𝒟 — and the system stays undecided.
+    </div>
   {:else}
     <div class="rail-head">
       <span class="prefix">//</span><span>buffer</span>
@@ -324,5 +366,22 @@
   .rail-note .em {
     color: var(--ink);
     font-weight: 600;
+  }
+
+  /* lemma3-set-D definitions panel */
+  .rail-defs {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .rail-defs p {
+    margin: 0.15rem 0;
+  }
+  .rail-defs .term {
+    color: var(--bivalent);
+    font-weight: 700;
+  }
+  .rail-defs .muted {
+    color: var(--ink-muted);
   }
 </style>

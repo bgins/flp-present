@@ -452,8 +452,9 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE — Lemma 3. The hard one. The "preservation" lemma.
-  # Heroes back to our stage-12 canvas: 3 in-flight, p3 faulty,
-  # still bivalent.
+  # Bespoke `lemma3-set-D` visual: C → 𝒞 → apply e → 𝒟, with the
+  # bivalent member of 𝒟 highlighted. The stage-12 snapshot below
+  # still feeds the chrome bar.
   # ──────────────────────────────────────────────────────────────
   - id: lemma3
     head: { section: "§ 3", topic: "lemma 3 · preservation" }
@@ -471,6 +472,7 @@ scenes:
         configuration forever, it can prevent the processes from
         ever deciding."
 
+    visual: lemma3-set-D
     chrome: { stage: 12, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
