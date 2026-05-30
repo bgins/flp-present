@@ -497,9 +497,9 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 11 — the main construction.
-  # Same hero canvas state. Quote spells out the stage rule:
-  # head-of-queue process takes a step, receives its earliest
-  # pending message if any, rotates to the back.
+  # Bespoke `construction-q` visual: rotating process queue +
+  # per-process earliest-first message queues + the head-takes-a-step
+  # rule. The stage-12 snapshot below still feeds the chrome bar.
   # ──────────────────────────────────────────────────────────────
   - id: construction
     head: { section: "§ 3", topic: "the construction" }
@@ -520,6 +520,7 @@ scenes:
         delivered. The adversary's freedom is in WHICH stage
         each delivery lands.
 
+    visual: construction-q
     chrome: { stage: 12, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
