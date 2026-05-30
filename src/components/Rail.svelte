@@ -59,6 +59,57 @@
       <span class="em">safe</span> protocol can wait; FLP says some adversary makes
       that wait infinite.
     </div>
+  {:else if visual === 'lemma2-sxs'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>setup</span>
+    </div>
+    <div class="rail-note">
+      assume every initial is univalent.&#160;<span class="em">⇒</span
+      >&#160;adjacent C₀ (0-valent) and C₁ (1-valent) exist, differing only in
+      <span class="em">p₃.x</span>.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>config Δ</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">p₁.x</span><span class="v">0 = 0</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">p₂.x</span><span class="v">0 = 0</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">p₃.x</span><span class="v"
+        ><span class="v zero">0</span>&#160;≠&#160;<span class="v one">1</span
+        ></span
+      >
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>schedule σ</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">faulty</span><span class="v">p₃</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">steps</span><span class="v">none from p₃</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">decides</span><span class="v zero">0</span>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>result</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">C₀ →</span><span class="v zero">0 ✓</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">C₁ →</span><span class="v zero">0 ✗</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k"></span><span class="v contra">∴ ⊥</span>
+    </div>
   {:else}
     <div class="rail-head">
       <span class="prefix">//</span><span>buffer</span>
@@ -249,6 +300,20 @@
     text-transform: uppercase;
     letter-spacing: 0.14em;
     font-size: 12px;
+  }
+  .rail-kv .v.zero {
+    color: var(--univalent-0);
+    font-weight: 600;
+  }
+  .rail-kv .v.one {
+    color: var(--univalent-1);
+    font-weight: 600;
+  }
+  .rail-kv .v.contra {
+    color: var(--accent-decide);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
   .rail-note {
     font-size: 13px;

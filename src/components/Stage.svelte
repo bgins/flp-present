@@ -3,6 +3,7 @@
   import Canvas from '../visuals/Canvas.svelte'
   import SlowVsDead from '../visuals/SlowVsDead.svelte'
   import ValencyTree from '../visuals/ValencyTree.svelte'
+  import Lemma2Sxs from '../visuals/Lemma2Sxs.svelte'
 
   let { scene }: { scene: Scene } = $props()
 
@@ -16,6 +17,8 @@
     <SlowVsDead />
   {:else if visual === 'valency-tree'}
     <ValencyTree />
+  {:else if visual === 'lemma2-sxs'}
+    <Lemma2Sxs />
   {:else}
     <div class="placeholder">
       <span>:: {visual} ::</span>

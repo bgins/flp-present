@@ -389,8 +389,9 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 9 — Lemma 2. A bivalent initial config exists.
-  # Briefly rewind to stage 0 to show the initial config that
-  # Lemma 2 picks out.
+  # Bespoke `lemma2-sxs` visual: two adjacent initials + identical σ
+  # reaching the same decision → contradiction. The stage-0 snapshot
+  # below still feeds the chrome bar.
   # ──────────────────────────────────────────────────────────────
   - id: lemma2
     head: { section: "§ 3", topic: "lemma 2 · bivalent initial" }
@@ -407,6 +408,7 @@ scenes:
         valency assignment. The proof uses exactly ONE crashed
         process — the very fault model the theorem allows.
 
+    visual: lemma2-sxs
     chrome: { stage: 0, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
