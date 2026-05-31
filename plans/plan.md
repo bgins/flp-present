@@ -450,12 +450,24 @@ sketches still carry the original (pre-bump) sizes. Apply the
 bumps as part of the build, or to the sketches first if we want
 to re-screenshot-verify.
 
-**Build phase: scaffolded.** Svelte 5 + Vite + TypeScript project in
-place under `src/`, with the build-time YAML pipeline parsing
-`src/script.yaml` into the typed `Scene` schema and a placeholder
-`App.svelte` rendering scene 1. `npm run check` and `npm run build`
-both pass. Next: the component tree (`AppShell` three-column shell →
-`visuals/Canvas` → scene navigation), per Pickup notes §4.
+**Build phase: visuals complete.** Svelte 5 + Vite + TypeScript app
+under `src/`, build-time YAML → typed `Scene` schema. The three-column
+`AppShell` (chrome, essay, stage, rail, controls, watermark) is built
+with ← / → scene navigation. Every scene renders: the default `canvas`
+visual plus all five bespoke visuals — `slow-vs-dead`, `valency-tree`,
+`lemma2-sxs`, `lemma3-set-D`, `construction-q` — each wired through
+`scene.visual` (`Stage` dispatches the canvas; `Rail` swaps to a
+proof-anatomy panel for slow-vs-dead / lemma2 / lemma3). `npm run lint`,
+`check`, and `build` all pass. SVG-text porting gotchas (whitespace,
+braces, baselines) are captured in project memory.
+
+Remaining build work:
+- Optional bespoke sketches not yet built: `lemma1_commutativity` and
+  `section_4_positive_result` fall back to the default canvas (TODO).
+- Legibility bumps — still unapplied (see Legibility note above); the
+  ported components carry the sketches' pre-bump sizes.
+- Autoplay (`⏵`) control — not wired (`Controls` has back/forward/reset).
+- Open questions below (transition policy, keyboard beyond ← →).
 
 ## Watermark — centaur sigil
 
