@@ -218,6 +218,20 @@ tweaks made during porting that the sketch didn't have:
   baseline so the styled `e = (p, m)` run aligns with the rest; under the
   sketch's middle baseline Chrome renders that run raised (superscript-ish),
   even though it's the same font.
+- `Canvas` / `SlowVsDead` / `Lemma2Sxs` — process-register lines (`x=0`,
+  `y=b`) use an alphabetic baseline so the plain `=N` run sits with the
+  styled tspans (under middle, Chrome drops it). Canvas needs the rule
+  scoped as `.process-node .process-reg` to outrank `.process-node text`'s
+  `dominant-baseline: middle`. Labels also sit a few px higher and the
+  registers a few px off the circle bottom, for vertical padding in the
+  small (r=28) circles.
+- `Lemma2Sxs` — the viewBox is padded to `-40 0 880 620` (from `0 0 800
+  600`). The two-column layout is wide; the horizontal margin keeps its
+  top-right from crowding the chrome badge, and the extra height keeps the
+  bottom contradiction text out of the zoom-mode footer (zoom fits to
+  height, so anything past y=600 was clipped).
+- `SlowVsDead` — observation rows shift left a few px so the longest one
+  ("12 ticks of silence…") clears the box's right edge.
 
 ## Data model — script-driven snapshots
 
@@ -435,9 +449,6 @@ Uncomment if talk depth allows.
 - **§4 bespoke visual.** The §4 scene exists but uses the default
   canvas. A dedicated initial-clique-digraph sketch would land
   the positive-result contrast better. Optional polish.
-- **Apply legibility bumps.** Per `legibility.md`'s per-selector
-  table. Decide whether to bump the sketches (to re-verify by
-  screenshot) or only the Svelte components during the build.
 
 ## Status
 
@@ -451,11 +462,13 @@ lemma 3 set 𝒟, construction queue) drafted in
 `analysis.md`. Watermark (centaur sigil) explored and resolved —
 see the Watermark section below.
 
-**Legibility:** audited but not yet applied. `legibility.md` has
-the AVIXA-DISCAS analysis and a per-selector bump table; the
-sketches still carry the original (pre-bump) sizes. Apply the
-bumps as part of the build, or to the sketches first if we want
-to re-screenshot-verify.
+**Legibility:** applied to the Svelte components (`legibility.md`
+has the AVIXA-DISCAS analysis + bump table). SVG sub-labels and
+rail text are enlarged and the zoom-mode rail widened; box-filling
+headers that couldn't grow were left at or near their original
+size. Fullscreen carries the diagram at the ~30-ft FVD (its ~2×
+scale-up), so the bumps mainly target the persistent UI and the
+smallest sub-labels. Verified by screenshot per visual.
 
 **Build phase: visuals complete.** Svelte 5 + Vite + TypeScript app
 under `src/`, build-time YAML → typed `Scene` schema. The three-column
@@ -471,8 +484,6 @@ braces, baselines) are captured in project memory.
 Remaining build work:
 - Optional bespoke sketches not yet built: `lemma1_commutativity` and
   `section_4_positive_result` fall back to the default canvas (TODO).
-- Legibility bumps — still unapplied (see Legibility note above); the
-  ported components carry the sketches' pre-bump sizes.
 - Autoplay (`⏵`) control — not wired (`Controls` has back/forward/reset).
 - Open questions below (transition policy, keyboard beyond ← →).
 
@@ -541,7 +552,7 @@ flp-demo/
 | --- | --- |
 | `plans/plan.md` | This document. |
 | `plans/analysis.md` | Internal analysis of the paper, with provenance markers for every claim. Heavy on terminology, proof structure, and pedagogical framings. **Read this first** when picking up the work in a new thread. |
-| `plans/legibility.md` | AVIXA-DISCAS font-size audit + per-selector bump table, against projection legibility for the expected venue (medium conf room, ~12 attendees, ~15-ft FVD). Not yet applied. |
+| `plans/legibility.md` | AVIXA-DISCAS font-size audit + per-selector bump table, against projection legibility for the expected venue (medium conf room, ~12 attendees; FVD revised to ~30 ft). Applied to the Svelte components. |
 | `flp.pdf` | The paper (Fischer, Lynch, Paterson 1985, © ACM). **Gitignored** — kept locally, not redistributed; cite the canonical source (see `analysis.md` Sources). |
 | `flp.txt` | `pdftotext -layout flp.pdf` extract. **Gitignored** — derivative of the © ACM paper. |
 | `script.yaml` | Sixteen-scene narration script. Self-contained world snapshots per scene. |

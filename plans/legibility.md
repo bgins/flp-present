@@ -189,5 +189,24 @@ HTML unless marked (SVG); SVG values are in viewBox units.
 
 **Research:** complete (this document).
 
-**Application:** pending. See task #24 ("Apply legibility bumps
-from legibility.md to all sketches").
+**Application:** done — applied to the Svelte components (not the
+sketches), verified by screenshot per visual.
+
+Deviations from the conservative table above:
+
+- **FVD revised to ~30 ft** (the room is deeper than the 15-ft
+  assumption). Rather than ~2× every size, fullscreen mode carries
+  the diagram — its canvas scales ~2× over the 3-column view — so
+  the bumps target the persistent UI (rail, chrome) and the
+  smallest SVG sub-labels, which compound with the fullscreen
+  scale. The zoom-mode rail widened 16rem → 18rem.
+- **Box-filling labels couldn't grow.** Bumping them overflowed
+  their containers, so they were reverted or tracked tighter:
+  `.sd-obs-head` (11px + 0.12em), `.cq-rule-text` (kept 12px),
+  `.vt-badge` (11px + 0.12em), `.l3-legend` (kept 11px).
+- **In-circle registers capped.** `.sd-proc .reg` / `.l2-reg` went
+  to 11px (not 13) to fit the r=28 circles; `.process-reg` (r=44)
+  took the full 13px.
+- **Valency badge dropped.** Bumping the chrome valency badge made
+  it dominate the header; left at 14px — the border + color carry
+  it.
