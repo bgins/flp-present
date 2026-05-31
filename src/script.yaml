@@ -424,6 +424,7 @@ scenes:
   # Same stage-0 setup so it doesn't disturb the lemma 3 hero.
   # ──────────────────────────────────────────────────────────────
   - id: lemma1_commutativity
+    visual: lemma1-commute
     head: { section: "§ 2", topic: "lemma 1 · commutativity" }
     cite: "paper §2"
     quote: |

@@ -59,6 +59,49 @@
       <span class="em">safe</span> protocol can wait; FLP says some adversary makes
       that wait infinite.
     </div>
+  {:else if visual === 'lemma1-commute'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>definitions</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">σ</span>
+        <span class="muted">— a schedule (a sequence of steps)</span>
+      </p>
+      <p>
+        <span class="term">P(σ)</span>
+        <span class="muted">— the processes σ touches</span>
+      </p>
+      <p>
+        <span class="term">disjoint</span>
+        <span class="muted">— P(σ₁) ∩ P(σ₂) = ∅</span>
+      </p>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>claim</span>
+    </div>
+    <div class="rail-note">
+      <span class="em">σ₁</span> and <span class="em">σ₂</span> commute:
+      σ₂(σ₁(C)) = σ₁(σ₂(C)) = <span class="em">C₃</span>. The diamond closes
+      either way.
+    </div>
+
+    <div class="rail-head"><span class="prefix">//</span><span>why</span></div>
+    <div class="rail-note">
+      a step depends only on the process's own state and the messages addressed
+      to it. Disjoint schedules never touch the same process, so neither can see
+      the other's effect — the order can't matter.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>used in</span>
+    </div>
+    <div class="rail-note">
+      Lemma 3, Case 1: an event <span class="em">e = (p, m)</span> and
+      <span class="em">e′ = (p′, m′)</span> with p ≠ p′ act on disjoint
+      singletons — so they swap freely.
+    </div>
   {:else if visual === 'lemma2-sxs'}
     <div class="rail-head">
       <span class="prefix">//</span><span>setup</span>

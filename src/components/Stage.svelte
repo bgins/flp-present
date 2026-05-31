@@ -3,6 +3,7 @@
   import Canvas from '../visuals/Canvas.svelte'
   import SlowVsDead from '../visuals/SlowVsDead.svelte'
   import ValencyTree from '../visuals/ValencyTree.svelte'
+  import Lemma1Commute from '../visuals/Lemma1Commute.svelte'
   import Lemma2Sxs from '../visuals/Lemma2Sxs.svelte'
   import Lemma3SetD from '../visuals/Lemma3SetD.svelte'
   import ConstructionQueue from '../visuals/ConstructionQueue.svelte'
@@ -19,6 +20,8 @@
     <SlowVsDead />
   {:else if visual === 'valency-tree'}
     <ValencyTree />
+  {:else if visual === 'lemma1-commute'}
+    <Lemma1Commute />
   {:else if visual === 'lemma2-sxs'}
     <Lemma2Sxs />
   {:else if visual === 'lemma3-set-D'}

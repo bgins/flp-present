@@ -8,6 +8,7 @@ export type Visual =
   | 'canvas'
   | 'slow-vs-dead'
   | 'valency-tree'
+  | 'lemma1-commute'
   | 'lemma2-sxs'
   | 'lemma3-set-D'
   | 'construction-q'
