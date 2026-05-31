@@ -28,7 +28,13 @@
   ]
 </script>
 
-<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+<!-- viewBox padded vs the bare 0 0 800 600. Horizontally (-40, width 880):
+     the two-column layout is wide and otherwise reaches within ~54px of the
+     canvas edge, crowding the top-right toward the chrome badge; the side
+     margin pulls the columns inward. Vertically (height 620): the contra-sub
+     bottoms at y≈603, past 600 — in zoom mode the canvas fits to height, so
+     anything below 600 was clipped at the footer. 620 contains it with margin. -->
+<svg viewBox="-40 0 880 620" preserveAspectRatio="xMidYMid meet">
   <defs>
     <marker
       id="l2arrowhead"
@@ -59,7 +65,7 @@
 
       <g class="l2-proc" transform="translate(130, 100)">
         <circle r="28" />
-        <text class="l2-label" y="-6">p₁</text>
+        <text class="l2-label" y="-10">p₁</text>
         <text class="l2-reg" y="8"><tspan class="x">x</tspan>=0</text>
         <text class="l2-reg" y="20"
           ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -67,7 +73,7 @@
       </g>
       <g class="l2-proc" transform="translate(270, 100)">
         <circle r="28" />
-        <text class="l2-label" y="-6">p₂</text>
+        <text class="l2-label" y="-10">p₂</text>
         <text class="l2-reg" y="8"><tspan class="x">x</tspan>=0</text>
         <text class="l2-reg" y="20"
           ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -76,7 +82,7 @@
       <g class="l2-proc faulty" transform="translate(200, 200)">
         <circle class="diff-ring" r="36" />
         <circle r="28" />
-        <text class="l2-label" y="-6">p₃</text>
+        <text class="l2-label" y="-10">p₃</text>
         <text class="l2-reg" y="8"
           ><tspan class="x">x</tspan>=<tspan class={col.x3class}>{col.x3}</tspan
           ></text
@@ -153,7 +159,7 @@
 
   .l2-col-head {
     font-family: 'Geist Mono', monospace;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: middle;
@@ -192,9 +198,12 @@
     font-weight: 700;
   }
   .l2-proc .l2-reg {
-    font-size: 9px;
+    font-size: 11px;
     fill: var(--ink-muted);
     letter-spacing: 0.06em;
+    /* Alphabetic: the plain `=N` run and styled tspans land on different
+       baselines under middle (see memory). */
+    dominant-baseline: alphabetic;
   }
   .l2-proc .l2-reg .x {
     fill: var(--ink);
@@ -242,7 +251,7 @@
   }
   .l2-σ-label {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     fill: var(--ink-muted);
     text-anchor: middle;
     /* Alphabetic (not middle) baseline: σ falls back to a proportional
@@ -259,7 +268,7 @@
   }
   .l2-σ-trace {
     font-family: 'Geist Mono', monospace;
-    font-size: 11.5px;
+    font-size: 13px;
     fill: var(--ink);
     dominant-baseline: middle;
   }
@@ -302,7 +311,7 @@
     dominant-baseline: middle;
   }
   .l2-decide .verb {
-    font-size: 11px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     fill: var(--ink-muted);
@@ -336,7 +345,7 @@
   }
   .l2-contra-sub {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     fill: var(--ink-muted);
     text-anchor: middle;
     /* Alphabetic baseline — see .l2-σ-label; the contra-sub's σ falls back

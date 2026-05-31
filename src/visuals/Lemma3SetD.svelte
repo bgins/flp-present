@@ -196,7 +196,7 @@
     font-weight: 700;
   }
   .l3-config .badge {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.18em;
     fill: var(--bivalent);
@@ -286,7 +286,7 @@
   }
   .l3-map-sub {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     fill: var(--ink-muted);
     text-anchor: middle;
     /* Alphabetic — contains 𝒟/𝒞 fallback glyphs. */
@@ -297,7 +297,7 @@
 
   .l3-claim-callout {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     fill: var(--bivalent);
     /* Alphabetic — contains ∃ / ∈ / 𝒟 fallback glyphs. */

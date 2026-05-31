@@ -141,7 +141,7 @@
     display: none;
   }
   .shell.zoomed .stage {
-    grid-template-columns: 1fr 16rem;
+    grid-template-columns: 1fr 18rem;
   }
   .zoom-badge {
     position: absolute;

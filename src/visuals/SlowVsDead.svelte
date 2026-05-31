@@ -20,7 +20,7 @@
 
   <g class="sd-proc" transform="translate(100, 130)">
     <circle r="28" />
-    <text class="label" y="-6">p₁</text>
+    <text class="label" y="-10">p₁</text>
     <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
     <text class="reg" y="20"
       ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -28,7 +28,7 @@
   </g>
   <g class="sd-proc" transform="translate(300, 130)">
     <circle r="28" />
-    <text class="label" y="-6">p₂</text>
+    <text class="label" y="-10">p₂</text>
     <text class="reg" y="8"><tspan class="x">x</tspan>=1</text>
     <text class="reg" y="20"
       ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -36,7 +36,7 @@
   </g>
   <g class="sd-proc slow" transform="translate(200, 260)">
     <circle r="32" />
-    <text class="label" y="-6">p₃</text>
+    <text class="label" y="-10">p₃</text>
     <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
     <text class="reg" y="20"
       ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -55,24 +55,24 @@
       >&#160;·&#160;what's been received</tspan
     ></text
   >
-  <text class="sd-obs-row" x="72" y="402"
+  <text class="sd-obs-row" x="66" y="402"
     ><tspan class="who">from p₃ :&#160;</tspan><tspan class="id">[m₁]</tspan
     ><tspan class="pl">&#160;&#160;vote 0</tspan></text
   >
-  <text class="sd-obs-row" x="72" y="424"
+  <text class="sd-obs-row" x="66" y="424"
     ><tspan class="who">from p₃ :&#160;</tspan><tspan class="id">[m₂]</tspan
     ><tspan class="pl">&#160;&#160;vote 0</tspan></text
   >
-  <text class="sd-obs-row" x="72" y="446"
+  <text class="sd-obs-row" x="66" y="446"
     ><tspan class="who">from p₂ :&#160;</tspan><tspan class="id">[m₃]</tspan
     ><tspan class="pl">&#160;&#160;vote 1</tspan></text
   >
-  <text class="sd-obs-row" x="72" y="478"
+  <text class="sd-obs-row" x="66" y="478"
     ><tspan class="who">from p₃ :&#160;</tspan><tspan class="silence"
       >… (none since)</tspan
     ></text
   >
-  <text class="sd-obs-row" x="72" y="504"
+  <text class="sd-obs-row" x="66" y="504"
     ><tspan class="who">clock&#160;&#160;&#160;:&#160;</tspan><tspan
       class="silence">12 ticks of silence from p₃</tspan
     ></text
@@ -91,7 +91,7 @@
 
   <g class="sd-proc" transform="translate(500, 130)">
     <circle r="28" />
-    <text class="label" y="-6">p₁</text>
+    <text class="label" y="-10">p₁</text>
     <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
     <text class="reg" y="20"
       ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -99,7 +99,7 @@
   </g>
   <g class="sd-proc" transform="translate(700, 130)">
     <circle r="28" />
-    <text class="label" y="-6">p₂</text>
+    <text class="label" y="-10">p₂</text>
     <text class="reg" y="8"><tspan class="x">x</tspan>=1</text>
     <text class="reg" y="20"
       ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -107,7 +107,7 @@
   </g>
   <g class="sd-proc dead" transform="translate(600, 260)">
     <circle r="32" />
-    <text class="label" y="-6">p₃</text>
+    <text class="label" y="-10">p₃</text>
     <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
     <text class="reg" y="20"
       ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
@@ -126,24 +126,24 @@
       >&#160;·&#160;what's been received</tspan
     ></text
   >
-  <text class="sd-obs-row" x="472" y="402"
+  <text class="sd-obs-row" x="466" y="402"
     ><tspan class="who">from p₃ :&#160;</tspan><tspan class="id">[m₁]</tspan
     ><tspan class="pl">&#160;&#160;vote 0</tspan></text
   >
-  <text class="sd-obs-row" x="472" y="424"
+  <text class="sd-obs-row" x="466" y="424"
     ><tspan class="who">from p₃ :&#160;</tspan><tspan class="id">[m₂]</tspan
     ><tspan class="pl">&#160;&#160;vote 0</tspan></text
   >
-  <text class="sd-obs-row" x="472" y="446"
+  <text class="sd-obs-row" x="466" y="446"
     ><tspan class="who">from p₂ :&#160;</tspan><tspan class="id">[m₃]</tspan
     ><tspan class="pl">&#160;&#160;vote 1</tspan></text
   >
-  <text class="sd-obs-row" x="472" y="478"
+  <text class="sd-obs-row" x="466" y="478"
     ><tspan class="who">from p₃ :&#160;</tspan><tspan class="silence"
       >… (none since)</tspan
     ></text
   >
-  <text class="sd-obs-row" x="472" y="504"
+  <text class="sd-obs-row" x="466" y="504"
     ><tspan class="who">clock&#160;&#160;&#160;:&#160;</tspan><tspan
       class="silence">12 ticks of silence from p₃</tspan
     ></text
@@ -164,7 +164,7 @@
 <style>
   .sd-col-head {
     font-family: 'Geist Mono', monospace;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: middle;
@@ -215,9 +215,12 @@
     font-weight: 700;
   }
   .sd-proc .reg {
-    font-size: 9px;
+    font-size: 11px;
     fill: var(--ink-muted);
     letter-spacing: 0.06em;
+    /* Alphabetic: the plain `=N` run and styled tspans land on different
+       baselines under middle (see memory). Smaller circles cap this at 11px. */
+    dominant-baseline: alphabetic;
   }
   .sd-proc .reg .x {
     fill: var(--ink);
@@ -245,7 +248,7 @@
 
   .sd-tag {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: middle;
@@ -275,20 +278,20 @@
   }
   .sd-obs-head {
     font-family: 'Geist Mono', monospace;
-    font-size: 10.5px;
+    font-size: 11px;
     font-weight: 700;
     fill: var(--ink-muted);
     text-anchor: middle;
     dominant-baseline: middle;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
   }
   .sd-obs-head .em {
     fill: var(--ink);
   }
   .sd-obs-row {
     font-family: 'Geist Mono', monospace;
-    font-size: 11.5px;
+    font-size: 13px;
     fill: var(--ink);
     dominant-baseline: middle;
   }
@@ -327,7 +330,7 @@
   }
   .sd-banner-sub {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     fill: var(--ink-muted);
     text-anchor: middle;
     /* Alphabetic: the bold `em` raises under middle (see memory). */

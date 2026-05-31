@@ -154,7 +154,7 @@
 <style>
   .cq-section-head {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.22em;
@@ -202,7 +202,7 @@
     font-weight: 700;
   }
   .cq-slot .badge {
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.18em;
     fill: var(--ink-muted);
@@ -220,7 +220,7 @@
 
   .cq-rot-label {
     font-family: 'Geist Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     fill: var(--ink-muted);
     text-anchor: middle;
     /* Alphabetic: the ↻ is a fallback glyph. */
@@ -235,7 +235,7 @@
   /* Per-process message columns */
   .cq-col-head {
     font-family: 'Geist Mono', monospace;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-anchor: middle;
     /* Alphabetic: bracket tspans baseline-shift under middle. */
@@ -269,12 +269,12 @@
     dominant-baseline: middle;
   }
   .cq-msg .id {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     fill: var(--bivalent);
   }
   .cq-msg .pl {
-    font-size: 11px;
+    font-size: 13px;
     fill: var(--ink);
     opacity: 0.78;
   }
@@ -313,7 +313,7 @@
   }
   .cq-rule-text .step {
     fill: var(--ink-muted);
-    font-size: 10px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
   }

@@ -206,7 +206,7 @@
   }
 
   .rail-head {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.16em;
@@ -234,7 +234,7 @@
     column-gap: 0.5rem;
     padding: 0.3rem 0;
     align-items: baseline;
-    font-size: 14px;
+    font-size: 15px;
   }
   .b-row .id {
     color: var(--bivalent);
@@ -247,12 +247,12 @@
     display: block;
     color: var(--ink);
     opacity: 0.78;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .b-div {
     margin: 0.7rem 0 0.4rem;
-    font-size: 12px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--ink-faint);
@@ -268,7 +268,7 @@
   }
 
   .b-null {
-    font-size: 14px;
+    font-size: 15px;
     padding: 0.22rem 0;
     color: var(--ink);
     opacity: 0.85;
@@ -281,7 +281,7 @@
   }
   .b-null .tag {
     color: var(--accent-decide);
-    font-size: 12px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
@@ -292,7 +292,7 @@
     column-gap: 0.45rem;
     padding: 0.2rem 0;
     align-items: baseline;
-    font-size: 14px;
+    font-size: 15px;
   }
   .t-row .n {
     color: var(--ink-faint);
@@ -315,7 +315,7 @@
     display: grid;
     grid-template-columns: 5rem 1fr;
     column-gap: 0.4rem;
-    font-size: 13px;
+    font-size: 15px;
     padding: 0.18rem 0;
     align-items: baseline;
   }
@@ -323,7 +323,7 @@
     color: var(--ink-faint);
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    font-size: 11px;
+    font-size: 13px;
   }
   .rail-kv .v {
     color: var(--ink);
@@ -341,7 +341,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    font-size: 12px;
+    font-size: 14px;
   }
   .rail-kv .v.zero {
     color: var(--univalent-0);
@@ -358,7 +358,7 @@
     text-transform: uppercase;
   }
   .rail-note {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.55;
     color: var(--ink-muted);
     margin-bottom: 0.6rem;
@@ -370,7 +370,7 @@
 
   /* lemma3-set-D definitions panel */
   .rail-defs {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.6;
     color: var(--ink);
   }

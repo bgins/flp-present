@@ -131,15 +131,15 @@
     letter-spacing: 0.04em;
   }
   .vt-config .vt-meta {
-    font-size: 10px;
+    font-size: 12px;
     fill: var(--ink-muted);
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
   .vt-config .vt-badge {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
   }
   .vt-config.bivalent .vt-badge {
     fill: var(--bivalent);
@@ -153,7 +153,7 @@
   }
   .vt-edge-label {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     fill: var(--ink-muted);
     dominant-baseline: middle;
     letter-spacing: 0.02em;
@@ -181,7 +181,7 @@
   }
   .vt-wedge-sub {
     font-family: 'Geist Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     fill: var(--ink-muted);
     text-anchor: middle;
     dominant-baseline: middle;
@@ -201,7 +201,7 @@
   }
   .vt-leaf text {
     font-family: 'Geist Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: middle;

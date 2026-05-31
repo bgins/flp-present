@@ -87,13 +87,11 @@
     >
       <circle r="44" />
       <text class="process-label" y="-14">{sub(p.id)}</text>
-      <text class="process-reg" y="8"
+      <text class="process-reg" y="12"
         ><tspan class="reg-name">x</tspan>={p.x}</text
       >
-      <text class="process-reg" y="24">
-        <tspan class="reg-name">y</tspan>=<tspan class="reg-blank" dy="1.5"
-          >{p.y}</tspan
-        >
+      <text class="process-reg" y="29">
+        <tspan class="reg-name">y</tspan>=<tspan class="reg-blank">{p.y}</tspan>
       </text>
     </g>
   {/each}
@@ -105,9 +103,9 @@
     >
       {#if t.flip}
         <tspan class="arrow">◀ </tspan><tspan class="id" dx="3">{t.id}</tspan
-        ><tspan class="sep">::</tspan><tspan class="payload">{t.payload}</tspan>
+        ><tspan class="sep">&#160;::&#160;</tspan><tspan class="payload">{t.payload}</tspan>
       {:else}
-        <tspan class="id">{t.id}</tspan><tspan class="sep">::</tspan><tspan
+        <tspan class="id">{t.id}</tspan><tspan class="sep">&#160;::&#160;</tspan><tspan
           class="payload">{t.payload}</tspan
         ><tspan class="arrow" dx="3"> ▶</tspan>
       {/if}
@@ -131,10 +129,16 @@
     font-size: 22px;
     font-weight: 700;
   }
-  .process-reg {
-    font-size: 11px;
+  /* Scoped under .process-node so this outranks `.process-node text`
+     (which sets dominant-baseline: middle) — a bare `.process-reg`
+     loses on specificity and the alphabetic override is ignored. */
+  .process-node .process-reg {
+    font-size: 13px;
     fill: var(--ink-muted);
     letter-spacing: 0.04em;
+    /* Alphabetic: under middle the plain `=N` run and the styled tspans
+       (reg-name, reg-blank) land on different baselines (see memory). */
+    dominant-baseline: alphabetic;
   }
   .process-reg .reg-name {
     fill: var(--ink);
@@ -173,7 +177,7 @@
     letter-spacing: -0.02em;
   }
   .msg-inline .id {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     fill: var(--bivalent);
   }
@@ -185,7 +189,7 @@
     letter-spacing: -0.22em;
   }
   .msg-inline .payload {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     fill: var(--bivalent);
     opacity: 0.78;
