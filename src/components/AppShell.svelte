@@ -9,15 +9,19 @@
   let {
     scenes,
     activeIndex,
+    zoomed,
     forward,
     back,
     reset,
+    toggleZoom,
   }: {
     scenes: Scene[]
     activeIndex: number
+    zoomed: boolean
     forward: () => void
     back: () => void
     reset: () => void
+    toggleZoom: () => void
   } = $props()
 
   const scene = $derived(scenes[activeIndex])
@@ -29,7 +33,7 @@
   }
 </script>
 
-<div class="shell">
+<div class="shell" class:zoomed>
   <header class="chrome">
     <span class="brand">:: FLP ::</span>
     <span class="chrome-stat">stage <strong>{scene.chrome.stage}</strong></span>
@@ -48,12 +52,37 @@
   </header>
 
   <div class="stage">
-    <Essay {scenes} {activeIndex} />
+    {#if !zoomed}
+      <Essay {scenes} {activeIndex} />
+    {/if}
     <Stage {scene} />
     <Rail {scene} />
   </div>
 
-  <Controls {activeIndex} total={scenes.length} {forward} {back} {reset} />
+  {#if !zoomed}
+    <Controls
+      {activeIndex}
+      total={scenes.length}
+      {forward}
+      {back}
+      {reset}
+      {toggleZoom}
+    />
+  {:else}
+    <footer class="zoom-footer">
+      <span>
+        scene
+        <span class="zoom-counter">{activeIndex + 1} / {scenes.length}</span>
+      </span>
+      <span>keys ← → · esc</span>
+    </footer>
+  {/if}
+
+  {#if zoomed}
+    <span class="zoom-badge" style:color={valencyColor[scene.chrome.valency]}>
+      {scene.chrome.valency}
+    </span>
+  {/if}
 </div>
 
 <style>
@@ -104,5 +133,44 @@
     grid-template-columns: 33fr 52fr 15fr;
     min-height: 0;
     overflow: hidden;
+  }
+
+  /* Fullscreen-canvas mode (Option A): chrome hidden via CSS; essay and
+     controls aren't rendered. Canvas fills left/top/bottom; rail stays. */
+  .shell.zoomed .chrome {
+    display: none;
+  }
+  .shell.zoomed .stage {
+    grid-template-columns: 1fr 16rem;
+  }
+  .zoom-badge {
+    position: absolute;
+    top: 0.7rem;
+    left: 1rem;
+    z-index: 60;
+    padding: 0.22rem 0.65rem;
+    border: 1.5px solid currentColor;
+    background: var(--bg);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  /* In-flow footer row in zoom (reserves space so the canvas doesn't
+     extend under it): keys left, scene counter right. */
+  .zoom-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1.5rem;
+    box-shadow: inset 0 1px 0 rgba(24, 24, 24, 0.12);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+  }
+  .zoom-counter {
+    color: var(--ink);
+    font-weight: 600;
   }
 </style>

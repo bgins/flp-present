@@ -7,12 +7,14 @@
     forward,
     back,
     reset,
+    toggleZoom,
   }: {
     activeIndex: number
     total: number
     forward: () => void
     back: () => void
     reset: () => void
+    toggleZoom: () => void
   } = $props()
 </script>
 
@@ -24,10 +26,11 @@
     >▸ forward</button
   >
   <button class="ctrl" onclick={reset}>⟳ reset</button>
+  <button class="ctrl" onclick={toggleZoom}>⤢ fullscreen</button>
   <div class="ctrl-spacer"><Watermark /></div>
   <span class="hint">
     scene <span class="scene-counter">{activeIndex + 1} / {total}</span> :: keys ←
-    →
+    → · f
   </span>
 </footer>
 

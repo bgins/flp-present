@@ -326,6 +326,13 @@ in lockstep.
   useful for a hands-off run-through during rehearsal.
 - **Reset** (⟳): jump to scene 1.
 - **Scene N / M** counter on the right of the control bar.
+- **Fullscreen canvas** (`f` / `⤢` button / `Esc`): toggles a zoomed
+  mode for far-room viewing. Hides the chrome, controls, and essay so
+  the canvas fills the left/top/bottom; the rail stays. A reserved zoom
+  footer shows the scene counter (left) + keys (right), with a compact
+  valency badge pinned top-left. `← / →` still navigate. This is the
+  primary readability lever at long FVD (~30 ft) — the ~2× canvas
+  scale-up offsets the distance rather than bumping every font.
 
 **Active scene visual model**: the essay column scrolls smoothly;
 the active scene is at full opacity with a `▸` margin marker, all
