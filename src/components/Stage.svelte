@@ -20,6 +20,8 @@
     <Canvas {scene} />
   {:else if visual === 'message-buffer'}
     <MessageBuffer {scene} />
+  {:else if visual === 'buffer-state'}
+    <MessageBuffer {scene} op="state" />
   {:else if visual === 'message-receive'}
     <MessageReceive {scene} />
   {:else if visual === 'slow-vs-dead'}

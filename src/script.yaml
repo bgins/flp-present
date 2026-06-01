@@ -116,6 +116,7 @@ scenes:
   # Same stage-0 snapshot as scene 1; nothing else has changed.
   # ──────────────────────────────────────────────────────────────
   - id: configuration
+    visual: buffer-state
     head: { section: "§ 2", topic: "configuration" }
     cite: "paper §2"
     quote: |

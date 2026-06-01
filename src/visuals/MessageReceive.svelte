@@ -36,6 +36,8 @@
       return {
         id: p.id,
         faulty: p.faulty,
+        x: p.x,
+        y: p.y,
         d,
         node: at(C, d, R + 110),
         msgs: scene.buffer.filter((m) => m.to === p.id),
@@ -108,8 +110,8 @@
       return {
         x1: c.x,
         y1: c.y,
-        x2: to.x - (dx / len) * 40,
-        y2: to.y - (dy / len) * 40,
+        x2: to.x - (dx / len) * 52,
+        y2: to.y - (dy / len) * 52,
         selected: c.selected,
       }
     })
@@ -169,14 +171,18 @@
       class:receiver={receiver && p.id === receiver.id}
       transform="translate({p.node.x},{p.node.y})"
     >
-      <circle r="32" />
-      <text class="mr-proc-label" y="0">{sub(p.id)}</text>
+      <circle r="44" />
+      <text class="mr-proc-label" y="-14">{sub(p.id)}</text>
+      <text class="mr-reg" y="12"><tspan class="rk">x</tspan>={p.x}</text>
+      <text class="mr-reg" y="29"
+        ><tspan class="rk">y</tspan>=<tspan class="rb">{p.y}</tspan></text
+      >
     </g>
   {/each}
 
   <!-- Caption. -->
   <text class="mr-cap" x={C.x} y="500">receive</text>
-  <text class="mr-cap-sub" x={C.x} y="522"
+  <text class="mr-cap-sub" x={C.x} y="518"
     >pull any pending message or&#160;∅</text
   >
 </svg>
@@ -244,17 +250,34 @@
   }
   .mr-proc-label {
     font-family: 'Geist Mono', monospace;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     fill: var(--ink);
     text-anchor: middle;
     dominant-baseline: middle;
   }
+  .mr-reg {
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    fill: var(--ink-muted);
+    text-anchor: middle;
+    /* Alphabetic: the plain `=N` run + styled tspans misalign under middle. */
+    dominant-baseline: alphabetic;
+    letter-spacing: 0.04em;
+  }
+  .mr-reg .rk {
+    fill: var(--ink);
+  }
+  .mr-reg .rb {
+    fill: var(--bivalent);
+    font-weight: 700;
+  }
   .mr-proc.faulty circle {
     stroke: var(--accent-decide);
     stroke-dasharray: 4 3;
   }
-  .mr-proc.faulty .mr-proc-label {
+  .mr-proc.faulty .mr-proc-label,
+  .mr-proc.faulty .mr-reg .rk {
     fill: var(--accent-decide);
   }
 

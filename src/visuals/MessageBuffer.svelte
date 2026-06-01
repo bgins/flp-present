@@ -14,7 +14,9 @@
   import type { Scene } from '../lib/types'
   import { sub } from '../lib/format'
 
-  let { scene }: { scene: Scene } = $props()
+  // op: 'send' shows the converging send streams; 'state' is a static
+  // configuration view (no operation flow) — e.g. the `configuration` scene.
+  let { scene, op = 'send' }: { scene: Scene; op?: 'send' | 'state' } = $props()
 
   const C = { x: 400, y: 286 }
   const R = 95
@@ -44,6 +46,8 @@
       return {
         id: p.id,
         faulty: p.faulty,
+        x: p.x,
+        y: p.y,
         d,
         node: at(C, d, R + 110),
         sendFrom: at(C, d, R + 76), // just inside the node
@@ -101,16 +105,18 @@
   {/each}
 
   <!-- Send: each process feeds the one pool — streams converge on the centre. -->
-  {#each procs as p (p.id)}
-    <line
-      class="mbf-send"
-      x1={p.sendFrom.x}
-      y1={p.sendFrom.y}
-      x2={p.sendTo.x}
-      y2={p.sendTo.y}
-      marker-end="url(#mbf-in)"
-    />
-  {/each}
+  {#if op === 'send'}
+    {#each procs as p (p.id)}
+      <line
+        class="mbf-send"
+        x1={p.sendFrom.x}
+        y1={p.sendFrom.y}
+        x2={p.sendTo.x}
+        y2={p.sendTo.y}
+        marker-end="url(#mbf-in)"
+      />
+    {/each}
+  {/if}
 
   <!-- A circle per pending message, receding & fading inward (max 4 shown). -->
   {#each pods as pod, i (i)}
@@ -122,21 +128,31 @@
     {/if}
   {/each}
 
-  <!-- Processes around the rim. -->
+  <!-- Processes around the rim, each carrying its registers (its state). -->
   {#each procs as p (p.id)}
     <g
       class="mbf-proc"
       class:faulty={p.faulty}
       transform="translate({p.node.x},{p.node.y})"
     >
-      <circle r="32" />
-      <text class="mbf-proc-label" y="0">{sub(p.id)}</text>
+      <circle r="44" />
+      <text class="mbf-proc-label" y="-14">{sub(p.id)}</text>
+      <text class="mbf-reg" y="12"><tspan class="rk">x</tspan>={p.x}</text>
+      <text class="mbf-reg" y="29"
+        ><tspan class="rk">y</tspan>=<tspan class="rb">{p.y}</tspan></text
+      >
     </g>
   {/each}
 
   <!-- Caption. -->
-  <text class="mbf-cap" x={C.x} y="500">the message buffer</text>
-  <text class="mbf-cap-sub" x={C.x} y="522">sends converge into one multiset</text>
+  <text class="mbf-cap" x={C.x} y="500"
+    >{op === 'state' ? 'a configuration' : 'the message buffer'}</text
+  >
+  <text class="mbf-cap-sub" x={C.x} y="518"
+    >{op === 'state'
+      ? 'process states + message buffer'
+      : 'sends converge into one multiset'}</text
+  >
 </svg>
 
 <style>
@@ -210,17 +226,34 @@
   }
   .mbf-proc-label {
     font-family: 'Geist Mono', monospace;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     fill: var(--ink);
     text-anchor: middle;
     dominant-baseline: middle;
   }
+  .mbf-reg {
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    fill: var(--ink-muted);
+    text-anchor: middle;
+    /* Alphabetic: the plain `=N` run + styled tspans misalign under middle. */
+    dominant-baseline: alphabetic;
+    letter-spacing: 0.04em;
+  }
+  .mbf-reg .rk {
+    fill: var(--ink);
+  }
+  .mbf-reg .rb {
+    fill: var(--bivalent);
+    font-weight: 700;
+  }
   .mbf-proc.faulty circle {
     stroke: var(--accent-decide);
     stroke-dasharray: 4 3;
   }
-  .mbf-proc.faulty .mbf-proc-label {
+  .mbf-proc.faulty .mbf-proc-label,
+  .mbf-proc.faulty .mbf-reg .rk {
     fill: var(--accent-decide);
   }
 
