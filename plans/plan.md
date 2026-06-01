@@ -328,17 +328,43 @@ The channel `Canvas` is now **retired** — no scene uses the `canvas` visual.
   ground, ink modules, bracket/terminal framing — not stock black-on-white.
   Details (which sources, layout, whether it's its own scene or a rail panel)
   to be sorted out later.
-- **`section_4_positive_result` — the last bespoke visual.** The closing
-  contrast, and the one bespoke scene still on the fallback `canvas`. It is
-  **outside the impossibility run** — a different fault model (strict majority
-  alive, *no crashes during execution*), so it gets a fresh setup, not the
-  message thread. Proposed visual: the **initial-clique digraph** (analysis.md
-  §444–476) — processes broadcast their id and listen for L−1 others
-  (L = ⌈(N+1)/2⌉), building a "heard-from" digraph G; stage 2 takes the
-  transitive closure and everyone decides on the initial clique (the unique
-  source clique). Rail: a **proof-anatomy panel** for that 2-stage algorithm
-  (like the lemma scenes), not the buffer. Pedagogically it's the "weaken the
-  fault model by one knob and consensus returns" beat that closes the talk.
+- **§4 positive result — TWO scenes (decided, frozen; not yet built).** The
+  closing contrast: weaken the fault model by one knob and consensus returns.
+  `section_4_positive_result` currently is a bare-processes `system` stopgap;
+  it becomes **two** bespoke scenes. Both are **outside the impossibility run**
+  (a different fault model: **strict majority alive, no crashes *during*
+  execution**) — fresh setup, not the message thread.
+
+  Why two scenes: §4 has two distinct ideas, and one scene lets the digraph
+  machinery bury the more important "aha." Split **why → how**, mapping to the
+  two halves of consensus:
+
+  - **Scene A — "the knob" (why it's possible / TERMINATION).** Quote: Theorem
+    2 statement. The direct contrast with the impossibility: *no mid-run crashes
+    ⇒ a process can wait for a **majority** and the wait always returns* (the
+    alive majority broadcasts, channels are reliable, nobody vanishes mid-step —
+    so you never wait on a maybe-dead pivotal process, the slow-vs-dead trap FLP
+    exploits). You still can't wait for *everyone* (initially-dead minority), so
+    you wait for a majority, not all. Visual: a process gathering a **majority
+    quorum** — alive majority answering, initially-dead minority greyed — so a
+    decision becomes *safe*, where every prior scene held bivalent. This is the
+    higher-impact beat; build it FIRST (and it's the simpler visual).
+  - **Scene B — "the clique" (how agreement holds / AGREEMENT).** Quote: the §4
+    algorithm. Each process decided on a *different* majority — why do they
+    agree? Any two majorities **overlap**; stage-2 exchange + transitive closure
+    (G⁺) reveals the same **initial clique** (unique source clique, no incoming
+    edges, by the majority property) to everyone; a fixed rule on its values →
+    same decision. Visual: the **heard-from digraph** + initial clique
+    highlighted → decision. Rail: proof-anatomy panel for the 2-stage algorithm
+    (L = ⌈(N+1)/2⌉, hear from L−1, closure, unique clique). analysis.md §444–476.
+
+  Open design specifics (defer to build time): **N = 3** (consistent, simpler)
+  vs **5** (L=3, a 3-of-5 clique reads "majority" more clearly — plan.md
+  anticipated a 5-process §4 variant); the **decision rule** on the clique's
+  values (e.g. min → 0, since the locked p₁=0/p₂=1 clique ties); whether to show
+  the **`y → decided` payoff** (recommended — it's the contrast with forever-`b`).
+  Does NOT contradict Theorem 1: FLP's adversary needs a *mid-run* crash to
+  stall bivalent forever (Lemma 3's deferral); §4 assumes that lever away.
 
 Snapshot-per-scene (no deltas) trades verbosity for
 authorability: you can jump to any scene independently, and the
