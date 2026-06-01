@@ -127,8 +127,10 @@ protocol.
 
 ### Valency (the proof's key concept)
 
-**[paper §3]** For a configuration C, let `V` = set of decision
-values of configs reachable from C.
+**[paper §2]** A configuration has **decision value** `v` if some
+process in it is in a decision state — i.e. has written its
+write-once output `y_p = v`. **[paper §3]** For a configuration C,
+let `V` = set of decision values of configs reachable from C.
 
 - **Bivalent** iff `|V| = 2`. **[paper §3, verbatim "C is
   bivalent if |V| = 2"]**.
@@ -272,7 +274,7 @@ correct."
 
 ## Things common shorthand gets wrong
 
-**[synth + paper §2]** Items 1–5 below contrast paper specifics
+**[synth + paper §2]** The items below contrast paper specifics
 with simplifications I've seen in secondary writeups (training
 data) — worth flagging if any of those simplifications surface
 in the talk Q&A.
@@ -319,6 +321,44 @@ in the talk Q&A.
    we also assume that processes do not have access to
    synchronized clocks... we do not postulate the ability to
    detect the death of a process."
+
+8. **FLP does NOT work by losing or withholding a message.** The
+   impossibility run is **admissible**: every message to a
+   nonfaulty process is *eventually delivered*, and every nonfaulty
+   process takes infinitely many steps **[paper §2, §3
+   construction]**. **[synth]** The adversary controls only the
+   *order and timing* of deliveries. By Lemma 3 it can always
+   deliver the next pending message and *still* reach a bivalent
+   configuration — so it delivers everything yet the system never
+   commits. "A message never arrives" is the wrong picture; "every
+   message arrives, but never in an order that forces a decision"
+   is right. (Contrast item 6: the channels are reliable.)
+
+9. **The impossibility run can have ZERO actual crashes.**
+   **[synth]** The constructed run delivers every message and lets
+   every process step infinitely often, so *no* process is faulty
+   in it — adversarial **scheduling alone** defeats the protocol.
+   The "one fault" is what the protocol must *tolerate*; the lemmas
+   (2, and 3 Case 2) invoke only the *possibility* of a crash — a
+   deciding run in which one chosen process takes no steps — to
+   force their contradictions **[paper §3]**. The protocol's
+   required caution (it can never tell a slow process from a dead
+   one — the slow-vs-dead point) is the crack the adversary widens
+   with timing.
+
+10. **"Decide" is one process's write-once `y`-flip — not a vote
+    tally, not "all processes agree."** **[paper §2]** A run is
+    *deciding* the moment *some* process writes `y_p` from `b` to a
+    value. **[synth]** *How* a process chooses to write `y` is the
+    (unspecified) protocol's rule — "got a matching majority of
+    votes" is one possible rule, not FLP's definition; the proof is
+    agnostic to it. Keep the registers distinct: `x_p` is the
+    immutable **input** (its vote), `y_p` the write-once **output**
+    (its decision). Sending/receiving messages never touches either;
+    only a decision writes `y`. Agreement (partial-correctness
+    condition 1) makes one process's write consistent system-wide.
+    And **univalent ≠ decided**: the outcome can be sealed while
+    every `y_p` is still `b`.
 
 ## Metaphors and intuitions for the talk
 
