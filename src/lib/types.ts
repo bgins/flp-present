@@ -6,6 +6,8 @@ export type Valency = 'bivalent' | 'univalent-0' | 'univalent-1'
 
 export type Visual =
   | 'canvas'
+  | 'message-buffer'
+  | 'message-receive'
   | 'slow-vs-dead'
   | 'valency-tree'
   | 'lemma1-commute'

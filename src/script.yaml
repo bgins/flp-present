@@ -153,6 +153,7 @@ scenes:
   # paper §2, a single step can both receive and send.
   # ──────────────────────────────────────────────────────────────
   - id: buffer
+    visual: message-buffer
     head: { section: "§ 2", topic: "the buffer" }
     cite: "paper §2"
     quote: |
@@ -188,6 +189,7 @@ scenes:
   # entry where receive returned ∅.
   # ──────────────────────────────────────────────────────────────
   - id: null_event
+    visual: message-receive
     head: { section: "§ 2", topic: "the ∅ event" }
     cite: "paper §2"
     quote: |

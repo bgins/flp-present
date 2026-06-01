@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Scene } from '../lib/types'
   import Canvas from '../visuals/Canvas.svelte'
+  import MessageBuffer from '../visuals/MessageBuffer.svelte'
+  import MessageReceive from '../visuals/MessageReceive.svelte'
   import SlowVsDead from '../visuals/SlowVsDead.svelte'
   import ValencyTree from '../visuals/ValencyTree.svelte'
   import Lemma1Commute from '../visuals/Lemma1Commute.svelte'
@@ -16,6 +18,10 @@
 <div class="canvas">
   {#if visual === 'canvas'}
     <Canvas {scene} />
+  {:else if visual === 'message-buffer'}
+    <MessageBuffer {scene} />
+  {:else if visual === 'message-receive'}
+    <MessageReceive {scene} />
   {:else if visual === 'slow-vs-dead'}
     <SlowVsDead />
   {:else if visual === 'valency-tree'}
