@@ -1,16 +1,15 @@
 <script lang="ts">
-  // message-receive (prototype on scene: null_event). The RECEIVE side: a
-  // process pulls ANY pending message addressed to it — or ∅ — from the
-  // unordered multiset. The chamber holds:
-  //   • indistinct background "bubbles" that grow center→edge in the SAME
-  //     proportions as the send circles — the unbounded storage bubbling forth
-  //     from the convergence (centre);
-  //   • a few DISTINCT, uniform-size candidates at varied radii (edge or
-  //     centre), pushing the bubbles aside but leaving their proportions;
-  //   • ∅ as just another candidate circle (internal slash).
-  // receive = a STRAIGHT arrow from each candidate (well separated so the
-  // arrows don't stack); the SELECTED one is solid — here ∅, even though
-  // messages are pending (the null_event point). See
+  // message-receive. The RECEIVE side: the pool resolved into per-recipient
+  // chambers, and the scene's last trace event picks what's depicted —
+  //   • step (p, ∅)  → p reaches in and is handed ∅ though messages pend
+  //                    (null_event): ∅ is a candidate, selected (solid arrow);
+  //   • deliver mN   → mN's recipient receives it (admissible): the real
+  //                    message is selected, no ∅.
+  // The receiver is always NONFAULTY; a faulty process's chamber is EXEMPT
+  // (greyed, dashed) — its messages can never be received. Each chamber also
+  // holds indistinct background "bubbles" (the unbounded storage) and its
+  // distinct candidates at varied radii. The SELECTED candidate gets a solid
+  // arrow to the receiver; the rest are faint. See
   // plans/message-buffer-visual.md. Scene-driven.
   import type { Scene } from '../lib/types'
   import { sub } from '../lib/format'
@@ -48,25 +47,55 @@
     scene.processes.map((_, i) => at(C, dir(((i + 0.5) * 2 * Math.PI) / n), R)),
   )
 
-  // Receiver = the process with the most pending messages — the strongest
-  // "candidates present, yet ∅ selected."
-  const receiver = $derived([...procs].sort((a, b) => b.msgs.length - a.msgs.length)[0])
+  // The receive view depicts the scene's LAST trace event:
+  //   deliver mN  → mN's recipient receives it (a real delivery — admissible)
+  //   step (p, ∅) → p reaches in and is handed ∅ (null_event)
+  const lastEvent = $derived(scene.trace[scene.trace.length - 1])
+  const isDelivery = $derived(lastEvent?.verb === 'deliver')
+  const deliveredMsg = $derived(
+    isDelivery ? scene.buffer.find((m) => m.id === lastEvent?.target) : undefined,
+  )
+  // Receiver: the delivery's recipient, or the ∅-step's process — falling back
+  // to the most-pending process. Never the faulty one (its mail is exempt and
+  // it isn't taking steps).
+  const receiverId = $derived(
+    isDelivery ? deliveredMsg?.to : lastEvent?.target.match(/\((p\d+)/)?.[1],
+  )
+  const receiver = $derived(
+    procs.find((p) => p.id === receiverId && !p.faulty) ??
+      [...procs].filter((p) => !p.faulty).sort((a, b) => b.msgs.length - a.msgs.length)[0],
+  )
 
   // Candidates per chamber: each pending message as a uniform distinct circle,
   // spread angularly (for separate straight arrows) at varied radii. The
   // receiver also gets a ∅ candidate, marked selected.
+  // The 4th candidate sits up and slightly left (42°, radius 55 — out along its
+  // spoke, deeper into the chamber) so its arrow to the receiver passes clear
+  // of the 3rd candidate's circle while staying off the partition line.
   const candAngles = (k: number): number[] =>
-    k <= 1 ? [0] : k === 2 ? [-24, 24] : k === 3 ? [-32, 0, 32] : [-36, -12, 12, 36]
-  const candRadii = [66, 44, 60, 46]
+    k <= 1 ? [0] : k === 2 ? [-24, 24] : k === 3 ? [-32, 0, 32] : [-36, -12, 12, 42]
+  const candRadii = [66, 44, 60, 55]
 
-  type Cand = { x: number; y: number; kind: 'msg' | 'null'; label: string; selected: boolean }
+  type Item = { kind: 'msg' | 'null'; label: string; selected: boolean; exempt: boolean }
+  type Cand = Item & { x: number; y: number }
   const chambers = $derived(
     procs.map((p) => {
       const isRcv = receiver && p.id === receiver.id
-      const items: { kind: 'msg' | 'null'; label: string; selected: boolean }[] =
-        p.msgs.map((m) => ({ kind: 'msg' as const, label: sub(m.id), selected: false }))
-      // ∅ is just another candidate, placed at the centre of the group.
-      if (isRcv) items.splice(Math.floor(items.length / 2), 0, { kind: 'null', label: '∅', selected: true })
+      // A faulty process's chamber is EXEMPT — its messages never get received.
+      const items: Item[] = p.msgs.map((m) => ({
+        kind: 'msg' as const,
+        label: sub(m.id),
+        selected: isRcv && isDelivery && m.id === deliveredMsg?.id,
+        exempt: !!p.faulty,
+      }))
+      // ∅ is a candidate only for the receiver in a null event (not a delivery).
+      if (isRcv && !isDelivery)
+        items.splice(Math.floor(items.length / 2), 0, {
+          kind: 'null',
+          label: '∅',
+          selected: true,
+          exempt: false,
+        })
       const angs = candAngles(items.length)
       const cands: Cand[] = items.map((it, j) => ({
         ...it,
@@ -81,7 +110,7 @@
   // candidates but keeping their size.
   const bgPattern: [number, number][] = [
     [24, -16], [24, 16],
-    [44, -28], [44, -6], [44, 18], [44, 34],
+    [44, -28], [44, -6], [44, 18], [44, 42],
     [66, -32], [66, -10], [66, 12], [66, 34],
   ]
   const bgSize = (rad: number) => rad * 0.11 + 2.2
@@ -141,7 +170,8 @@
     <circle class="mr-pack" cx={b.x} cy={b.y} r={b.br} />
   {/each}
 
-  <!-- Receive arrows (straight): faint = candidate, solid = selected (∅). -->
+  <!-- Receive arrows (straight): faint = candidate, solid = selected (the
+       delivered message, or ∅ for a null event). -->
   {#each arrows as a, i (i)}
     <line
       class="mr-arrow"
@@ -155,11 +185,16 @@
   {/each}
 
   <!-- Candidates (uniform size): a circle whose label is its identity — a
-       message id, or ∅ for the null candidate. -->
+       message id, or ∅ for the null candidate. Faulty chambers are exempt
+       (greyed, dashed): their messages can never be received. -->
   {#each allCands as c, i (i)}
-    <circle class="mr-cand-pod" cx={c.x} cy={c.y} r={CAND_R} />
-    <text class="mr-cand-label" class:nullglyph={c.kind === 'null'} x={c.x} y={c.y}
-      >{c.label}</text
+    <circle class="mr-cand-pod" class:exempt={c.exempt} cx={c.x} cy={c.y} r={CAND_R} />
+    <text
+      class="mr-cand-label"
+      class:nullglyph={c.kind === 'null'}
+      class:exempt={c.exempt}
+      x={c.x}
+      y={c.y}>{c.label}</text
     >
   {/each}
 
@@ -183,7 +218,9 @@
   <!-- Caption. -->
   <text class="mr-cap" x={C.x} y="500">receive</text>
   <text class="mr-cap-sub" x={C.x} y="518"
-    >pull any pending message or&#160;∅</text
+    >{isDelivery
+      ? 'delivered to a nonfaulty process'
+      : 'pull any pending message or ∅'}</text
   >
 </svg>
 
@@ -218,6 +255,12 @@
     stroke: var(--ink);
     stroke-width: 1.3;
   }
+  /* Exempt = addressed to the faulty process: stuck, never received. Greyed and
+     dashed, echoing the faulty node's own dashed circle. */
+  .mr-cand-pod.exempt {
+    stroke: var(--ink-faint);
+    stroke-dasharray: 3 2.5;
+  }
   .mr-cand-label {
     font-family: 'Geist Mono', monospace;
     font-size: 11px;
@@ -225,6 +268,9 @@
     fill: var(--ink);
     text-anchor: middle;
     dominant-baseline: middle;
+  }
+  .mr-cand-label.exempt {
+    fill: var(--ink-faint);
   }
   .mr-arrow {
     fill: none;

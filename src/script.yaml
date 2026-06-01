@@ -42,6 +42,7 @@ scenes:
   # Canvas: initial config, nothing in flight, nobody faulty yet.
   # ──────────────────────────────────────────────────────────────
   - id: result
+    visual: system
     head: { section: "§ 1", topic: "the result" }
     cite: "paper §1, abstract"
     quote: |
@@ -88,6 +89,7 @@ scenes:
   # those registers mean.
   # ──────────────────────────────────────────────────────────────
   - id: process
+    visual: process-state
     head: { section: "§ 2", topic: "the process" }
     cite: "paper §2"
     quote: |
@@ -145,13 +147,20 @@ scenes:
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 5 — the buffer is a multiset.
-  # First scene with in-flight messages. Three pending pairs;
-  # adversary may pull any of them next.
-  #
-  # The three (pₙ, ∅) steps below are how m1/m2/m3 got into the
-  # buffer: each process woke up, receive returned ∅, and the
-  # step's Phase-2 send put one message into the buffer. Per
-  # paper §2, a single step can both receive and send.
+  # First scene with in-flight messages. SEND view: messages stream
+  # from their SENDER into the one pool (no partitions on send). The
+  # scheduler interleaves turns p₁ → p₂ → p₁ (a live run), and the
+  # adversary withholds delivery, so the sends pile up:
+  #   • p₁ (vote 0) — scheduled TWICE, re-broadcasts → FOUR pending
+  #     (m1, m2 then a retry m5, m6): the annoying retrier. Its
+  #     inflow runs the full fade crisp → lighter → faint → spent ring,
+  #     ordered by recency: the retry (m5, m6) is crisp at the rim and
+  #     the first broadcast (m1, m2) has sunk deepest into the core.
+  #   • p₂ (vote 1) — broadcast once → two pending (m3, m4): polite.
+  #   • p₃ (vote 0) — not yet scheduled → silent (foreshadows it as
+  #     the process that goes faulty).
+  # Both values stay in flight → bivalent. Each broadcast step sends
+  # to BOTH peers (paper §2: a step sends a finite SET).
   # ──────────────────────────────────────────────────────────────
   - id: buffer
     visual: message-buffer
@@ -176,13 +185,16 @@ scenes:
       - { id: p3, x: 0, y: b, pos: [400, 500] }
     buffer:
       - { id: m1, from: p1, to: p2, payload: "vote 0" }
-      - { id: m2, from: p2, to: p1, payload: "vote 1" }
-      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m5, from: p1, to: p2, payload: "vote 0" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 1, verb: step, target: "(p1, ∅)" }   # sends m1
-      - { stage: 2, verb: step, target: "(p2, ∅)" }   # sends m2
-      - { stage: 3, verb: step, target: "(p3, ∅)" }   # sends m3
+      - { stage: 1, verb: step, target: "(p1, ∅)" }   # p1 broadcasts m1, m2
+      - { stage: 2, verb: step, target: "(p2, ∅)" }   # p2 broadcasts m3, m4
+      - { stage: 3, verb: step, target: "(p1, ∅)" }   # p1 retries → m5, m6
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 5 — the ∅ event.
@@ -210,22 +222,28 @@ scenes:
         Notation: the paper writes this null marker as `0`; we
         render it `∅` to keep it distinct from decision value 0.
 
-    chrome: { stage: 5, valency: bivalent, faulty: null }
+    chrome: { stage: 4, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500] }
+    # RECEIVE view: the same pool, now resolved into per-recipient
+    # partitions. p₃'s inbox is the fullest — m2, m6 (p₁'s votes ·0)
+    # and m4 (p₂'s vote ·1), both values pending — yet receive(p₃)
+    # returns ∅. The system may withhold; silence isn't an empty buffer.
     buffer:
       - { id: m1, from: p1, to: p2, payload: "vote 0" }
-      - { id: m2, from: p2, to: p1, payload: "vote 1" }
-      - { id: m3, from: p3, to: p1, payload: "vote 0" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m5, from: p1, to: p2, payload: "vote 0" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 1, verb: step, target: "(p1, ∅)" }   # sends m1
-      - { stage: 2, verb: step, target: "(p2, ∅)" }   # sends m2
-      - { stage: 3, verb: step, target: "(p3, ∅)" }   # sends m3
-      - { stage: 4, verb: step, target: "(p2, ∅)" }   # idle — no send
-      - { stage: 5, verb: step, target: "(p3, ∅)" }   # idle — no send
+      - { stage: 1, verb: step, target: "(p1, ∅)" }   # p1 broadcasts m1, m2
+      - { stage: 2, verb: step, target: "(p2, ∅)" }   # p2 broadcasts m3, m4
+      - { stage: 3, verb: step, target: "(p1, ∅)" }   # p1 retries → m5, m6
+      - { stage: 4, verb: step, target: "(p3, ∅)" }   # p3 reaches in — gets ∅
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 6 — admissibility (the often-misquoted condition).
@@ -247,27 +265,30 @@ scenes:
         gets one crash for free, but every message to nonfaulty
         processes must eventually be delivered.
 
+    visual: message-receive
     chrome: { stage: 7, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
-    # m3 stays in the buffer — p3 turned faulty before its vote
-    # was delivered. Admissibility still requires m3 to reach p1
-    # (the destination is nonfaulty).
+    # RECEIVE view (delivery): p1 (nonfaulty) finally gets m3 — the very vote
+    # it has been holding since the buffer scene (admissibility: messages to
+    # nonfaulty ARE received). m2, m4, m6 sit STUCK at the now-faulty p3
+    # (greyed/exempt, never delivered); m5 is still pending for p2. m1 was
+    # delivered to p2 earlier. Both values in flight → bivalent.
     buffer:
-      - { id: m3, from: p3, to: p1, payload: "vote 0" }
-      - { id: m4, from: p2, to: p1, payload: "echo m1" }
-      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m5, from: p1, to: p2, payload: "vote 0" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
-      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
-      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
-      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
-      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
-      - { stage: 6, verb: deliver, target: "m1" }        # p2 receives, sends m4
-      - { stage: 7, verb: deliver, target: "m2" }        # p1 receives, sends m5
+      - { stage: 3, verb: step,    target: "(p1, ∅)" }   # p1's retry → m5, m6
+      - { stage: 4, verb: step,    target: "(p3, ∅)" }   # p3's last step — then faulty
+      - { stage: 5, verb: deliver, target: "m1" }         # p2 (nonfaulty) receives p1's vote
+      - { stage: 6, verb: delay,   target: "m3" }         # adversary defers m3
+      - { stage: 7, verb: deliver, target: "m3" }         # p1 (nonfaulty) finally receives p2's vote
 
   # ──────────────────────────────────────────────────────────────
   # SCENE — the correctness conditions (the goalposts).
@@ -298,24 +319,25 @@ scenes:
         `b` to a value. Theorem 1 says no protocol can hold all
         three at once.
 
+    visual: message-receive
     chrome: { stage: 7, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
     buffer:
-      - { id: m3, from: p3, to: p1, payload: "vote 0" }
-      - { id: m4, from: p2, to: p1, payload: "echo m1" }
-      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m5, from: p1, to: p2, payload: "vote 0" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
-      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
-      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
-      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
-      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
-      - { stage: 6, verb: deliver, target: "m1" }        # p2 receives, sends m4
-      - { stage: 7, verb: deliver, target: "m2" }        # p1 receives, sends m5
+      - { stage: 3, verb: step,    target: "(p1, ∅)" }   # p1's retry → m5, m6
+      - { stage: 4, verb: step,    target: "(p3, ∅)" }   # p3's last step — then faulty
+      - { stage: 5, verb: deliver, target: "m1" }         # p2 (nonfaulty) receives p1's vote
+      - { stage: 6, verb: delay,   target: "m3" }         # adversary defers m3
+      - { stage: 7, verb: deliver, target: "m3" }         # p1 (nonfaulty) finally receives p2's vote
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 7 — valency, defined.
@@ -338,18 +360,18 @@ scenes:
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
     buffer:
-      - { id: m3, from: p3, to: p1, payload: "vote 0" }
-      - { id: m4, from: p2, to: p1, payload: "echo m1" }
-      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m5, from: p1, to: p2, payload: "vote 0" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
-      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
-      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
-      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
-      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
-      - { stage: 6, verb: deliver, target: "m1" }        # → sends m4
-      - { stage: 7, verb: deliver, target: "m2" }        # → sends m5
+      - { stage: 3, verb: step,    target: "(p1, ∅)" }   # p1's retry → m5, m6
+      - { stage: 4, verb: step,    target: "(p3, ∅)" }   # p3's last step — then faulty
+      - { stage: 5, verb: deliver, target: "m1" }         # p2 (nonfaulty) receives p1's vote
+      - { stage: 6, verb: delay,   target: "m3" }         # adversary defers m3
+      - { stage: 7, verb: deliver, target: "m3" }         # p1 (nonfaulty) finally receives p2's vote
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 8 — Robinson's translation. Not from the paper.
@@ -377,18 +399,18 @@ scenes:
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
     buffer:
-      - { id: m3, from: p3, to: p1, payload: "vote 0" }
-      - { id: m4, from: p2, to: p1, payload: "echo m1" }
-      - { id: m5, from: p1, to: p2, payload: "echo m2" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m5, from: p1, to: p2, payload: "vote 0" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 1, verb: step,    target: "(p1, ∅)" }   # sends m1
-      - { stage: 2, verb: step,    target: "(p2, ∅)" }   # sends m2
-      - { stage: 3, verb: step,    target: "(p3, ∅)" }   # sends m3
-      - { stage: 4, verb: step,    target: "(p2, ∅)" }   # idle
-      - { stage: 5, verb: step,    target: "(p3, ∅)" }   # p3's last step
-      - { stage: 6, verb: deliver, target: "m1" }        # → sends m4
-      - { stage: 7, verb: deliver, target: "m2" }        # → sends m5
+      - { stage: 3, verb: step,    target: "(p1, ∅)" }   # p1's retry → m5, m6
+      - { stage: 4, verb: step,    target: "(p3, ∅)" }   # p3's last step — then faulty
+      - { stage: 5, verb: deliver, target: "m1" }         # p2 (nonfaulty) receives p1's vote
+      - { stage: 6, verb: delay,   target: "m3" }         # adversary defers m3
+      - { stage: 7, verb: deliver, target: "m3" }         # p1 (nonfaulty) finally receives p2's vote
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 9 — Lemma 2. A bivalent initial config exists.
@@ -482,22 +504,23 @@ scenes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
-    # Buffer ids advanced past scenes 6-8's {m3,m4,m5} so there's
-    # no id collision. m3 was delayed at stage 8, then admitted at
-    # stage 10 (admissibility requires delivery to nonfaulty p1).
+    # Stage-12 snapshot (dormant — lemma3-set-D uses a proof-anatomy rail, so
+    # this buffer isn't rendered; kept in sync with `construction`). The opening
+    # m2·m4·m6 are STILL stuck at faulty p3; m8 (to p1) and m9 (to p2) are the
+    # live p1↔p2 churn. Both values in flight → bivalent.
     buffer:
-      - { id: m5, from: p1, to: p2, payload: "echo m2" }
-      - { id: m6, from: p2, to: p3, payload: "prop 0" }
-      - { id: m7, from: p1, to: p3, payload: "echo m3" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
+      - { id: m8, from: p2, to: p1, payload: "vote 1" }
+      - { id: m9, from: p1, to: p2, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 6,  verb: deliver, target: "m1" }       # → sends m4
-      - { stage: 7,  verb: deliver, target: "m2" }       # → sends m5
-      - { stage: 8,  verb: delay,   target: "m3" }       # adversary defers
-      - { stage: 9,  verb: step,    target: "(p2, ∅)" }  # → sends m6
-      - { stage: 10, verb: deliver, target: "m3" }       # admissibility honored
-      - { stage: 11, verb: deliver, target: "m4" }       # → sends m7
-      - { stage: 12, verb: delay,   target: "m6" }       # the lemma 3 deferral
+      - { stage: 8,  verb: deliver, target: "m5" }        # p2 receives p1's opening vote
+      - { stage: 9,  verb: step,    target: "(p2, ∅)" }   # p2 re-broadcasts → m8 (to p1)
+      - { stage: 10, verb: step,    target: "(p1, ∅)" }   # p1 re-broadcasts → m9 (to p2)
+      - { stage: 11, verb: delay,   target: "m8" }        # adversary defers m8
+      - { stage: 12, verb: deliver, target: "m8" }        # HEAD p1 receives its earliest — the stage rule
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 11 — the main construction.
@@ -530,20 +553,22 @@ scenes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
-    # Same hero stage-12 snapshot as scene 10 (lemma 3).
+    # Same stage-12 snapshot as lemma3 (the per-recipient queues in the canvas
+    # are this buffer, organized + earliest-first). m2·m4·m6 stuck at faulty p3;
+    # m8 (to p1, p1's earliest — received this stage) and m9 (to p2) are live.
     buffer:
-      - { id: m5, from: p1, to: p2, payload: "echo m2" }
-      - { id: m6, from: p2, to: p3, payload: "prop 0" }
-      - { id: m7, from: p1, to: p3, payload: "echo m3" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+      - { id: m6, from: p1, to: p3, payload: "vote 0" }
+      - { id: m8, from: p2, to: p1, payload: "vote 1" }
+      - { id: m9, from: p1, to: p2, payload: "vote 0" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 6,  verb: deliver, target: "m1" }       # → sends m4
-      - { stage: 7,  verb: deliver, target: "m2" }       # → sends m5
-      - { stage: 8,  verb: delay,   target: "m3" }       # adversary defers
-      - { stage: 9,  verb: step,    target: "(p2, ∅)" }  # → sends m6
-      - { stage: 10, verb: deliver, target: "m3" }       # admissibility honored
-      - { stage: 11, verb: deliver, target: "m4" }       # → sends m7
-      - { stage: 12, verb: delay,   target: "m6" }       # the lemma 3 deferral
+      - { stage: 8,  verb: deliver, target: "m5" }        # p2 receives p1's opening vote
+      - { stage: 9,  verb: step,    target: "(p2, ∅)" }   # p2 re-broadcasts → m8 (to p1)
+      - { stage: 10, verb: step,    target: "(p1, ∅)" }   # p1 re-broadcasts → m9 (to p2)
+      - { stage: 11, verb: delay,   target: "m8" }        # adversary defers m8
+      - { stage: 12, verb: deliver, target: "m8" }        # HEAD p1 receives its earliest — the stage rule
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 12 — the punchline. Stage 99. Still bivalent.
@@ -559,6 +584,9 @@ scenes:
       succeeds. The resulting run is admissible, and no decision
       is ever reached. It follows that P is not totally correct.
 
+    # SEND view: the pile that never drains — p1, p2 still broadcasting into the
+    # pool (p3 dead/dark), the buffer never empties, valency still bivalent.
+    visual: message-buffer
     chrome: { stage: 99, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
@@ -567,18 +595,18 @@ scenes:
     # Buffer is m84 + m87 (the two delays in the trace below) plus
     # m96 (the newly-sent message from stage 96's ∅ step).
     buffer:
-      - { id: m84, from: p2, to: p1, payload: "echo m83" }
-      - { id: m87, from: p1, to: p2, payload: "vote 1" }
-      - { id: m96, from: p2, to: p3, payload: "prop 0" }
+      - { id: m84, from: p2, to: p1, payload: "vote 1" }
+      - { id: m87, from: p1, to: p2, payload: "vote 0" }
+      - { id: m96, from: p2, to: p3, payload: "vote 1" }
     null_steps: [p1, p2, p3]
     trace:
-      - { stage: 93, verb: deliver, target: "m83" }       # historical
-      - { stage: 94, verb: delay,   target: "m84" }       # still in buffer
+      - { stage: 93, verb: deliver, target: "m83" }
+      - { stage: 94, verb: delay,   target: "m84" }       # held — still pending
       - { stage: 95, verb: deliver, target: "m85" }
-      - { stage: 96, verb: step,    target: "(p2, ∅)" }   # sends m96
-      - { stage: 97, verb: deliver, target: "m86" }
-      - { stage: 98, verb: delay,   target: "m87" }       # still in buffer
-      - { stage: 99, verb: deliver, target: "m88" }
+      - { stage: 96, verb: deliver, target: "m86" }
+      - { stage: 97, verb: delay,   target: "m87" }       # held — still pending
+      - { stage: 98, verb: deliver, target: "m88" }
+      - { stage: 99, verb: step,    target: "(p2, ∅)" }   # p2 broadcasts again → m96 (the pile never stops)
 
   # ──────────────────────────────────────────────────────────────
   # SCENE — window of vulnerability. The "so what" moment.
@@ -607,24 +635,25 @@ scenes:
         bug in any one protocol. Every asynchronous commit
         protocol — Paxos, Raft, two-phase commit — has a window.
 
+    visual: message-buffer
     chrome: { stage: 99, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
     buffer:
-      - { id: m84, from: p2, to: p1, payload: "echo m83" }
-      - { id: m87, from: p1, to: p2, payload: "vote 1" }
-      - { id: m96, from: p2, to: p3, payload: "prop 0" }
+      - { id: m84, from: p2, to: p1, payload: "vote 1" }
+      - { id: m87, from: p1, to: p2, payload: "vote 0" }
+      - { id: m96, from: p2, to: p3, payload: "vote 1" }
     null_steps: [p1, p2, p3]
     trace:
       - { stage: 93, verb: deliver, target: "m83" }
       - { stage: 94, verb: delay,   target: "m84" }
       - { stage: 95, verb: deliver, target: "m85" }
-      - { stage: 96, verb: step,    target: "(p2, ∅)" }
-      - { stage: 97, verb: deliver, target: "m86" }
-      - { stage: 98, verb: delay,   target: "m87" }
-      - { stage: 99, verb: deliver, target: "m88" }
+      - { stage: 96, verb: deliver, target: "m86" }
+      - { stage: 97, verb: delay,   target: "m87" }
+      - { stage: 98, verb: deliver, target: "m88" }
+      - { stage: 99, verb: step,    target: "(p2, ∅)" }
 
   # ──────────────────────────────────────────────────────────────
   # SCENE — §4 positive result. The contrast.
@@ -652,6 +681,10 @@ scenes:
         and shows that's the cliff. Slightly less hostile and
         you're back on solid ground.
 
+    # Outside the impossibility run (different fault model, no buffer). Neutral
+    # bare-processes stopgap until the bespoke §4 visual (initial-clique digraph
+    # + proof-anatomy rail — see plan.md); NOT the impossibility buffer.
+    visual: system
     chrome: { stage: 0, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }

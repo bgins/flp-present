@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Scene, Verb } from '../lib/types'
-  import { sub, formatTarget } from '../lib/format'
+  import { sub } from '../lib/format'
 
   let { scene }: { scene: Scene } = $props()
 
@@ -202,9 +202,9 @@
     </div>
     {#each scene.buffer as m (m.id)}
       <div class="b-row">
-        <span class="id">[{sub(m.id)}]</span>
+        <span class="id">[{m.id[0]}<sub>{m.id.slice(1)}</sub>]</span>
         <span
-          ><span class="meta">→ {sub(m.to)}</span><span class="pl"
+          ><span class="meta">to {sub(m.to)}</span><span class="pl"
             >{m.payload}</span
           ></span
         >
@@ -232,7 +232,11 @@
           class:step={t.verb === 'step'}
           style:color={verbColor(t.verb)}>{t.verb}</span
         >
-        <span class="m">{formatTarget(t.target)}</span>
+        <span class="m"
+          >{#if /^m\d+$/.test(t.target)}[{t.target[0]}<sub>{t.target.slice(
+              1,
+            )}</sub>]{:else}{sub(t.target)}{/if}</span
+        >
       </div>
     {/each}
   {/if}

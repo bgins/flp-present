@@ -292,23 +292,53 @@ scenes:
 
 | Scene id | visual |
 | --- | --- |
-| `result`                     | `canvas` |
+| `result`                     | `system` (bare processes — progressive reveal) |
 | `slow_vs_dead`               | `slow-vs-dead` |
-| `process`                    | `canvas` |
-| `configuration`              | `canvas` |
-| `buffer`                     | `canvas` |
-| `null_event`                 | `canvas` |
-| `admissible`                 | `canvas` |
-| `correctness`                | `canvas` |
+| `process`                    | `process-state` (+ registers) |
+| `configuration`              | `buffer-state` (+ empty buffer) |
+| `buffer`                     | `message-buffer` (send view) |
+| `null_event`                 | `message-receive` (receive view) |
+| `admissible`                 | `message-receive` (delivery to nonfaulty p₁) |
+| `correctness`                | `message-receive` (reuses admissible) |
 | `valency_def`                | `valency-tree` |
 | `valency_intuition`          | `valency-tree` |
 | `lemma2`                     | `lemma2-sxs` |
-| `lemma1_commutativity`       | `canvas` (TODO: bespoke commute sketch) |
+| `lemma1_commutativity`       | `lemma1-commute` |
 | `lemma3`                     | `lemma3-set-D` |
 | `construction`               | `construction-q` |
-| `punchline`                  | `canvas` |
-| `window_of_vulnerability`    | `canvas` (reuses punchline state) |
-| `section_4_positive_result`  | `canvas` (TODO: §4 protocol sketch) |
+| `punchline`                  | `message-buffer` (send — the pile never drains) |
+| `window_of_vulnerability`    | `message-buffer` (reuses punchline) |
+| `section_4_positive_result`  | `system` (bare-processes stopgap; TODO: §4 initial-clique digraph) |
+
+The channel `Canvas` is now **retired** — no scene uses the `canvas` visual.
+`Canvas.svelte` can be deleted once we're sure nothing references it.
+
+**Future changes / scene ideas** (noted, not yet scheduled):
+
+- **`result` deserves a better visual than lone processes.** Three bare
+  process circles with no registers/buffer is a weak opening image — the
+  processes are properly *introduced* one scene later at `process` (where the
+  registers debut), so the bare reveal at `result` carries little. Rethink:
+  give `result` a stronger cold-open treatment for the impossibility statement
+  (candidate directions TBD), rather than the first step of the
+  process→register→buffer reveal ladder.
+- **A "references" scene with QR codes.** A late scene (likely near the end)
+  with a few QR codes linking to the paper and the secondary analyses we quote
+  (Aspnes, Robinson, etc.). Style the QR codes in our design language — paper
+  ground, ink modules, bracket/terminal framing — not stock black-on-white.
+  Details (which sources, layout, whether it's its own scene or a rail panel)
+  to be sorted out later.
+- **`section_4_positive_result` — the last bespoke visual.** The closing
+  contrast, and the one bespoke scene still on the fallback `canvas`. It is
+  **outside the impossibility run** — a different fault model (strict majority
+  alive, *no crashes during execution*), so it gets a fresh setup, not the
+  message thread. Proposed visual: the **initial-clique digraph** (analysis.md
+  §444–476) — processes broadcast their id and listen for L−1 others
+  (L = ⌈(N+1)/2⌉), building a "heard-from" digraph G; stage 2 takes the
+  transitive closure and everyone decides on the initial clique (the unique
+  source clique). Rail: a **proof-anatomy panel** for that 2-stage algorithm
+  (like the lemma scenes), not the buffer. Pedagogically it's the "weaken the
+  fault model by one knob and consensus returns" beat that closes the talk.
 
 Snapshot-per-scene (no deltas) trades verbosity for
 authorability: you can jump to any scene independently, and the
@@ -481,9 +511,23 @@ proof-anatomy panel for slow-vs-dead / lemma2 / lemma3). `npm run lint`,
 `check`, and `build` all pass. SVG-text porting gotchas (whitespace,
 braces, baselines) are captured in project memory.
 
+**Message-system rollout: complete.** The per-pair channel `Canvas` is retired —
+every message-bearing scene uses the by-sender send pool (`message-buffer`) or
+the per-recipient receive partition (`message-receive`), with the progressive
+intro reveal (`system` → `process-state` → `buffer-state`) and one coherent
+single-`vote v` run threaded across all scenes. Design + per-scene buffers in
+`plans/message-buffer-visual.md`; project memory `message-buffer-redesign`.
+
 Remaining build work:
-- Optional bespoke sketches not yet built: `lemma1_commutativity` and
-  `section_4_positive_result` fall back to the default canvas (TODO).
+- **Brian to review scenes 9-17** next session — valency_def/intuition, lemma2,
+  lemma1, lemma3, construction, punchline, window, section_4. He's signed off on
+  1-8; the late scenes were rolled out (and the message thread reconciled) but
+  not yet eyeballed by him.
+- `section_4_positive_result` — currently a bare-processes `system` stopgap;
+  wants its bespoke initial-clique digraph + proof-anatomy rail (see the Future
+  changes note above).
+- `result` cold-open — lone bare processes is a weak opener; rethink (Future
+  changes note).
 - Autoplay (`⏵`) control — not wired (`Controls` has back/forward/reset).
 - Open questions below (transition policy, keyboard beyond ← →).
 

@@ -1,22 +1,37 @@
 <script lang="ts">
-  // message-buffer (prototype on scene: buffer). FLP's message system: one
-  // circular buffer (the single multiset) chambered by destination. This is a
-  // SEND/state view: each chamber shows one circle per pending message (cap 4),
-  // in fixed equally-spaced slots receding inward and fading by depth — crisp →
-  // lighter → glitching (grains away) → text-gone ring — so the stack reads
-  // "smaller and more indistinct toward the centre." Processes send INTO the
-  // pool — generic in-streams converging on the centre (send is
-  // an event/inflow; the buffer entry stores only (destination, value), no
-  // sender). No ∅ here: null is receive-produced, so it belongs in the receive
-  // representation (`null_event`), not the send view. No per-channel queues
-  // (analysis.md §66). Light-cypherpunk + botanical-plate (plan.md §47;
-  // plans/message-buffer-visual.md). Scene-driven.
+  // message-buffer (scene: buffer). FLP's message system is ONE multiset — no
+  // topology, no stored sender (analysis.md §66-70). This is the SEND view: it
+  // shows the *act* of sending, organised by SENDER. Each process streams its
+  // sent messages inward, CONVERGING on the unbounded core (the dashed central
+  // well); pods recede & fade as they enter storage — crisp → lighter → faint
+  // → spent ring (the label fades a level at each depth). No partitions here: the
+  // pool is undifferentiated on send. The per-recipient partition is a RECEIVE
+  // concern and lives in `MessageReceive` (null_event) — it's how receive(p)
+  // sees the pool, not an intrinsic structure. So: send = converge into the
+  // pool (by sender); receive = the pool resolved into per-recipient wedges.
+  // ∅ is receive-produced (never on send). Recipients show in the rail (the
+  // (destination, value) pair). Light-cypherpunk + botanical-plate (plan.md
+  // §47; plans/message-buffer-visual.md). Scene-driven.
   import type { Scene } from '../lib/types'
   import { sub } from '../lib/format'
 
   // op: 'send' shows the converging send streams; 'state' is a static
   // configuration view (no operation flow) — e.g. the `configuration` scene.
-  let { scene, op = 'send' }: { scene: Scene; op?: 'send' | 'state' } = $props()
+  // showBuffer / showRegisters drive the intro's progressive reveal:
+  //   result        → showBuffer=false, showRegisters=false  (bare processes)
+  //   process       → showBuffer=false                       (+ registers)
+  //   configuration → (defaults)                             (+ the buffer)
+  let {
+    scene,
+    op = 'send',
+    showBuffer = true,
+    showRegisters = true,
+  }: {
+    scene: Scene
+    op?: 'send' | 'state'
+    showBuffer?: boolean
+    showRegisters?: boolean
+  } = $props()
 
   const C = { x: 400, y: 286 }
   const R = 95
@@ -50,27 +65,35 @@
         y: p.y,
         d,
         node: at(C, d, R + 110),
-        sendFrom: at(C, d, R + 76), // just inside the node
-        sendTo: at(C, d, R + 8), // just outside the rim (arrow points inward)
-        msgs: scene.buffer.filter((m) => m.to === p.id),
+        // The sender's inflow: from just inside its node to ~8px off the rim
+        // (same arrowhead gap MessageReceive leaves at the process circle).
+        // The head points inward — "sent into the pool" — but stays outside
+        // the rim; the pods' own inward dissolve carries the descent into the
+        // unbounded core.
+        streamFrom: at(C, d, R + 70),
+        streamTo: at(C, d, R + 8),
+        // Pods are grouped by SENDER on the send view (the act of sending).
+        msgs: scene.buffer.filter((m) => m.from === p.id),
       }
     }),
   )
 
-  const dividers = $derived(
-    scene.processes.map((_, i) => at(C, dir(((i + 0.5) * 2 * Math.PI) / n), R)),
-  )
-
-  // One circle per pending message (cap 4), filling slots outer → inner. Each
-  // slot fades by depth: 0 crisp → 1 lighter → 2 glitching → 3 text-gone ring.
+  // One circle per pending message (cap 4), filling slots outer → inner, fading
+  // by depth: 0 crisp → 1 lighter → 2 faint → 3 spent ring. Ordered by recency:
+  // the MOST RECENT send sits crisp at the rim, and earlier sends have sunk
+  // deeper (the first-sent reached the pool first, so it's the deepest/smallest,
+  // dissolving into the core). So we walk the sender's messages newest → oldest.
   type Pod = { x: number; y: number; r: number; slot: number; label: string }
   const pods = $derived.by(() => {
     const out: Pod[] = []
     for (const p of procs) {
-      const m = Math.min(p.msgs.length, 4)
+      const recent = [...p.msgs].reverse() // newest first → outer slot
+      const m = Math.min(recent.length, 4)
       for (let j = 0; j < m; j++) {
         const pos = at(C, p.d, slotPos[j])
-        out.push({ ...pos, r: slotSize[j], slot: j, label: sub(p.msgs[j].id) })
+        // Keep the raw id; the label renders the digits as a real (cell-filling)
+        // subscript tspan, not floaty full-width Unicode subscript glyphs.
+        out.push({ ...pos, r: slotSize[j], slot: j, label: recent[j].id })
       }
     }
     return out
@@ -79,54 +102,51 @@
 
 <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
   <defs>
-    <!-- Grain-dissolve for the fading label (matches the paper noise). -->
-    <filter id="mbf-grain" x="-40%" y="-40%" width="180%" height="180%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" stitchTiles="stitch" result="noise" />
-      <feColorMatrix
-        in="noise"
-        type="matrix"
-        values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 2 -0.55"
-        result="mask"
-      />
-      <feComposite in="SourceGraphic" in2="mask" operator="in" />
-    </filter>
     <!-- Send inflow arrowhead. -->
     <marker id="mbf-in" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
       <path d="M 0,0 L 6,3.5 L 0,7 z" fill="#a8a39c" />
     </marker>
   </defs>
 
-  <!-- ── CONSTRUCTION ── -->
-  <circle class="mbf-rim" cx={C.x} cy={C.y} r={R} />
-  <circle class="mbf-core" cx={C.x} cy={C.y} r="13" />
-  <circle class="mbf-center" cx={C.x} cy={C.y} r="1.4" />
-  {#each dividers as dv, i (i)}
-    <line class="mbf-divider" x1={C.x} y1={C.y} x2={dv.x} y2={dv.y} />
-  {/each}
+  <!-- ── THE POOL ── (one undifferentiated multiset; no partitions on send) -->
+  {#if showBuffer}
+    <circle class="mbf-rim" cx={C.x} cy={C.y} r={R} />
+    <circle class="mbf-core" cx={C.x} cy={C.y} r="13" />
+    <circle class="mbf-center" cx={C.x} cy={C.y} r="1.4" />
 
-  <!-- Send: each process feeds the one pool — streams converge on the centre. -->
-  {#if op === 'send'}
-    {#each procs as p (p.id)}
-      <line
-        class="mbf-send"
-        x1={p.sendFrom.x}
-        y1={p.sendFrom.y}
-        x2={p.sendTo.x}
-        y2={p.sendTo.y}
-        marker-end="url(#mbf-in)"
-      />
+    <!-- Send: each sender streams its messages inward, converging on the
+         unbounded core. Quiet senders (no messages) show no stream. -->
+    {#if op === 'send'}
+      {#each procs as p (p.id)}
+        {#if p.msgs.length}
+          <line
+            class="mbf-stream"
+            x1={p.streamFrom.x}
+            y1={p.streamFrom.y}
+            x2={p.streamTo.x}
+            y2={p.streamTo.y}
+            marker-end="url(#mbf-in)"
+          />
+        {/if}
+      {/each}
+    {/if}
+
+    <!-- One pod per sent message, ranged along the sender's inflow, receding &
+         fading toward the core: crisp → lighter → faint → spent ring (the
+         label fades out a level at each depth, no glitch; max 4 shown). -->
+    {#each pods as pod, i (i)}
+      <circle class="mbf-pod s{pod.slot}" cx={pod.x} cy={pod.y} r={pod.r} />
+      {#if pod.slot < 3}
+        <text
+          class="mbf-label s{pod.slot}"
+          x={pod.x}
+          y={pod.y}
+          style:font-size="{pod.r}px"
+          >{pod.label[0]}<tspan class="mbf-num">{pod.label.slice(1)}</tspan></text
+        >
+      {/if}
     {/each}
   {/if}
-
-  <!-- A circle per pending message, receding & fading inward (max 4 shown). -->
-  {#each pods as pod, i (i)}
-    <circle class="mbf-pod s{pod.slot}" cx={pod.x} cy={pod.y} r={pod.r} />
-    {#if pod.slot === 2}
-      <text class="mbf-label s2" x={pod.x} y={pod.y} filter="url(#mbf-grain)">{pod.label}</text>
-    {:else if pod.slot < 2}
-      <text class="mbf-label s{pod.slot}" x={pod.x} y={pod.y}>{pod.label}</text>
-    {/if}
-  {/each}
 
   <!-- Processes around the rim, each carrying its registers (its state). -->
   {#each procs as p (p.id)}
@@ -136,23 +156,27 @@
       transform="translate({p.node.x},{p.node.y})"
     >
       <circle r="44" />
-      <text class="mbf-proc-label" y="-14">{sub(p.id)}</text>
-      <text class="mbf-reg" y="12"><tspan class="rk">x</tspan>={p.x}</text>
-      <text class="mbf-reg" y="29"
-        ><tspan class="rk">y</tspan>=<tspan class="rb">{p.y}</tspan></text
-      >
+      <text class="mbf-proc-label" y={showRegisters ? -14 : 0}>{sub(p.id)}</text>
+      {#if showRegisters}
+        <text class="mbf-reg" y="12"><tspan class="rk">x</tspan>={p.x}</text>
+        <text class="mbf-reg" y="29"
+          ><tspan class="rk">y</tspan>=<tspan class="rb">{p.y}</tspan></text
+        >
+      {/if}
     </g>
   {/each}
 
-  <!-- Caption. -->
-  <text class="mbf-cap" x={C.x} y="500"
-    >{op === 'state' ? 'a configuration' : 'the message buffer'}</text
-  >
-  <text class="mbf-cap-sub" x={C.x} y="518"
-    >{op === 'state'
-      ? 'process states + message buffer'
-      : 'sends converge into one multiset'}</text
-  >
+  <!-- Caption (only once the buffer rota is on screen). -->
+  {#if showBuffer}
+    <text class="mbf-cap" x={C.x} y="500"
+      >{op === 'state' ? 'a configuration' : 'the message buffer'}</text
+    >
+    <text class="mbf-cap-sub" x={C.x} y="518"
+      >{op === 'state'
+        ? 'process states + message buffer'
+        : 'sends converge into one multiset'}</text
+    >
+  {/if}
 </svg>
 
 <style>
@@ -170,11 +194,7 @@
   .mbf-center {
     fill: var(--ink-faint);
   }
-  .mbf-divider {
-    stroke: var(--ink-faint);
-    stroke-width: 0.8;
-  }
-  .mbf-send {
+  .mbf-stream {
     stroke: var(--ink-faint);
     stroke-width: 1;
   }
@@ -206,17 +226,25 @@
     text-anchor: middle;
     dominant-baseline: middle;
   }
+  /* Real subscript: normal digits (they fill their cells, so multi-digit ids
+     stay tight) at reduced size, lowered — not the floaty full-width Unicode
+     subscript glyphs that read as "m8 4". */
+  .mbf-num {
+    font-size: 0.72em;
+    /* Lowered to the font's true-subscript level so it matches the Unicode
+       subscripts (process ids, ∅) and the rail's <sub> — not a raised look. */
+    baseline-shift: -0.34em;
+  }
+  /* Size is set inline = the pod radius, so the label scales in step with the
+     circle (constant padding as the stack recedes). Slot only sets the fade. */
   .mbf-label.s0 {
     fill: var(--ink);
-    font-size: 11px;
   }
   .mbf-label.s1 {
     fill: var(--ink-muted);
-    font-size: 9.5px;
   }
   .mbf-label.s2 {
     fill: var(--ink-faint);
-    font-size: 8px;
   }
 
   .mbf-proc circle {

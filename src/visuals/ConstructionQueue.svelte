@@ -12,6 +12,11 @@
   ]
 
   type Msg = [string, string] // [id, payload]
+  // Queues are per-recipient, earliest-first (analysis.md §250). Single `vote v`
+  // throughout, consistent with the run: p₁ only ever hears p₂'s `vote 1`, p₂
+  // only ever hears p₁'s `vote 0` (each keeps receiving the opposite — which is
+  // why neither converges). p₃ is faulty, so its queue (the opening m2·m4·m6,
+  // still there) is never received and only grows.
   const columns: {
     x: number
     label: string
@@ -24,9 +29,9 @@
       label: "p₁'s queue",
       faulty: false,
       msgs: [
-        ['[m₁]', 'vote 0'],
-        ['[m₄]', 'vote 1'],
-        ['[m₇]', 'prop 0'],
+        ['m8', 'vote 1'],
+        ['m10', 'vote 1'],
+        ['m12', 'vote 1'],
       ],
       elide: '⋮',
     },
@@ -35,9 +40,9 @@
       label: "p₂'s queue",
       faulty: false,
       msgs: [
-        ['[m₂]', 'vote 1'],
-        ['[m₅]', 'vote 0'],
-        ['[m₈]', 'ack'],
+        ['m9', 'vote 0'],
+        ['m11', 'vote 0'],
+        ['m13', 'vote 0'],
       ],
       elide: '⋮',
     },
@@ -46,9 +51,9 @@
       label: "p₃'s queue",
       faulty: true,
       msgs: [
-        ['[m₃]', 'vote 0'],
-        ['[m₆]', 'vote 1'],
-        ['[m₉]', 'prop 1'],
+        ['m2', 'vote 0'],
+        ['m4', 'vote 1'],
+        ['m6', 'vote 0'],
       ],
       elide: '⋮  (never received)',
     },
@@ -99,7 +104,9 @@
         transform="translate({col.x}, {msgRowY[r]})"
       >
         <rect x="-72" y="-16" width="144" height="32" rx="2" />
-        <text class="id" x="-60" y="0">{id}</text>
+        <text class="id" x="-60" y="0"
+          >[{id[0]}<tspan class="cq-num">{id.slice(1)}</tspan>]</text
+        >
         <text class="pl" x="-22" y="0">{pl}</text>
       </g>
     {/each}
@@ -121,7 +128,7 @@
     ><tspan class="pid">p₁</tspan><tspan
       >&#160;&#160;takes a step&#160;&#160;·&#160;&#160;</tspan
     ><tspan class="verb-recv">receives</tspan><tspan>&#160;&#160;</tspan><tspan
-      class="em">[m₁]</tspan
+      class="em">[m₈]</tspan
     ><tspan>&#160;&#160;(its earliest)&#160;&#160;·&#160;&#160;</tspan><tspan
       class="verb-rot">rotates to back</tspan
     ></text
@@ -272,6 +279,12 @@
     font-size: 13px;
     font-weight: 700;
     fill: var(--bivalent);
+  }
+  /* Real subscript (normal digits, smaller + lowered) so two-digit ids stay
+     tight, instead of floaty full-width Unicode subscript glyphs. */
+  .cq-num {
+    font-size: 0.72em;
+    baseline-shift: -0.34em;
   }
   .cq-msg .pl {
     font-size: 13px;

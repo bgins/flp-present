@@ -18,6 +18,10 @@
 <div class="canvas">
   {#if visual === 'canvas'}
     <Canvas {scene} />
+  {:else if visual === 'system'}
+    <MessageBuffer {scene} op="state" showBuffer={false} showRegisters={false} />
+  {:else if visual === 'process-state'}
+    <MessageBuffer {scene} op="state" showBuffer={false} />
   {:else if visual === 'message-buffer'}
     <MessageBuffer {scene} />
   {:else if visual === 'buffer-state'}

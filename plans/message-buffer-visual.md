@@ -87,18 +87,21 @@ Seed counts are **exact** (the real buffer state: e.g. p₁ has 2 pending, p₂ 
 p₃ 0). Abundance/unboundedness is carried by the receding device below, not by
 faking extra messages.
 
-## Representing the unbounded — receding, fading, glitching pods
+## Representing the unbounded — receding, fading pods
 
-Per chamber: a **clear, labelled** message pod near the rim (a real pending
-message). Behind it, toward the center, **smaller and fainter** pods — label
-still legible at first, then **hiding / glitching the text out** and softly
-dissolving into the core. The crisp pods are the actual messages; the fading
-tail evokes the buffer's unbounded *capacity* (it could hold arbitrarily many),
-not infinitely-many-right-now.
+Per sender stream: a **clear, labelled** message pod near the rim (a real
+pending message). Behind it, toward the core, **smaller and fainter** pods —
+the label fades **a level at each depth** (ink → muted → faint → spent ring,
+the deepest unlabelled) and the pod recedes, softly dissolving into the core.
+The crisp pods are the actual messages; the fading tail evokes the buffer's
+unbounded *capacity* (it could hold arbitrarily many), not
+infinitely-many-right-now.
 
-The glitch should read as **light cypherpunk** (per the locked aesthetic, §47),
-not heavy noise — a restrained terminal dissolve that sits comfortably next to
-the botanical line work and survives 30-ft projection.
+**Glitch dropped (May 2026).** An earlier version grained the deep label out
+with an feTurbulence "glitch" (light-cypherpunk dissolve). It read as a foreign
+vocabulary next to the botanical line work, and the body already carries a
+paper-grain overlay for patina. Replaced with one more **fade level** — cleaner,
+more legible at 30 ft, more minimal. The fade alone carries the dissolve.
 
 **Option 3 (adopted):** render one crisp seed with its faint **generating
 arcs** — the two circles whose lens is the vesica — so the geometry behind the
@@ -158,3 +161,169 @@ symbols appear as labels in the rail, or in a legend?
   discussion — once the language is settled, replace the channel-based default.
 - **Legibility.** Re-audit at 30 ft once the form is locked (the glitching
   labels especially).
+
+## The running example (one consensus run)
+
+A single thread of messages runs through every message-bearing scene so the
+buffer is always *meaningful* and *continuous*, not freshly invented per slide.
+
+**Premise.** Three processes vote: **p₁ = 0, p₂ = 1, p₃ = 0**. They run a
+broadcast-vote protocol — each process keeps re-sending its own value to the
+others. The adversary reorders and delays delivery and eventually crashes p₃,
+so the processes never converge and every `y` register stays `b`. Both values
+0 and 1 stay in flight forever → the configuration stays **bivalent**. Message
+ids (m1, m2, …) climb with time.
+
+The protocol is **not from the paper** (FLP is protocol-agnostic) — it's the
+simplest illustration that keeps both values in flight forever.
+
+**One message type — `vote v`.** Every pending message is a `vote v`,
+v ∈ {0, 1}. The carried value is just the **sender's vote**, so the payload is
+fully determined by `from`:
+
+| sender | vote |
+|--------|------|
+| p₁     | 0    |
+| p₂     | 1    |
+| p₃     | 0    |
+
+Duplicates are fine and expected (p₂ keeps re-sending `vote 1`); they're what
+keeps the buffer non-empty forever. No `echo`/`prop`/relay types — one alphabet.
+
+**Send and receive show the one pool two different ways** (revised May 2026
+after the by-destination send view confused who-sent-what):
+
+- **Send view (`buffer`) — by SENDER, no partitions.** It shows the *act* of
+  sending. Each process streams its sent messages **inward, converging on the
+  unbounded core** (the dashed central well); pods recede and dissolve as they
+  enter storage. The pool is **undifferentiated** — no chamber walls. p₁'s
+  inflow carries its four sends, p₂'s carries two, p₃ is silent. The buffer
+  forgets the sender the moment a message lands, so this sender-grouping is a
+  property of the *send event*, not stored state.
+- **Receive view (`null_event`) — by RECIPIENT, partitioned.** The same pool
+  **resolved into per-recipient wedges** — the natural partition `receive(p)`
+  filters on. A process reaches into *its* wedge and pulls a pending message
+  **or ∅**. The partition is how receive *sees* the pool, not intrinsic
+  structure (the multiset has none).
+
+So partitions appear **only** on receive, where they're meaningful. Recipients
+are legible on send via the **rail** (`[mₙ] to pₓ : vote v` — the
+`(destination, value)` pair), and via the receive view's wedges. The earlier
+mistake was drawing destination chambers on the *send* view: p's full chamber
+plus p's inward arrow read as "p sent these," when a chamber is p's *inbox*.
+
+**Progressive reveal across the intro** — each scene adds exactly the layer its
+quote introduces:
+
+| scene           | visual          | shows                                       |
+|-----------------|-----------------|---------------------------------------------|
+| `result`        | `system`        | bare processes p₁ p₂ p₃                     |
+| `process`       | `process-state` | + registers x, y                            |
+| `configuration` | `buffer-state`  | + the empty pool (rim + dashed core)        |
+| `buffer`        | `message-buffer`| send: by-sender streams converging into pool |
+| `null_event`    | `message-receive`| receive: pool partitioned by recipient, pull/∅ |
+
+Implemented with two flags on the rota (`MessageBuffer`): `showRegisters`,
+`showBuffer`.
+
+**Per-scene buffer (the run).** Ids/stages already form one continuous trace;
+payloads follow the sender-vote rule above.
+
+Protocol (illustrative): each process, **whenever it is scheduled**,
+re-broadcasts its vote to the two others (no clocks → no timeouts; it re-sends
+because nothing has decided). The adversary picks who runs and **withholds
+delivery**, so sends pile up. p₁ is the annoying retrier, p₂ polite, p₃ quiet.
+
+| scene | stage | view (canvas) | rail buffer — from → to · vote |
+|---|---|---|---|
+| `buffer` | 3 | **send** (message-buffer) | m1 p1→p2·0, m2 p1→p3·0, m3 p2→p1·1, m4 p2→p3·1, m5 p1→p2·0, m6 p1→p3·0 |
+| `null_event` | 4 | **receive**, ∅ selected | *(same six)* |
+| `admissible` | 7 | **receive** · deliver **m3** | m2·m4·m6 →p3 ⟂, m3 p2→p1·1 (delivered), m5 p1→p2·0 (pending) |
+| `correctness` | 7 | **receive** (reuse admissible) | *(same as admissible)* |
+| `valency_def`, `valency_intuition` | 7 | valency-tree (buffer rail) | *(same st7 set: m2·m3·m4·m5·m6)* |
+| `lemma3` | 12 | lemma3-set-D | *proof-anatomy rail — no buffer (dormant data synced to construction)* |
+| `construction` | 12 | construction-q (buffer rail) | m2·m4·m6 →p3 ⟂, m8 p2→p1·1, m9 p1→p2·0 — queues: p₁ all ·1, p₂ all ·0, p₃ stuck |
+| `punchline` | 99 | **send** | m96 p2→p3·1 ⟂, m97 p2→p1·1, m98 p1→p2·0 |
+| `window_of_vulnerability` | 99 | **send** (reuse punchline) | *(same as punchline)* |
+
+⟂ = **stuck**: addressed to the faulty p₃, exempt from delivery — never drains.
+`slow_vs_dead`, `lemma1`, `lemma2` use proof-anatomy rails (no buffer) and sit
+outside the run (stage 0 / empty). `section_4_positive_result` is a separate
+positive result — see plan.md's scene note.
+
+**`buffer` (send, stage 3):** the scheduler interleaves **p₁ → p₂ → p₁** (a
+live run). p₁ broadcasts (m1, m2), p₂ broadcasts (m3, m4), p₁ **retries**
+(m5, m6) → p₁ owns four {m1, m2, m5, m6}, p₂ two {m3, m4}, p₃ silent. A
+broadcast step sends to *both* peers (one step = a finite set). Pods are ranged
+by **recency** — the most recent send sits crisp at the rim, earlier sends have
+sunk deeper (the first-sent reached the pool first, so it's deepest/smallest,
+dissolving into the core). On p₁'s inflow the retry (m5, m6) is crisp at the rim
+and the first broadcast (m1, m2) has sunk through the fade — crisp → lighter →
+faint → spent ring. The rail (id order + destination) and the trace log
+(p₁→p₂→p₁) carry the precise send order. Interleaving the ids reads more
+like a live system at low tracing cost — the rail (id order + destination) and
+the trace log (p₁→p₂→p₁) keep the precise order. Both values in flight → bivalent.
+
+**`null_event` (receive, stage 4):** same six-message pool, resolved by
+recipient. p₃'s inbox is fullest — m2, m6 (p₁'s votes ·0) and m4 (p₂'s vote ·1),
+both values — yet `receive(p₃)` returns **∅**. Receiver = most-pending process;
+3 candidates + ∅ = 4, within the receive layout's angle budget. Thematically
+p₃ — the quiet sender about to go faulty — is also starved on receive (the
+slow-vs-dead seed).
+
+**Post-crash — the live p₁↔p₂ channel (stages 5+).** p₃ takes its last step at
+stage 4 (the ∅) and crashes; from stage 5 it is faulty and never steps again.
+That collapses the run to **one live exchange, p₁↔p₂**: p₁ keeps sending its
+`vote 0` to p₂, p₂ keeps sending its `vote 1` to p₁, so p₁'s inbox always holds
+an inbound 1 and p₂'s an inbound 0 — **both values circulate forever → the
+configuration stays bivalent.** The adversary merely orders these p₁↔p₂
+deliveries to keep it so (Lemma 3 / the construction in action).
+
+**Why the buffer grows without bound.** p₁ and p₂ can't tell p₃ is dead from
+merely slow, so they keep broadcasting to it — and every `→ p₃` message is
+**never delivered** (p₃ faulty ⇒ exempt). They accumulate forever: the unbounded
+buffer *and* the slow-vs-dead point, made concrete by the same run. At
+`admissible` (just after the crash) we show the **actual** stuck set — m2, m4,
+m6, the three `→ p₃` sends from the opening, all accounted for. Later (st12,
+st99) the pile has grown past listing, so those snapshots show **one
+representative stuck `→ p₃` message (⟂) plus the live p₁↔p₂ pair**; the send
+view's receding/fading dissolve carries the "arbitrarily many" the rail can't list.
+
+**View per scene (the rule: the moment is a send or a receive).**
+
+- `admissible` — the quote is about messages being *received*, so the **receive**
+  view delivers **m3** to nonfaulty **p₁** — the very vote p₁ has been holding
+  since the `buffer` scene (sent there, still pending at `null_event`, received
+  here): the delivery *pays off* a message the audience has watched, rather than
+  conjuring a new one. p₃'s chamber holds m2·m4·m6 as **exempt** stuck pods
+  (greyed, no arrow); m5 is still pending for p₂. Trace ends on `deliver m3`.
+  `MessageReceive` reads all of this from the scene's last trace event (verb
+  `deliver` → delivery mode; recipient = receiver; faulty chambers exempt) —
+  **implemented**.
+- `correctness` — same stage-7 snapshot; attention is on the quote, so it reuses
+  admissible's receive view.
+- `punchline` / `window` — the pile that never drains; show the **send** view
+  (p₁, p₂ still broadcasting into the pool, p₃ dark), reinforcing "it never
+  ends." Trace ends on a send `step`.
+
+**The rail is in sync at every stage.** The buffer+trace rail renders on
+`buffer`, `null_event`, `admissible`, `correctness`, `valency_*`, `construction`,
+`punchline`, `window` — each now lists the run's messages above, ids climbing
+with the stage, both values always present. The proof-anatomy scenes
+(`slow_vs_dead`, `lemma1`, `lemma2`, `lemma3`) swap the rail for their argument
+panel, so they show no buffer — their dormant scene-data buffers can stay as-is.
+
+**Status.** Thread consistent end-to-end. Stage-7 wired (`admissible` delivers
+m3; `correctness` reuses it; `valency_*` rail-synced); `MessageReceive` is
+last-trace-event driven. `construction` rebuilt — canvas queues + rail re-derived
+to the run (m2·m4·m6 still stuck, m8/m9 live), `lemma3`'s dormant data synced.
+`punchline`/`window` (st99) wired to the **send** view (live pair + stuck-p₃
+rep, ids climb). `section_4` is outside the run → bare-processes `system` stopgap
+(bespoke §4 visual + proof-anatomy rail still TODO — see plan.md). **The channel
+`Canvas` is now retired** (no scene uses it).
+
+**Subscript rendering.** Ids render the digits as a real subscript — normal,
+cell-filling glyphs (smaller + `baseline-shift: -0.34em`, the font's true-sub
+level) via SVG `<tspan>` on the canvas and HTML `<sub>` in the rail — *not* the
+full-width Unicode subscript glyphs, which read spaced ("m8 4") for multi-digit
+ids. See the `svelte-svg-text` memory.
