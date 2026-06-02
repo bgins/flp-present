@@ -38,25 +38,26 @@
 scenes:
 
   # ──────────────────────────────────────────────────────────────
-  # SCENE 1 — the result, stated cold.
-  # Canvas: initial config, nothing in flight, nobody faulty yet.
+  # SCENE 1 — the opener: the result, stated cold, as front matter.
+  # The §1 result quote (titled "the paper") over the QR atlas visual —
+  # the paper, the source repo, and the sources we quote — plus the
+  # links rail. First so latecomers can grab the paper before the
+  # argument starts. Off the run timeline (stage/faulty hidden); the
+  # references visual ignores processes.
   # ──────────────────────────────────────────────────────────────
   - id: result
-    visual: system
-    head: { section: "§ 1", topic: "the result" }
+    visual: references
+    head: { section: "§ 1", topic: "the paper" }
     cite: "paper §1"
     quote: |
       In this paper, we show the surprising result that no completely
       asynchronous consensus protocol can tolerate even a single
       unannounced process death.
 
-    chrome: { stage: 0, valency: bivalent, faulty: null }
-    processes:
-      - { id: p1, x: 0, y: b, pos: [200, 180] }
-      - { id: p2, x: 1, y: b, pos: [600, 180] }
-      - { id: p3, x: 0, y: b, pos: [400, 500] }
+    chrome: { stage: null, valency: bivalent, faulty: null }
+    processes: []
     buffer: []
-    null_steps: [p1, p2, p3]
+    null_steps: []
     trace: []
 
   # ──────────────────────────────────────────────────────────────

@@ -12,6 +12,7 @@ export type Visual =
   | 'buffer-state'
   | 'message-receive'
   | 'correctness'
+  | 'references'
   | 'slow-vs-dead'
   | 'valency-tree'
   | 'lemma1-commute'

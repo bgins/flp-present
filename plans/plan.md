@@ -292,7 +292,7 @@ scenes:
 
 | Scene id | visual |
 | --- | --- |
-| `result`                     | `system` (bare processes — progressive reveal) |
+| `result`                     | `references` (front-matter QR atlas opener) |
 | `slow_vs_dead`               | `slow-vs-dead` |
 | `process`                    | `process-state` (+ registers) |
 | `configuration`              | `buffer-state` (+ empty buffer) |
@@ -316,19 +316,15 @@ The channel `Canvas` is now **retired** — no scene uses the `canvas` visual.
 
 **Future changes / scene ideas** (noted, not yet scheduled):
 
-- **`result` deserves a better visual than lone processes.** Three bare
-  process circles with no registers/buffer is a weak opening image — the
-  processes are properly *introduced* one scene later at `process` (where the
-  registers debut), so the bare reveal at `result` carries little. Rethink:
-  give `result` a stronger cold-open treatment for the impossibility statement
-  (candidate directions TBD), rather than the first step of the
-  process→register→buffer reveal ladder.
-- **A "references" scene with QR codes.** A late scene (likely near the end)
-  with a few QR codes linking to the paper and the secondary analyses we quote
-  (Aspnes, Robinson, etc.). Style the QR codes in our design language — paper
-  ground, ink modules, bracket/terminal framing — not stock black-on-white.
-  Details (which sources, layout, whether it's its own scene or a rail panel)
-  to be sorted out later.
+- **`result` cold-open + QR references — SHIPPED (uncommitted, pending review).**
+  Both ideas landed as one: `result` is now the **front-matter opener** — its §1
+  quote (titled "the paper") over a `references` visual: a 2×2 atlas of QR
+  "specimen plates" (paper · a tour · notes · presentation) drawn as our own
+  warm-sepia ink modules, each a square inscribed in a construction circle; the
+  rail carries the same four as clickable links. Codes via `qrcode-generator`
+  (local `.d.ts` — community @types omit the matrix API). Placed first so
+  latecomers can grab the paper. Open: phone scan-test; links/title are hardcoded
+  in `References.svelte` (a reuse-refactoring item).
 - **`b` blank-value color in the `process` rail legend.** The register legend
   renders the blank output value `b` in `--ink-faint` (soft gray). It reads as
   tentative — a placeholder / "candidate" gray rather than a committed semantic
@@ -471,7 +467,7 @@ trades flexibility for a tighter talk.
 
 Eighteen scenes covering the punchline arc and the §4 contrast:
 
-1.  **result** — §1 abstract
+1.  **result** — §1 quote, now the front-matter QR opener (atlas: paper · a tour · notes · presentation)
 2.  **slow_vs_dead** — §1 indistinguishability
 3.  **process** — §2 registers (x_p, y_p, blank `b`)
 4.  **configuration** — §2 the system-snapshot noun

@@ -9,6 +9,7 @@
   import Lemma2Sxs from '../visuals/Lemma2Sxs.svelte'
   import Lemma3SetD from '../visuals/Lemma3SetD.svelte'
   import ConstructionQueue from '../visuals/ConstructionQueue.svelte'
+  import References from '../visuals/References.svelte'
 
   let { scene }: { scene: Scene } = $props()
 
@@ -30,6 +31,8 @@
     <MessageReceive {scene} />
   {:else if visual === 'correctness'}
     <MessageBuffer {scene} op="state" ghostBuffer />
+  {:else if visual === 'references'}
+    <References />
   {:else if visual === 'slow-vs-dead'}
     <SlowVsDead />
   {:else if visual === 'valency-tree'}

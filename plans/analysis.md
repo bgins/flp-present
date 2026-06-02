@@ -554,10 +554,12 @@ cited source.
 - **Primary**: Fischer, Lynch, Paterson. "Impossibility of
   Distributed Consensus with One Faulty Process." *Journal of
   the ACM*, Vol. 32, No. 2, April 1985, pp. 374–382.
-  ACM Digital Library, DOI 10.1145/3149.214121 (TODO: verify the
-  DOI / canonical URL before publishing). The local `flp.pdf` and
-  `flp.txt` are gitignored — kept for reference, not redistributed
-  (© ACM).
+  ACM Digital Library, DOI 10.1145/3149.214121 — verified, resolves
+  via https://doi.org/10.1145/3149.214121 (the ACM DL page may be
+  paywalled; a free author-hosted full text is at MIT CSAIL TDS,
+  https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf). The
+  local `flp.pdf` and `flp.txt` are gitignored — kept for reference,
+  not redistributed (© ACM).
 - **Henry Robinson, "A Brief Tour of FLP Impossibility"** —
   https://www.the-paper-trail.org/post/2008-08-13-a-brief-tour-of-flp-impossibility/
   *Fetched via WebFetch on 2026-05-20.* Gentle walkthrough,

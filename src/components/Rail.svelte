@@ -132,6 +132,52 @@
       </div>
       <div class="rail-note">Keeps agreement. Never terminates.</div>
     {/if}
+  {:else if visual === 'references'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>links</span>
+    </div>
+    <div class="ref-links">
+      <a
+        class="ref-link"
+        href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="rl-title">paper</span><span class="rl-sub"
+          >JACM 1985 · full text</span
+        >
+      </a>
+      <a
+        class="ref-link"
+        href="https://www.the-paper-trail.org/post/2008-08-13-a-brief-tour-of-flp-impossibility/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="rl-title">a tour</span><span class="rl-sub"
+          >Robinson · the Paper Trail</span
+        >
+      </a>
+      <a
+        class="ref-link"
+        href="https://www.cs.yale.edu/homes/aspnes/pinewiki/FischerLynchPaterson.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="rl-title">notes</span><span class="rl-sub"
+          >Aspnes · Yale</span
+        >
+      </a>
+      <a
+        class="ref-link"
+        href="https://github.com/bgins/flp-present"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="rl-title">presentation</span><span class="rl-sub"
+          >bgins/flp-present</span
+        >
+      </a>
+    </div>
   {:else if visual === 'lemma1-commute'}
     <div class="rail-head">
       <span class="prefix">//</span><span>definitions</span>
@@ -497,6 +543,30 @@
   .rail-note .em {
     color: var(--ink);
     font-weight: 600;
+  }
+
+  /* references — clickable links list */
+  .ref-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .ref-link {
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .ref-link .rl-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .ref-link .rl-sub {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .ref-link:hover .rl-title {
+    color: var(--bivalent);
   }
 
   /* lemma3-set-D definitions panel */
