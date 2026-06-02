@@ -644,6 +644,33 @@ src="centaur.svg">` / inline SVG) mounted once in
 Placement landed on bottom-center; revisit if it competes with
 the controls row.
 
+## Licensing & reuse
+
+**License: MPL-2.0** (root `LICENSE` from the repo's initial commit). The middle
+path: file-level copyleft, so the shared presentation *engine* stays open and
+improvements flow back, while each team's bespoke per-paper visuals and script
+can be licensed however they like. The aspiration is a small commons of MPL
+"present-a-paper" apps that human + agent teams fork-and-adapt. (Covers our
+code/visuals/docs only — the FLP paper stays © ACM and out of the repo.)
+
+**Deferred to the reuse-refactoring** (not yet scheduled):
+
+- **Engine / content factoring.** Today the engine and the FLP content are
+  intermingled — `Rail` hardcodes the goalposts / lemma panels, `Stage` hardcodes
+  the FLP visual dispatch, `script.yaml` is FLP-specific. A clean seam between the
+  reusable shell (scene model, narrated three-column layout, navigation, design
+  language) and per-paper content is what makes "fork me for your paper" real.
+  Agent-legibility (clear structure + README + `CLAUDE.md`) matters more for
+  adoption than the license.
+- **Per-file MPL headers.** Add the Exhibit A notice to each authored source file
+  (`.svelte`, `.ts`, `.css`, `.yaml`, `index.html`; skip generated/vendored). The
+  root `LICENSE` establishes MPL now; the per-file headers are what make the
+  file-level copyleft *travel with a file* when it's copied into another project,
+  so they land with (or just before) the factoring, when file-portability starts
+  to matter. Scriptable (`find` + insert, or an `addlicense`-style tool).
+- **README aimed at "fork me for your paper"** — where the paper content goes,
+  how to author a bespoke visual.
+
 ## Repository layout
 
 Paths below are relative to the repo root. The planning docs
