@@ -299,7 +299,8 @@ scenes:
 | `buffer`                     | `message-buffer` (send view) |
 | `null_event`                 | `message-receive` (receive view) |
 | `admissible`                 | `message-receive` (delivery to nonfaulty p₁) |
-| `correctness`                | `message-receive` (reuses admissible) |
+| `partial`                    | `correctness` (off-timeline decided config + goalposts rail) |
+| `total`                      | `correctness` (off-timeline; adds termination) |
 | `valency_def`                | `valency-tree` |
 | `valency_intuition`          | `valency-tree` |
 | `lemma2`                     | `lemma2-sxs` |
@@ -328,7 +329,15 @@ The channel `Canvas` is now **retired** — no scene uses the `canvas` visual.
   ground, ink modules, bracket/terminal framing — not stock black-on-white.
   Details (which sources, layout, whether it's its own scene or a rail panel)
   to be sorted out later.
-- **§4 positive result — TWO scenes (decided, frozen; not yet built).** The
+- **`b` blank-value color in the `process` rail legend.** The register legend
+  renders the blank output value `b` in `--ink-faint` (soft gray). It reads as
+  tentative — a placeholder / "candidate" gray rather than a committed semantic
+  color, and the same faint ink already does duty as tertiary separators. Give
+  `b` ("blank / no decision written yet") a deliberate treatment — possibly its
+  own token — kept clear of both the `--bivalent` accent (so it never reads as a
+  valency claim) and the plain faint-separator gray. Low-stakes; fold into a
+  future color pass. Decided in this thread that `b` must stay register-level,
+  not valency-colored (see the legend discussion / analysis.md #10).
   closing contrast: weaken the fault model by one knob and consensus returns.
   `section_4_positive_result` currently is a bare-processes `system` stopgap;
   it becomes **two** bespoke scenes. Both are **outside the impossibility run**
@@ -381,6 +390,44 @@ canonical constant.
 renderer doesn't have to know the verb-specific shape ahead of
 time.
 
+## Chrome status fields — policy & repair TODO
+
+The chrome bar's `stage` and `faulty` fields describe **what the current scene
+is about**, not a complete run log. They assert a run-state only on scenes that
+actually depict one; elsewhere they gray or vanish, so the bar never implies the
+live run is somewhere it isn't.
+
+- **Stage** — three states (`chrome.stage: number | null`, plus `chrome.muted`):
+  - **Crisp** — scene sits on the run's spine and advances it.
+  - **Gray** (`muted: true`) — scene is paused on a real run stage to explain
+    something, not advancing it.
+  - **Hidden** (`stage: null`) — no run stage at all (setup before the run,
+    abstract lemmas, the §4 model, the off-timeline correctness scenes).
+- **Faulty** — crisp where the crash is doing work in the scene; hidden
+  (`faulty: null`) otherwise. The render now hides the field entirely when null,
+  so pre-crash scenes no longer show "faulty —" (applied globally already).
+- **Valency badge** renders the paper's term ("0-valent" / "1-valent" /
+  "bivalent") via a label map, not the data slug.
+
+Mechanism is fully in place (`stage: null` hides, `muted: true` grays,
+`faulty: null` hides, label map). **Done:** `partial` / `total` (stage + faulty
+hidden, badge 1-valent); `configuration` (crisp `stage 0` — it *is* the initial
+config); `admissible` / `construction` / `punchline` / `window` (crisp + faulty,
+the crash is the point); intro scenes already dropped "faulty —" via the render
+change.
+
+**Repair TODO** (open — overlaps the scenes 9-17 review; just per-scene data):
+
+- `result`, `process`, `slow_vs_dead` — currently crisp `stage 0`. Decide hide
+  vs. keep crisp-0 (we kept crisp-0 for `configuration`; these are pre-run, lean
+  hide).
+- `valency_def`, `valency_intuition` — gray the stage (`muted`, st 7) and set
+  `faulty: null` (the crash isn't what those scenes are about).
+- `lemma3` — gray the stage (`muted`, st 12) and `faulty: null`.
+- `lemma1_commutativity`, `lemma2` — currently crisp `stage 0`; hide
+  (`stage: null`) — abstract proof asides.
+- `section_4_positive_result` — currently crisp `stage 0`; hide (separate model).
+
 ## Interaction model — narrated essay (locked)
 
 The presentation is a **scripted walkthrough**, not a free-form
@@ -422,7 +469,7 @@ trades flexibility for a tighter talk.
 
 ## Pedagogical arc — locked in `script.yaml`
 
-Seventeen scenes covering the punchline arc and the §4 contrast:
+Eighteen scenes covering the punchline arc and the §4 contrast:
 
 1.  **result** — §1 abstract
 2.  **slow_vs_dead** — §1 indistinguishability
@@ -431,17 +478,19 @@ Seventeen scenes covering the punchline arc and the §4 contrast:
 5.  **buffer** — §2 multiset
 6.  **null_event** — §2 (p, ∅) (can return ∅ even when buffer has (p, m))
 7.  **admissible** — §2 both clauses (p3 turns faulty here)
-8.  **correctness** — §2 the goalposts: agreement + both outcomes
-    reachable + termination under one fault
-9.  **valency_def** — §3 V definition (bivalent + univalent)
-10. **valency_intuition** — Robinson's "undecided yet"
-11. **lemma2** — §3 bivalent initial exists
-12. **lemma1_commutativity** — §2 disjoint schedules commute
-13. **lemma3** — §3 preservation (the hero stage-12 state)
-14. **construction** — §3 stage / queue rule
-15. **punchline** — §3 stage 99, still bivalent
-16. **window_of_vulnerability** — §1 the folklore vindicated
-17. **section_4_positive_result** — §4 same authors, immediate
+8.  **partial** — §2 partial correctness: agreement + non-triviality
+    (off-timeline; badge 1-valent)
+9.  **total** — §2 total correctness: + termination, the bar Theorem 1
+    breaks (off-timeline)
+10. **valency_def** — §3 V definition (bivalent + univalent)
+11. **valency_intuition** — Robinson's "undecided yet"
+12. **lemma2** — §3 bivalent initial exists
+13. **lemma1_commutativity** — §2 disjoint schedules commute
+14. **lemma3** — §3 preservation (the hero stage-12 state)
+15. **construction** — §3 stage / queue rule
+16. **punchline** — §3 stage 99, still bivalent
+17. **window_of_vulnerability** — §1 the folklore vindicated
+18. **section_4_positive_result** — §4 same authors, immediate
     contrast: weaken the fault model by one knob, consensus
     returns
 

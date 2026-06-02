@@ -11,6 +11,7 @@ export type Visual =
   | 'message-buffer'
   | 'buffer-state'
   | 'message-receive'
+  | 'correctness'
   | 'slow-vs-dead'
   | 'valency-tree'
   | 'lemma1-commute'
@@ -49,10 +50,13 @@ export interface TraceEntry {
 }
 
 export interface Chrome {
-  stage: number
+  /** Run stage. `null` hides the field (scene sits outside the run). */
+  stage: number | null
   valency: Valency
-  /** Process id of the faulty process, or null if none yet. */
+  /** Process id of the faulty process, or null to hide the field. */
   faulty: string | null
+  /** Gray the stage — scene is paused on a real run stage, not advancing it. */
+  muted?: boolean
 }
 
 export interface SceneNote {

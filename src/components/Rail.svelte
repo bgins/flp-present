@@ -53,12 +53,85 @@
       <span class="k">∴</span><span class="v same">same</span>
     </div>
 
-    <div class="rail-head"><span class="prefix">//</span><span>note</span></div>
-    <div class="rail-note">
-      this is the practical intuition behind the impossibility. Every
-      <span class="em">safe</span> protocol can wait; FLP says some adversary makes
-      that wait infinite.
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the bind</span>
     </div>
+    <div class="rail-note">
+      There's no bound on how long a message can take. A slow p₃ looks
+      <span class="em">identical</span> to a dead one. Wait, and you might wait forever.
+      Act, and you might have quit on a live process. No timeout is long enough to
+      be sure.
+    </div>
+  {:else if visual === 'process-state'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>registers</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">x<sub>p</sub></span>
+        <span class="muted">— input · the value p proposes, fixed</span>
+      </p>
+      <p>
+        <span class="term">y<sub>p</sub></span>
+        <span class="muted">— output · p's decision</span>
+      </p>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>output values</span>
+    </div>
+    <div class="rail-legend">
+      <div class="leg-row">
+        <span class="leg-sym blank">b</span>
+        <span class="leg-desc">blank — no decision written yet, every y starts here</span>
+      </div>
+      <div class="leg-row">
+        <span class="leg-sym"
+          ><span class="zero">0</span>&#160;/&#160;<span class="one">1</span></span
+        >
+        <span class="leg-desc">a decision — written once, never changes</span>
+      </div>
+    </div>
+  {:else if visual === 'correctness'}
+    {#if scene.id === 'partial'}
+      <div class="rail-head">
+        <span class="prefix">//</span><span>partial correctness</span>
+      </div>
+      <div class="rail-defs">
+        <p>
+          <span class="term">agreement</span>
+          <span class="muted">— no config has two decision values</span>
+        </p>
+        <p>
+          <span class="term">non-trivial</span>
+          <span class="muted">— both 0 and 1 stay reachable</span>
+        </p>
+      </div>
+      <div class="rail-head"><span class="prefix">//</span><span>note</span></div>
+      <div class="rail-note">Both are safety. Neither makes anyone decide.</div>
+    {:else}
+      <div class="rail-head">
+        <span class="prefix">//</span><span>total correctness</span>
+      </div>
+      <div class="rail-defs">
+        <p>
+          <span class="term">agreement</span>
+          <span class="muted">— no config has two decision values</span>
+        </p>
+        <p>
+          <span class="term">non-trivial</span>
+          <span class="muted">— both 0 and 1 stay reachable</span>
+        </p>
+        <p>
+          <span class="term">terminating</span>
+          <span class="muted">— every admissible run decides</span>
+        </p>
+      </div>
+      <div class="rail-head">
+        <span class="prefix">//</span><span>theorem 1</span>
+      </div>
+      <div class="rail-note">Keeps agreement. Never terminates.</div>
+    {/if}
   {:else if visual === 'lemma1-commute'}
     <div class="rail-head">
       <span class="prefix">//</span><span>definitions</span>
@@ -99,8 +172,8 @@
     </div>
     <div class="rail-note">
       Lemma 3, Case 1: an event <span class="em">e = (p, m)</span> and
-      <span class="em">e′ = (p′, m′)</span> with p ≠ p′ act on disjoint
-      singletons — so they swap freely.
+      <span class="em">e′ = (p′, m′)</span> with p ≠ p′ act on disjoint singletons
+      — so they swap freely.
     </div>
   {:else if visual === 'lemma2-sxs'}
     <div class="rail-head">
@@ -233,12 +306,23 @@
           style:color={verbColor(t.verb)}>{t.verb}</span
         >
         <span class="m"
-          >{#if /^m\d+$/.test(t.target)}[{t.target[0]}<sub>{t.target.slice(
-              1,
-            )}</sub>]{:else}{sub(t.target)}{/if}</span
+          >{#if /^m\d+$/.test(t.target)}[{t.target[0]}<sub
+              >{t.target.slice(1)}</sub
+            >]{:else}{sub(t.target)}{/if}</span
         >
       </div>
     {/each}
+
+    {#if scene.id === 'buffer'}
+      <div class="rail-head">
+        <span class="prefix">//</span><span>protocol</span>
+      </div>
+      <div class="rail-note">
+        We use a simple voting protocol, but FLP holds for any
+        distributed consensus protocol. In our protocol, each process
+        broadcasts its vote when it wants.
+      </div>
+    {/if}
   {/if}
 </aside>
 
@@ -429,6 +513,36 @@
     font-weight: 700;
   }
   .rail-defs .muted {
+    color: var(--ink-muted);
+  }
+
+  /* process-state register legend */
+  .rail-legend {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .leg-row {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: 0.5rem;
+    padding: 0.28rem 0;
+    align-items: baseline;
+  }
+  .leg-sym {
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .leg-sym.blank {
+    color: var(--ink-faint);
+  }
+  .leg-sym .zero {
+    color: var(--univalent-0);
+  }
+  .leg-sym .one {
+    color: var(--univalent-1);
+  }
+  .leg-desc {
     color: var(--ink-muted);
   }
 </style>

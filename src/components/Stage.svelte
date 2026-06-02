@@ -28,6 +28,8 @@
     <MessageBuffer {scene} op="state" />
   {:else if visual === 'message-receive'}
     <MessageReceive {scene} />
+  {:else if visual === 'correctness'}
+    <MessageBuffer {scene} op="state" ghostBuffer />
   {:else if visual === 'slow-vs-dead'}
     <SlowVsDead />
   {:else if visual === 'valency-tree'}

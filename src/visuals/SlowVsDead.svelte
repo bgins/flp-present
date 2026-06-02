@@ -20,27 +20,15 @@
 
   <g class="sd-proc" transform="translate(100, 130)">
     <circle r="28" />
-    <text class="label" y="-10">p₁</text>
-    <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
-    <text class="reg" y="20"
-      ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
-    >
+    <text class="label">p₁</text>
   </g>
   <g class="sd-proc" transform="translate(300, 130)">
     <circle r="28" />
-    <text class="label" y="-10">p₂</text>
-    <text class="reg" y="8"><tspan class="x">x</tspan>=1</text>
-    <text class="reg" y="20"
-      ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
-    >
+    <text class="label">p₂</text>
   </g>
   <g class="sd-proc slow" transform="translate(200, 260)">
     <circle r="32" />
-    <text class="label" y="-10">p₃</text>
-    <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
-    <text class="reg" y="20"
-      ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
-    >
+    <text class="label">p₃</text>
   </g>
   <text class="sd-tag slow" x="200" y="316"
     ><tspan class="br">[&#160;</tspan><tspan class="v">alive · quiet</tspan
@@ -91,27 +79,15 @@
 
   <g class="sd-proc" transform="translate(500, 130)">
     <circle r="28" />
-    <text class="label" y="-10">p₁</text>
-    <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
-    <text class="reg" y="20"
-      ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
-    >
+    <text class="label">p₁</text>
   </g>
   <g class="sd-proc" transform="translate(700, 130)">
     <circle r="28" />
-    <text class="label" y="-10">p₂</text>
-    <text class="reg" y="8"><tspan class="x">x</tspan>=1</text>
-    <text class="reg" y="20"
-      ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
-    >
+    <text class="label">p₂</text>
   </g>
   <g class="sd-proc dead" transform="translate(600, 260)">
     <circle r="32" />
-    <text class="label" y="-10">p₃</text>
-    <text class="reg" y="8"><tspan class="x">x</tspan>=0</text>
-    <text class="reg" y="20"
-      ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
-    >
+    <text class="label">p₃</text>
   </g>
   <text class="sd-tag dead" x="600" y="316"
     ><tspan class="br">[&#160;</tspan><tspan class="v">crashed</tspan><tspan
@@ -154,10 +130,10 @@
 
   <!-- Bottom banner -->
   <rect class="sd-banner-bg" x="40" y="548" width="720" height="46" rx="2" />
-  <text class="sd-banner-text" x="400" y="564">indistinguishable from p₁</text>
+  <text class="sd-banner-text" x="400" y="564">indistinguishable to p₁</text>
   <text class="sd-banner-sub" x="400" y="587"
-    >∴ p₁ <tspan class="em">cannot wait</tspan> for p₃ — there is no time at which
-    silence becomes evidence of death</text
+    >p₁ <tspan class="em">cannot wait</tspan> forever&#160;·&#160;real systems
+    time out</text
   >
 </svg>
 
@@ -212,21 +188,6 @@
   }
   .sd-proc .label {
     font-size: 16px;
-    font-weight: 700;
-  }
-  .sd-proc .reg {
-    font-size: 11px;
-    fill: var(--ink-muted);
-    letter-spacing: 0.06em;
-    /* Alphabetic: the plain `=N` run and styled tspans land on different
-       baselines under middle (see memory). Smaller circles cap this at 11px. */
-    dominant-baseline: alphabetic;
-  }
-  .sd-proc .reg .x {
-    fill: var(--ink);
-  }
-  .sd-proc .reg .blank {
-    fill: var(--bivalent);
     font-weight: 700;
   }
 

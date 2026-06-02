@@ -9,6 +9,21 @@
   $effect(() => {
     if (active) el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   })
+
+  // Render `x_p` / `x_{ij}` subscript notation in authored quote/note text as
+  // real <sub> elements. Geist Mono has no subscript-LETTER glyphs (a literal
+  // `ₚ` falls back to a mismatched font), so we resize the normal glyph
+  // instead. The content is ours (script.yaml), so {@html} is safe — we escape
+  // HTML metacharacters first.
+  function subs(s: string): string {
+    return s
+      .trim()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/_\{([^}]+)\}/g, '<sub>$1</sub>')
+      .replace(/_([A-Za-z0-9]+)/g, '<sub>$1</sub>')
+  }
 </script>
 
 <section class="scene" class:active bind:this={el}>
@@ -17,12 +32,12 @@
     <span class="sep">::</span>
     <span class="topic">{scene.head.topic}</span>
   </div>
-  <p class="quote">{scene.quote.trim()}</p>
+  <p class="quote">{@html subs(scene.quote)}</p>
   <div class="cite">[ {scene.cite} ]</div>
   {#if scene.note}
     <div class="note">
       <span class="src">{scene.note.marker}</span>
-      {scene.note.body.trim()}
+      {@html subs(scene.note.body)}
     </div>
   {/if}
 </section>

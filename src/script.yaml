@@ -44,10 +44,11 @@ scenes:
   - id: result
     visual: system
     head: { section: "§ 1", topic: "the result" }
-    cite: "paper §1, abstract"
+    cite: "paper §1"
     quote: |
-      [E]very protocol for this problem has the possibility of
-      nontermination, even with only one faulty process.
+      In this paper, we show the surprising result that no completely
+      asynchronous consensus protocol can tolerate even a single
+      unannounced process death.
 
     chrome: { stage: 0, valency: bivalent, faulty: null }
     processes:
@@ -93,15 +94,16 @@ scenes:
     head: { section: "§ 2", topic: "the process" }
     cite: "paper §2"
     quote: |
-      Each [process] has an input register x_p ∈ {0, 1}, an
-      output register y_p ∈ {b, 0, 1}, and unbounded internal
-      storage. The output register is "write-once".
+      Each process p has a one-bit input register x_p, an output
+      register y_p with values in {b, 0, 1}.
     note:
       marker: "▸"
       body: |
-        `b` is the blank initial value. `y_p` transitioning from
-        `b` to a value is the "decide" moment — the punchline we
-        prove can be deferred forever.
+        x_p holds the value p proposes, set before the run. y_p
+        holds p's decision. The decision starts blank (`b`) until p
+        writes 0 or 1, and can only be written once. The `b → 0/1`
+        flip is the decision this paper shows can be deferred
+        forever.
 
     chrome: { stage: 0, valency: bivalent, faulty: null }
     processes:
@@ -130,11 +132,10 @@ scenes:
     note:
       marker: "▸"
       body: |
-        the noun for the rest of the talk. A configuration is the
-        full system snapshot at one instant. Valency, bivalent,
-        univalent — these are properties of CONFIGURATIONS, not
-        of individual processes. The badge above the canvas is
-        labeling the current configuration, not p₁ or p₂ or p₃.
+        A configuration is 0-valent, 1-valent, or bivalent. Lemma 2
+        will show that some initial configuration is bivalent. Our
+        badge in the header will track valency for the rest of this
+        talk.
 
     chrome: { stage: 0, valency: bivalent, faulty: null }
     processes:
@@ -168,15 +169,14 @@ scenes:
     cite: "paper §2"
     quote: |
       The message system maintains a multiset, called the message
-      buffer, of (destination, message) pairs sent but not yet
+      buffer, of messages that have been sent but not yet
       delivered.
     note:
       marker: "▸"
       body: |
-        one pool — not a queue per channel. The adversary can
-        pull any pending pair in any order. (Many secondary
-        treatments draw per-channel queues — that's a stricter
-        model than FLP makes.)
+        Processes communicate by sending each other messages. A
+        message is a pair (p, m), where p is the name of the
+        destination process and m is a "message value".
 
     chrome: { stage: 3, valency: bivalent, faulty: null }
     processes:
@@ -206,21 +206,17 @@ scenes:
     head: { section: "§ 2", topic: "the ∅ event" }
     cite: "paper §2"
     quote: |
-      the event (p, ∅) can always be applied to C, so it is
-      always possible for a process to take another step.
+      the message system is allowed to return ∅ a finite number of
+      times in response to receive(p), even though a message (p, m)
+      is present in the buffer.
     note:
       marker: "▸"
       body: |
-        this is the slow / dead indistinguishability in primitive
-        form. Time passes for `p` without anything being
-        delivered — receive(p) returned the null marker. And per
-        paper §2: this can happen even when a message (p, m) is
-        in the buffer. The message system is allowed to withhold
-        delivery a finite number of times — silence isn't proof
-        the buffer is empty.
-
-        Notation: the paper writes this null marker as `0`; we
-        render it `∅` to keep it distinct from decision value 0.
+        receive(p) either delivers one message or returns ∅. The
+        (p, ∅) event models silence, a step where nothing is
+        received. The message system acts nondeterministically, but
+        a process that keeps receiving eventually gets every message
+        sent to it.
 
     chrome: { stage: 4, valency: bivalent, faulty: null }
     processes:
@@ -291,53 +287,83 @@ scenes:
       - { stage: 7, verb: deliver, target: "m3" }         # p1 (nonfaulty) finally receives p2's vote
 
   # ──────────────────────────────────────────────────────────────
-  # SCENE — the correctness conditions (the goalposts).
-  # What it MEANS for a protocol to solve consensus: agreement +
-  # both outcomes possible + termination under one fault. This is
-  # exactly the bar Theorem 1 (next) proves unreachable. Same
-  # stage-7 canvas as the neighbours — attention rides the quote.
+  # SCENE — partial correctness (the safety goalposts).
+  # Agreement + non-triviality, both SAFETY — neither requires a
+  # decision, so we show the OPEN config (bivalent, y=b): non-triviality
+  # is "both values still reachable," agreement is "never two at once."
+  # The goalposts rail replaces buffer/trace (the off-timeline cue) and
+  # the chrome drops stage and faulty. The buffer shows as faint
+  # background pods. total then flips this to a decided 1-valent config.
   # ──────────────────────────────────────────────────────────────
-  - id: correctness
-    head: { section: "§ 2", topic: "correctness conditions" }
+  - id: partial
+    visual: correctness
+    head: { section: "§ 2", topic: "partial correctness" }
     cite: "paper §2"
     quote: |
       A consensus protocol is partially correct if it satisfies two
       conditions: (1) No accessible configuration has more than one
       decision value. (2) For each v ∈ {0, 1}, some accessible
-      configuration has decision value v. … A consensus protocol P
-      is totally correct in spite of one fault if it is partially
-      correct, and every admissible run is a deciding run.
+      configuration has decision value v.
     note:
       marker: "▸"
       body: |
-        the goalposts. (1) is agreement — no two processes ever
-        decide differently. (2) is non-triviality — a protocol that
-        always answers 0 is useless, so both outcomes must stay
-        reachable. "Totally correct in spite of one fault" then adds
-        termination: every admissible run must actually decide, even
-        with one process down. "Decide" = some y register goes from
-        `b` to a value. Theorem 1 says no protocol can hold all
-        three at once.
+        Both conditions are safety. Agreement keeps the system from
+        ever deciding two different values. Non-triviality keeps it
+        honest, since a protocol hardwired to always answer 0 would
+        satisfy agreement but be useless, so both 0 and 1 must stay
+        reachable. Neither one requires the protocol to ever actually
+        decide.
 
-    visual: message-receive
-    chrome: { stage: 7, valency: bivalent, faulty: p3 }
+    chrome: { stage: null, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
-      - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
+      - { id: p3, x: 0, y: b, pos: [400, 500] }
     buffer:
+      - { id: m1, from: p1, to: p2, payload: "vote 0" }
       - { id: m2, from: p1, to: p3, payload: "vote 0" }
       - { id: m3, from: p2, to: p1, payload: "vote 1" }
       - { id: m4, from: p2, to: p3, payload: "vote 1" }
-      - { id: m5, from: p1, to: p2, payload: "vote 0" }
-      - { id: m6, from: p1, to: p3, payload: "vote 0" }
-    null_steps: [p1, p2, p3]
-    trace:
-      - { stage: 3, verb: step,    target: "(p1, ∅)" }   # p1's retry → m5, m6
-      - { stage: 4, verb: step,    target: "(p3, ∅)" }   # p3's last step — then faulty
-      - { stage: 5, verb: deliver, target: "m1" }         # p2 (nonfaulty) receives p1's vote
-      - { stage: 6, verb: delay,   target: "m3" }         # adversary defers m3
-      - { stage: 7, verb: deliver, target: "m3" }         # p1 (nonfaulty) finally receives p2's vote
+    null_steps: []
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — total correctness (termination — the bar Theorem 1 breaks).
+  # Adds termination: a decision must actually be reached, so the config
+  # flips DECIDED (y=1, badge 1-valent). The open→decided beat from
+  # partial visually enacts termination. Off-timeline chrome; the buffer
+  # shows as faint background pods.
+  # ──────────────────────────────────────────────────────────────
+  - id: total
+    visual: correctness
+    head: { section: "§ 2", topic: "total correctness" }
+    cite: "paper §2"
+    quote: |
+      A consensus protocol P is totally correct in spite of one
+      fault if it is partially correct, and every admissible run is
+      a deciding run.
+    note:
+      marker: "▸"
+      body: |
+        Total correctness adds the part that bites, termination.
+        Every admissible run must actually decide even with one
+        process down, meaning some process finally writes its y from
+        b to a value. Theorem 1 says no protocol can hold all three
+        at once, and termination is what gives. Agreement holds the
+        whole way through. The decision is simply what never comes.
+
+    chrome: { stage: null, valency: univalent-1, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: 1, pos: [200, 180] }
+      - { id: p2, x: 1, y: 1, pos: [600, 180] }
+      - { id: p3, x: 0, y: 1, pos: [400, 500] }
+    buffer:
+      - { id: m1, from: p1, to: p2, payload: "vote 0" }
+      - { id: m2, from: p1, to: p3, payload: "vote 0" }
+      - { id: m3, from: p2, to: p1, payload: "vote 1" }
+      - { id: m4, from: p2, to: p3, payload: "vote 1" }
+    null_steps: []
+    trace: []
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 7 — valency, defined.

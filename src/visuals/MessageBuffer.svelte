@@ -26,11 +26,15 @@
     op = 'send',
     showBuffer = true,
     showRegisters = true,
+    ghostBuffer = false,
   }: {
     scene: Scene
     op?: 'send' | 'state'
     showBuffer?: boolean
     showRegisters?: boolean
+    // Render the pool's messages as a faint, unlabeled backdrop — the buffer is
+    // present but not the focus (the off-timeline correctness scenes).
+    ghostBuffer?: boolean
   } = $props()
 
   const C = { x: 400, y: 286 }
@@ -52,6 +56,14 @@
   type V = { x: number; y: number }
   const dir = (a: number): V => ({ x: Math.sin(a), y: -Math.cos(a) })
   const at = (p: V, d: V, s: number): V => ({ x: p.x + d.x * s, y: p.y + d.y * s })
+  const rot = (d: V, deg: number): V => {
+    const r = (deg * Math.PI) / 180
+    return { x: d.x * Math.cos(r) - d.y * Math.sin(r), y: d.x * Math.sin(r) + d.y * Math.cos(r) }
+  }
+  // A decided y takes its valency color (0 → 0-valent green, 1 → 1-valent
+  // orange), matching the badge; blank b keeps the open-config accent.
+  const yColor = (y: 'b' | 0 | 1): string =>
+    y === 0 ? 'var(--univalent-0)' : y === 1 ? 'var(--univalent-1)' : 'var(--bivalent)'
 
   const n = $derived(scene.processes.length)
 
@@ -98,6 +110,28 @@
     }
     return out
   })
+
+  // Off-timeline buffer (correctness scenes): the RECEIVE-view resting state —
+  // the pool partitioned by recipient (dividers), each chamber holding a few
+  // faint leftover-message bubbles that GROW outward (echoing the receive view's
+  // unbounded storage). No active receive (no arrows / selection); these are
+  // just configs whose processes have received messages. Empty buffer → none.
+  const dividers = $derived(
+    scene.processes.map((_, i) => at(C, dir(((i + 0.5) * 2 * Math.PI) / n), R)),
+  )
+  const chamberPattern: [number, number][] = [
+    [-20, 42], [14, 62], [-4, 80],
+  ]
+  const ghostBubbles = $derived(
+    scene.buffer.length === 0
+      ? []
+      : procs.flatMap((p) =>
+          chamberPattern.map(([ang, rad]) => ({
+            ...at(C, rot(p.d, ang), rad),
+            r: rad * 0.09 + 2.2,
+          })),
+        ),
+  )
 </script>
 
 <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
@@ -114,38 +148,49 @@
     <circle class="mbf-core" cx={C.x} cy={C.y} r="13" />
     <circle class="mbf-center" cx={C.x} cy={C.y} r="1.4" />
 
-    <!-- Send: each sender streams its messages inward, converging on the
-         unbounded core. Quiet senders (no messages) show no stream. -->
-    {#if op === 'send'}
-      {#each procs as p (p.id)}
-        {#if p.msgs.length}
-          <line
-            class="mbf-stream"
-            x1={p.streamFrom.x}
-            y1={p.streamFrom.y}
-            x2={p.streamTo.x}
-            y2={p.streamTo.y}
-            marker-end="url(#mbf-in)"
-          />
+    {#if ghostBuffer}
+      <!-- Receive-view resting state: the pool partitioned by recipient, each
+           chamber holding a few faint leftover-message bubbles, growing outward. -->
+      {#each dividers as dv, i (i)}
+        <line class="mbf-divider" x1={C.x} y1={C.y} x2={dv.x} y2={dv.y} />
+      {/each}
+      {#each ghostBubbles as b, i (i)}
+        <circle class="mbf-ghost-bubble" cx={b.x} cy={b.y} r={b.r} />
+      {/each}
+    {:else}
+      <!-- Send: each sender streams its messages inward, converging on the
+           unbounded core. Quiet senders (no messages) show no stream. -->
+      {#if op === 'send'}
+        {#each procs as p (p.id)}
+          {#if p.msgs.length}
+            <line
+              class="mbf-stream"
+              x1={p.streamFrom.x}
+              y1={p.streamFrom.y}
+              x2={p.streamTo.x}
+              y2={p.streamTo.y}
+              marker-end="url(#mbf-in)"
+            />
+          {/if}
+        {/each}
+      {/if}
+
+      <!-- One pod per sent message, ranged along the sender's inflow, receding &
+           fading toward the core: crisp → lighter → faint → spent ring (the
+           label fades out a level at each depth, no glitch; max 4 shown). -->
+      {#each pods as pod, i (i)}
+        <circle class="mbf-pod s{pod.slot}" cx={pod.x} cy={pod.y} r={pod.r} />
+        {#if pod.slot < 3}
+          <text
+            class="mbf-label s{pod.slot}"
+            x={pod.x}
+            y={pod.y}
+            style:font-size="{pod.r}px"
+            >{pod.label[0]}<tspan class="mbf-num">{pod.label.slice(1)}</tspan></text
+          >
         {/if}
       {/each}
     {/if}
-
-    <!-- One pod per sent message, ranged along the sender's inflow, receding &
-         fading toward the core: crisp → lighter → faint → spent ring (the
-         label fades out a level at each depth, no glitch; max 4 shown). -->
-    {#each pods as pod, i (i)}
-      <circle class="mbf-pod s{pod.slot}" cx={pod.x} cy={pod.y} r={pod.r} />
-      {#if pod.slot < 3}
-        <text
-          class="mbf-label s{pod.slot}"
-          x={pod.x}
-          y={pod.y}
-          style:font-size="{pod.r}px"
-          >{pod.label[0]}<tspan class="mbf-num">{pod.label.slice(1)}</tspan></text
-        >
-      {/if}
-    {/each}
   {/if}
 
   <!-- Processes around the rim, each carrying its registers (its state). -->
@@ -160,14 +205,17 @@
       {#if showRegisters}
         <text class="mbf-reg" y="12"><tspan class="rk">x</tspan>={p.x}</text>
         <text class="mbf-reg" y="29"
-          ><tspan class="rk">y</tspan>=<tspan class="rb">{p.y}</tspan></text
+          ><tspan class="rk">y</tspan>=<tspan class="rb" style:fill={yColor(p.y)}
+            >{p.y}</tspan
+          ></text
         >
       {/if}
     </g>
   {/each}
 
-  <!-- Caption (only once the buffer rota is on screen). -->
-  {#if showBuffer}
+  <!-- Caption (only once the buffer rota is on screen; dropped off-timeline,
+       where "a configuration" no longer fits). -->
+  {#if showBuffer && !ghostBuffer}
     <text class="mbf-cap" x={C.x} y="500"
       >{op === 'state' ? 'a configuration' : 'the message buffer'}</text
     >
@@ -219,6 +267,18 @@
     fill: none;
     stroke: var(--ink-faint);
     stroke-width: 0.6;
+  }
+  /* Off-timeline: the pool partitioned by recipient, with faint leftover-message
+     rings that grow outward — the receive view's resting state. */
+  .mbf-divider {
+    stroke: var(--ink-faint);
+    stroke-width: 0.8;
+  }
+  .mbf-ghost-bubble {
+    fill: none;
+    stroke: var(--ink-faint);
+    stroke-width: 0.8;
+    opacity: 0.35;
   }
   .mbf-label {
     font-family: 'Geist Mono', monospace;

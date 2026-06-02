@@ -31,23 +31,34 @@
     'univalent-0': 'var(--univalent-0)',
     'univalent-1': 'var(--univalent-1)',
   }
+
+  // Paper's terms for the badge: "0-valent" / "1-valent", not the data slugs.
+  const valencyLabel: Record<Valency, string> = {
+    bivalent: 'bivalent',
+    'univalent-0': '0-valent',
+    'univalent-1': '1-valent',
+  }
 </script>
 
 <div class="shell" class:zoomed>
   <header class="chrome">
     <span class="brand">:: FLP ::</span>
-    <span class="chrome-stat">stage <strong>{scene.chrome.stage}</strong></span>
-    <span class="sep">::</span>
-    <span class="chrome-stat">
-      faulty <strong
-        >{scene.chrome.faulty ? sub(scene.chrome.faulty) : '—'}</strong
+    {#if scene.chrome.stage !== null}
+      <span class="chrome-stat" class:muted={scene.chrome.muted}
+        >stage <strong>{scene.chrome.stage}</strong></span
       >
-    </span>
+    {/if}
+    {#if scene.chrome.faulty}
+      {#if scene.chrome.stage !== null}<span class="sep">::</span>{/if}
+      <span class="chrome-stat"
+        >faulty <strong>{sub(scene.chrome.faulty)}</strong></span
+      >
+    {/if}
     <span
       class="valency-badge"
       style:color={valencyColor[scene.chrome.valency]}
     >
-      {scene.chrome.valency}
+      {valencyLabel[scene.chrome.valency]}
     </span>
   </header>
 
@@ -81,7 +92,7 @@
 
   {#if zoomed}
     <span class="zoom-badge" style:color={valencyColor[scene.chrome.valency]}>
-      {scene.chrome.valency}
+      {valencyLabel[scene.chrome.valency]}
     </span>
   {/if}
 </div>
@@ -116,6 +127,10 @@
   .chrome-stat strong {
     color: var(--ink);
     font-weight: 600;
+  }
+  /* Paused on a real run stage but not advancing it — de-emphasized. */
+  .chrome-stat.muted {
+    opacity: 0.4;
   }
   .sep {
     color: var(--ink-faint);
