@@ -107,8 +107,10 @@
           <span class="muted">— both 0 and 1 stay reachable</span>
         </p>
       </div>
-      <div class="rail-head"><span class="prefix">//</span><span>note</span></div>
-      <div class="rail-note">Both are safety. Neither makes anyone decide.</div>
+      <div class="rail-head">
+        <span class="prefix">//</span><span>accessible</span>
+      </div>
+      <div class="rail-note">Reachable from an initial config.</div>
     {:else}
       <div class="rail-head">
         <span class="prefix">//</span><span>total correctness</span>
@@ -128,9 +130,16 @@
         </p>
       </div>
       <div class="rail-head">
-        <span class="prefix">//</span><span>theorem 1</span>
+        <span class="prefix">//</span><span>admissible</span>
       </div>
-      <div class="rail-note">Keeps agreement. Never terminates.</div>
+      <div class="rail-note">
+        At most one process is faulty, and every message to a live process is
+        eventually delivered.
+      </div>
+      <div class="rail-head">
+        <span class="prefix">//</span><span>deciding run</span>
+      </div>
+      <div class="rail-note">A run where some process actually decides.</div>
     {/if}
   {:else if visual === 'references'}
     <div class="rail-head">

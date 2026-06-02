@@ -257,10 +257,9 @@ scenes:
     note:
       marker: "▸"
       body: |
-        TWO clauses. "Admissible = at most one crash" forgets the
-        message-delivery half. The proof needs both: the adversary
-        gets one crash for free, but every message to nonfaulty
-        processes must eventually be delivered.
+        Admissibility is a system model choice. The paper models one
+        possible fault and ensures reliable delivery to live
+        processes, to avoid lost-message concerns.
 
     visual: message-receive
     chrome: { stage: 7, valency: bivalent, faulty: p3 }
@@ -308,12 +307,10 @@ scenes:
     note:
       marker: "▸"
       body: |
-        Both conditions are safety. Agreement keeps the system from
-        ever deciding two different values. Non-triviality keeps it
-        honest, since a protocol hardwired to always answer 0 would
-        satisfy agreement but be useless, so both 0 and 1 must stay
-        reachable. Neither one requires the protocol to ever actually
-        decide.
+        Partial correctness does not require termination. Its
+        conditions only bind what the protocol can reach, forbidding
+        any configuration that holds two decisions and keeping both
+        outcomes reachable. A decision never needs to happen.
 
     chrome: { stage: null, valency: bivalent, faulty: null }
     processes:
@@ -346,12 +343,9 @@ scenes:
     note:
       marker: "▸"
       body: |
-        Total correctness adds the part that bites, termination.
-        Every admissible run must actually decide even with one
-        process down, meaning some process finally writes its y from
-        b to a value. Theorem 1 says no protocol can hold all three
-        at once, and termination is what gives. Agreement holds the
-        whole way through. The decision is simply what never comes.
+        Total correctness requires termination. A decision must be
+        made. This paper shows that no protocol can guarantee it if
+        even one process may fail.
 
     chrome: { stage: null, valency: univalent-1, faulty: null }
     processes:
