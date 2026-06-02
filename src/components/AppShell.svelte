@@ -74,6 +74,7 @@
         scene
         <span class="zoom-counter">{activeIndex + 1} / {scenes.length}</span>
       </span>
+      <span class="zoom-title">{scene.head.topic}</span>
       <span>keys ← → · esc</span>
     </footer>
   {/if}
@@ -159,15 +160,28 @@
   /* In-flow footer row in zoom (reserves space so the canvas doesn't
      extend under it): keys left, scene counter right. */
   .zoom-footer {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     padding: 0.65rem 1.5rem;
     box-shadow: inset 0 1px 0 rgba(24, 24, 24, 0.12);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--ink-muted);
+  }
+  .zoom-footer > :first-child {
+    justify-self: start;
+  }
+  .zoom-footer > :last-child {
+    justify-self: end;
+  }
+  /* The scene title, centered — the only place it surfaces in fullscreen,
+     where the essay (and its head) is hidden. */
+  .zoom-title {
+    justify-self: center;
+    color: var(--ink);
+    font-weight: 600;
   }
   .zoom-counter {
     color: var(--ink);
