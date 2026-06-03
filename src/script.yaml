@@ -662,13 +662,12 @@ scenes:
       such a "window," confirming a widely believed tenet in
       the folklore.
     note:
-      marker: "▸"
+      marker: "— Lamport:"
       body: |
-        this is what the proof is FOR. Practitioners had long
-        suspected commit protocols were fragile to timing; FLP
-        showed it's a structural property of the problem, not a
-        bug in any one protocol. Every asynchronous commit
-        protocol — Paxos, Raft, two-phase commit — has a window.
+        "The famous result of Fischer, Lynch, and Paterson
+        implies that a reliable algorithm for electing a
+        proposer must use either randomness or real time—for
+        example, by using timeouts."
 
     visual: config-stack-crash
     chrome: { stage: 99, valency: bivalent, faulty: p3 }

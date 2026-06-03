@@ -221,6 +221,16 @@
           >bgins/flp-present</span
         >
       </a>
+      <a
+        class="ref-link"
+        href="https://lamport.azurewebsites.net/pubs/paxos-simple.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="rl-title">Paxos</span><span class="rl-sub"
+          >Lamport · 2001</span
+        >
+      </a>
     </div>
   {:else if visual === 'lemma1-commute'}
     <div class="rail-head">

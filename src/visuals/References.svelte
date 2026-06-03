@@ -1,31 +1,67 @@
 <script lang="ts">
   // references — the opening / front-matter slide. The paper's title up top,
-  // then a 2x2 "atlas" of QR specimen plates: the paper, the source repo, and
-  // the secondary sources we quote. Each code is rendered as OUR OWN ink SVG
-  // modules (not a stock black-on-white image) so it lives in the design
-  // language, and each is a square inscribed in a faint construction circle —
-  // the QR (a machine's compass-and-grid figure) revealed as a Dürer-style
-  // geometric construction. Plate captions are in the botanical/atlas voice
-  // (Tab. I · …), echoing the buffer's `fig. —` specimen captions.
+  // then a "quincunx" atlas of QR specimen plates: the paper at the center
+  // (the origin), the four sources we send people to at the corners — the
+  // classic five-figure (dice-five / Browne's Garden of Cyrus planting
+  // pattern), the atlas voice's natural answer to a fifth citation. Each code
+  // is rendered as OUR OWN ink SVG modules (not a stock black-on-white image)
+  // so it lives in the design language, and each is a square inscribed in a
+  // faint construction circle — the QR (a machine's compass-and-grid figure)
+  // revealed as a Dürer-style geometric construction. Faint spokes run from the
+  // center plate to each corner (stopping at the circle edges, never crossing a
+  // code): the paper at the heart of its own literature, sources radiating out.
+  // Plate captions are in the botanical/atlas voice (Tab. I · …), echoing the
+  // buffer's `fig. —` specimen captions.
   import qrcode from 'qrcode-generator'
 
   type Ref = { num: string; title: string; sub: string; url: string; cx: number; cy: number }
 
-  // 2x2, reading order. The paper links to the free author-hosted full text
-  // (MIT CSAIL TDS), not the paywalled DOI — the opener is for going to read it.
-  const refs: Ref[] = [
-    { num: 'I', title: 'paper', sub: 'JACM · 1985',
-      url: 'https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf', cx: 245, cy: 210 },
+  // The paper links to the free author-hosted full text (MIT CSAIL TDS), not the
+  // paywalled DOI — the opener is for going to read it. Lamport likewise links to
+  // his own author-hosted Paxos Made Simple (the secondary source we quote on the
+  // window-of-vulnerability slide).
+  const center: Ref = {
+    num: 'I', title: 'paper', sub: 'JACM · 1985',
+    url: 'https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf', cx: 400, cy: 330,
+  }
+  // Corners in reading order (top-left, top-right, bottom-left, bottom-right).
+  const corners: Ref[] = [
     { num: 'II', title: 'a tour', sub: 'the Paper Trail',
-      url: 'https://www.the-paper-trail.org/post/2008-08-13-a-brief-tour-of-flp-impossibility/', cx: 555, cy: 210 },
+      url: 'https://www.the-paper-trail.org/post/2008-08-13-a-brief-tour-of-flp-impossibility/', cx: 235, cy: 215 },
     { num: 'III', title: 'notes', sub: 'Aspnes · Yale',
-      url: 'https://www.cs.yale.edu/homes/aspnes/pinewiki/FischerLynchPaterson.html', cx: 245, cy: 418 },
+      url: 'https://www.cs.yale.edu/homes/aspnes/pinewiki/FischerLynchPaterson.html', cx: 565, cy: 215 },
     { num: 'IV', title: 'presentation', sub: 'bgins/flp-present',
-      url: 'https://github.com/bgins/flp-present', cx: 555, cy: 418 },
+      url: 'https://github.com/bgins/flp-present', cx: 235, cy: 445 },
+    { num: 'V', title: 'Paxos', sub: 'Lamport · 2001',
+      url: 'https://lamport.azurewebsites.net/pubs/paxos-simple.pdf', cx: 565, cy: 445 },
   ]
+  const refs: Ref[] = [center, ...corners]
 
-  const R = 72 // construction-circle radius; the QR square is inscribed in it
+  const R = 66 // construction-circle radius; the QR square is inscribed in it
   const QZ = 2 // quiet-zone modules (margin) added around the code
+
+  // Browne's reticulated "Network": the rhombic lattice an orchard of
+  // quincunxes tiles into. Basis vectors run center→corner; the lattice is two
+  // families of parallel lines. The plate circles are filled with the page
+  // cream (below), so the net is masked under every plate — it reads as ambient
+  // substrate with the five plates as clearings, never as lines converging on a
+  // hub. Drawn faint, like the paper-grain watermark.
+  const v1 = { x: 165, y: 115 } // center → bottom-right / top-left corner
+  const v2 = { x: 165, y: -115 } // center → top-right / bottom-left corner
+  const NET_STEP = 0.5 // half-basis pitch — a finer mesh than the plate spacing
+  const NET_RANGE = 10 // half-steps each side of center
+  const NET_EXT = 6 // line half-length in lattice units (clipped by the viewBox)
+  const net: { x1: number; y1: number; x2: number; y2: number }[] = []
+  for (let j = -NET_RANGE; j <= NET_RANGE; j++) {
+    const px = center.cx + j * NET_STEP * v2.x
+    const py = center.cy + j * NET_STEP * v2.y
+    net.push({ x1: px - NET_EXT * v1.x, y1: py - NET_EXT * v1.y, x2: px + NET_EXT * v1.x, y2: py + NET_EXT * v1.y })
+  }
+  for (let i = -NET_RANGE; i <= NET_RANGE; i++) {
+    const px = center.cx + i * NET_STEP * v1.x
+    const py = center.cy + i * NET_STEP * v1.y
+    net.push({ x1: px - NET_EXT * v2.x, y1: py - NET_EXT * v2.y, x2: px + NET_EXT * v2.x, y2: py + NET_EXT * v2.y })
+  }
 
   // Static content, so compute the plates once.
   const plates = refs.map((ref) => {
@@ -46,6 +82,13 @@
 </script>
 
 <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+  <!-- The reticulated Network, behind everything. -->
+  {#each net as n, i (i)}
+    <line class="ref-net" x1={n.x1} y1={n.y1} x2={n.x2} y2={n.y2} />
+  {/each}
+  <!-- Cream band masking the net behind the title type. -->
+  <rect class="ref-mask" x="0" y="0" width="800" height="124" />
+
   <!-- Title (the paper) + venue line. -->
   <text class="ref-title" x="400" y="48">Impossibility of Distributed Consensus</text>
   <text class="ref-title" x="400" y="76">with One Faulty Process</text>
@@ -99,8 +142,17 @@
     letter-spacing: 0.1em;
   }
 
+  .ref-net {
+    stroke: var(--w-faint);
+    stroke-width: 0.5;
+    opacity: 0.16;
+  }
+  /* Page cream — masks the net under the title and inside each plate. */
+  .ref-mask {
+    fill: var(--bg);
+  }
   .ref-circle {
-    fill: none;
+    fill: var(--bg);
     stroke: var(--w-faint);
     stroke-width: 1;
   }
