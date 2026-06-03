@@ -158,16 +158,7 @@
   <circle class="l3-dot bivalent" cx="400" cy="548" r="6" />
   <text class="l3-legend biv" x="414" y="548">BIVALENT</text>
 
-  <!-- Adversary takeaway, as a left-aligned bullet. The ▸ is drawn (not a
-       text glyph) so its size and vertical centering are font-independent —
-       an inline larger glyph baseline-aligns high in Chrome. -->
-  <polygon class="l3-mark" points="82,569 82,577 89,573" />
-  <text class="l3-legend" x="99" y="574"
-    >adversary's move :: pick the schedule landing in the bivalent member</text
-  >
-
-  <!-- Separator dividing the diagram (above) from the legend + adversary
-       takeaway footer (below). -->
+  <!-- Separator dividing the diagram (above) from the legend footer (below). -->
   <line
     x1="60"
     y1="534"
@@ -333,9 +324,5 @@
   .l3-legend.biv {
     fill: var(--bivalent);
     font-weight: 700;
-  }
-  /* Drawn ▸ bullet for the adversary takeaway (font-independent size + center). */
-  .l3-mark {
-    fill: var(--bivalent);
   }
 </style>

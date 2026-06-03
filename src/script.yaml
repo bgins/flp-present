@@ -538,9 +538,7 @@ scenes:
     cite: "paper §3"
     quote: |
       If p′ = p, then consider any finite deciding run from C₀ in
-      which p takes no steps... Hence, A is bivalent. But this is
-      impossible since the run to A is deciding, so A must be
-      univalent.
+      which p takes no steps.
     note:
       marker: "▸"
       body: |

@@ -330,10 +330,9 @@
 
     <div class="rail-head"><span class="prefix">//</span><span>why</span></div>
     <div class="rail-note">
-      Assume not. Then every D ∈ 𝒟 is univalent, with both 0-valent and 1-valent
-      members. Take neighbors C₀, C₁ ∈ 𝒞 whose images differ in valency. Lemma 1
-      swaps the two events (Case 1, different processes), or a deciding run (Case
-      2) gives the contradiction.
+      Assume not, so every D ∈ 𝒟 is univalent. But C is bivalent, so 𝒟 holds
+      both valencies, meaning two adjacent configs in 𝒞 are sent by e to
+      different valencies. The two cases show that is impossible.
     </div>
 
     <div class="rail-head">
