@@ -18,6 +18,8 @@ export type Visual =
   | 'lemma1-commute'
   | 'lemma2-sxs'
   | 'lemma3-set-D'
+  | 'lemma3-case1'
+  | 'lemma3-case2'
   | 'construction-q'
 
 export type Verb = 'deliver' | 'delay' | 'step'

@@ -438,13 +438,10 @@ scenes:
     note:
       marker: "▸"
       body: |
-        when two schedules touch disjoint sets of processes, they
-        commute. Pedestrian on its own; load-bearing in Lemma 3.
-        Case 1 of that proof needs exactly this — an event for p
-        and an event for p' (p' ≠ p) can swap order without
-        changing the resulting configuration.
+        Two schedules running on disjoint processes can run in any
+        order and produce the same configuration.
 
-    chrome: { stage: 0, valency: bivalent, faulty: null }
+    chrome: { stage: null, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
@@ -476,7 +473,7 @@ scenes:
         ever deciding."
 
     visual: lemma3-set-D
-    chrome: { stage: 12, valency: bivalent, faulty: p3 }
+    chrome: { stage: null, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
@@ -498,6 +495,66 @@ scenes:
       - { stage: 10, verb: step,    target: "(p1, ∅)" }   # p1 re-broadcasts → m9 (to p2)
       - { stage: 11, verb: delay,   target: "m8" }        # adversary defers m8
       - { stage: 12, verb: deliver, target: "m8" }        # HEAD p1 receives its earliest — the stage rule
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — Lemma 3, Case 1 (p′ ≠ p). The flipping step e′ touches a
+  # different process than e, so they commute (Lemma 1): D₁ = e′(D₀),
+  # a successor of the 0-valent D₀, so it cannot be 1-valent.
+  # Off-timeline (abstract proof). Bespoke `lemma3-case1` diamond.
+  # ──────────────────────────────────────────────────────────────
+  - id: lemma3_case1
+    head: { section: "§ 3", topic: "lemma 3 · case 1" }
+    cite: "paper §3"
+    quote: |
+      If p′ ≠ p, then D₁ = e′(D₀) by Lemma 1. This is impossible,
+      since any successor of a 0-valent configuration is 0-valent.
+    note:
+      marker: "▸"
+      body: |
+        C₀ is bivalent. Applying e commits it to 0 (D₀), but running
+        e′ first commits it to 1 (D₁). Since e and e′ run on
+        different processes, the order cannot matter (Lemma 1). So
+        D₁ = e′(D₀), a successor of the 0-valent D₀, which cannot be
+        1-valent.
+
+    visual: lemma3-case1
+    chrome: { stage: null, valency: bivalent, faulty: null }
+    processes: []
+    buffer: []
+    null_steps: []
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE — Lemma 3, Case 2 (p′ = p). e and e′ on the same process.
+  # A deciding run from C₀ with p silent reaches A (so A is univalent),
+  # but it commutes with e and e′ — from A, e reaches a 0-valent config
+  # and e′ then e a 1-valent one, so A is bivalent too. Contradiction.
+  # Off-timeline. Bespoke `lemma3-case2` deciding-run fan (paper Fig. 3).
+  # ──────────────────────────────────────────────────────────────
+  - id: lemma3_case2
+    head: { section: "§ 3", topic: "lemma 3 · case 2" }
+    cite: "paper §3"
+    quote: |
+      If p′ = p, then consider any finite deciding run from C₀ in
+      which p takes no steps... Hence, A is bivalent. But this is
+      impossible since the run to A is deciding, so A must be
+      univalent.
+    note:
+      marker: "▸"
+      body: |
+        Here e and e′ run on the same process p. A deciding run σ
+        keeps p silent, so it preserves the univalent images. D₀
+        stays 0-valent at E₀ and D₁ stays 1-valent at E₁, but
+        bivalent C₀ collapses to a univalent A. Since σ commutes
+        with e and e′, A reaches E₀ and E₁ as well, so A is bivalent
+        too. Univalent and bivalent at once is impossible.
+
+    visual: lemma3-case2
+    chrome: { stage: null, valency: bivalent, faulty: null }
+    processes: []
+    buffer: []
+    null_steps: []
+    trace: []
 
   # ──────────────────────────────────────────────────────────────
   # SCENE 11 — the main construction.

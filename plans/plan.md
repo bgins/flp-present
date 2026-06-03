@@ -305,6 +305,8 @@ scenes:
 | `lemma2`                     | `lemma2-sxs` |
 | `lemma1_commutativity`       | `lemma1-commute` |
 | `lemma3`                     | `lemma3-set-D` |
+| `lemma3_case1`               | `lemma3-case1` (commutativity diamond) |
+| `lemma3_case2`               | `lemma3-case2` (Fig. 3 grid) |
 | `construction`               | `construction-q` |
 | `punchline`                  | `message-buffer` (send — the pile never drains) |
 | `window_of_vulnerability`    | `message-buffer` (reuses punchline) |
@@ -466,7 +468,7 @@ trades flexibility for a tighter talk.
 
 ## Pedagogical arc — locked in `script.yaml`
 
-Seventeen scenes covering the punchline arc and the §4 contrast:
+Nineteen scenes covering the punchline arc and the §4 contrast:
 
 1.  **result** — §1 quote, now the front-matter QR opener (atlas: paper · a tour · notes · presentation)
 2.  **slow_vs_dead** — §1 indistinguishability
@@ -483,11 +485,13 @@ Seventeen scenes covering the punchline arc and the §4 contrast:
     + a rail tie forward to Theorem 1 and its two moves (off-timeline)
 11. **lemma2** — §3 bivalent initial exists (move 1)
 12. **lemma1_commutativity** — §2 disjoint schedules commute
-13. **lemma3** — §3 preservation (the hero stage-12 state)
-14. **construction** — §3 stage / queue rule
-15. **punchline** — §3 stage 99, still bivalent
-16. **window_of_vulnerability** — §1 the folklore vindicated
-17. **section_4_positive_result** — §4 same authors, immediate
+13. **lemma3** — §3 preservation, the claim (𝒞 → e → 𝒟)
+14. **lemma3_case1** — §3 case p′ ≠ p, the commutativity diamond
+15. **lemma3_case2** — §3 case p′ = p, the deciding-run grid (Fig. 3)
+16. **construction** — §3 stage / queue rule
+17. **punchline** — §3 stage 99, still bivalent
+18. **window_of_vulnerability** — §1 the folklore vindicated
+19. **section_4_positive_result** — §4 same authors, immediate
     contrast: weaken the fault model by one knob, consensus
     returns
 

@@ -246,24 +246,21 @@
     </div>
     <div class="rail-note">
       <span class="em">σ₁</span> and <span class="em">σ₂</span> commute:
-      σ₂(σ₁(C)) = σ₁(σ₂(C)) = <span class="em">C₃</span>. The diamond closes
-      either way.
+      σ₂(σ₁(C)) = σ₁(σ₂(C)) = <span class="em">C₃</span>.
     </div>
 
     <div class="rail-head"><span class="prefix">//</span><span>why</span></div>
     <div class="rail-note">
-      a step depends only on the process's own state and the messages addressed
-      to it. Disjoint schedules never touch the same process, so neither can see
-      the other's effect — the order can't matter.
+      A step depends only on the process's own state and the messages addressed
+      to it. Disjoint schedules never touch the same process, so they can run in
+      any order and produce the same result.
     </div>
 
     <div class="rail-head">
-      <span class="prefix">//</span><span>used in</span>
+      <span class="prefix">//</span><span>Lemma 3</span>
     </div>
     <div class="rail-note">
-      Lemma 3, Case 1: an event <span class="em">e = (p, m)</span> and
-      <span class="em">e′ = (p′, m′)</span> with p ≠ p′ act on disjoint singletons
-      — so they swap freely.
+      Uses commutativity to swap two events on different processes.
     </div>
   {:else if visual === 'lemma2-sxs'}
     <div class="rail-head">
@@ -339,18 +336,48 @@
 
     <div class="rail-head"><span class="prefix">//</span><span>why</span></div>
     <div class="rail-note">
-      assume not. Then every D ∈ 𝒟 is univalent, with both 0-valent and 1-valent
-      members. Pick neighbors C₀, C₁ ∈ 𝒞 whose images differ in valency — Lemma
-      1 commutativity (Case 1) or a deciding-run argument (Case 2) gives a
-      contradiction.
+      Assume not. Then every D ∈ 𝒟 is univalent, with both 0-valent and 1-valent
+      members. Take neighbors C₀, C₁ ∈ 𝒞 whose images differ in valency. Lemma 1
+      swaps the two events (Case 1, different processes), or a deciding run (Case
+      2) gives the contradiction.
     </div>
 
     <div class="rail-head">
       <span class="prefix">//</span><span>consequence</span>
     </div>
     <div class="rail-note">
-      the adversary can <span class="em">defer e</span> through a schedule that lands
-      in the bivalent member of 𝒟 — and the system stays undecided.
+      The adversary can <span class="em">defer e</span> through a schedule that lands
+      in the bivalent member of 𝒟, so the system stays undecided.
+    </div>
+  {:else if visual === 'lemma3-case1'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>case 1</span>
+    </div>
+    <div class="rail-note">
+      e and e′ run on different processes, so by Lemma 1 they commute. That makes
+      <span class="em">D₁ = e′(D₀)</span>, a successor of the 0-valent D₀.
+    </div>
+    <div class="rail-head">
+      <span class="prefix">//</span><span>result</span>
+    </div>
+    <div class="rail-note">
+      A successor of a 0-valent config is 0-valent. So D₁ cannot be 1-valent.
+      <span class="contra">⊥</span>
+    </div>
+  {:else if visual === 'lemma3-case2'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>case 2</span>
+    </div>
+    <div class="rail-note">
+      e and e′ run on the same process p. A deciding run σ keeps p silent, so
+      <span class="em">A</span> is univalent.
+    </div>
+    <div class="rail-head">
+      <span class="prefix">//</span><span>result</span>
+    </div>
+    <div class="rail-note">
+      σ keeps D₀ 0-valent at E₀ and D₁ 1-valent at E₁. By Lemma 1, A reaches
+      both, so A is bivalent too. <span class="contra">⊥</span>
     </div>
   {:else}
     <div class="rail-head">

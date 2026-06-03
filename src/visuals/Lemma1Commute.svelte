@@ -76,7 +76,7 @@
     <text class="label" y="0">C₃</text>
   </g>
   <text class="l1-conv" x="400" y="560">≡&#160;same configuration</text>
-  <text class="l1-conv-sub" x="400" y="578">σ₁, σ₂ commute — order doesn't matter</text>
+  <text class="l1-conv-sub" x="400" y="578">σ₁, σ₂ commute · order doesn't matter</text>
 </svg>
 
 <style>
