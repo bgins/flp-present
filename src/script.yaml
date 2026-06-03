@@ -696,8 +696,8 @@ scenes:
   # weakness — restore "initially dead only" and consensus is
   # back. Needs a dedicated canvas treatment (TODO sketch).
   # ──────────────────────────────────────────────────────────────
-  - id: section_4_positive_result
-    head: { section: "§ 4", topic: "consensus IS possible if…" }
+  - id: section_4_knob
+    head: { section: "§ 4", topic: "consensus returns" }
     cite: "paper §4"
     quote: |
       There is a partially correct consensus protocol in which
@@ -707,28 +707,85 @@ scenes:
     note:
       marker: "▸"
       body: |
-        the same authors, in the same paper. Weaken the fault
-        model by exactly one knob — say "no NEW crashes after
-        the protocol begins" — and consensus is achievable. FLP
-        is sharp: it picks out the precise hostile fault model
-        and shows that's the cliff. Slightly less hostile and
-        you're back on solid ground.
+        The same authors, the same paper. With no crashes during
+        the run and a majority alive, a process can wait for a
+        majority instead of everyone. The wait always returns, so
+        a decision is safe.
 
-    # Outside the impossibility run (different fault model, no buffer). Neutral
-    # bare-processes stopgap until the bespoke §4 visual (initial-clique digraph
-    # + proof-anatomy rail — see plan.md); NOT the impossibility buffer.
-    visual: system
-    chrome: { stage: 0, valency: bivalent, faulty: null }
+    # §4's positive result, the termination half. A fresh setup outside the
+    # impossibility run: five processes, a strict majority alive, no buffer. The
+    # alive majority answers the quorum hub, which decides — the badge finally
+    # leaves bivalent. Self-contained visual (Section4Knob); processes here are
+    # for the record (the chrome/rail don't read them for this scene).
+    visual: section4-knob
+    chrome: { stage: null, valency: univalent-0, faulty: null }
     processes:
-      - { id: p1, x: 0, y: b, pos: [200, 180] }
-      - { id: p2, x: 1, y: b, pos: [600, 180] }
-      - { id: p3, x: 0, y: b, pos: [400, 500] }
+      - { id: p1, x: 0, y: 0, pos: [400, 122] }
+      - { id: p2, x: 1, y: 0, pos: [578, 240] }
+      - { id: p3, x: 0, y: 0, pos: [222, 240] }
+      - { id: p4, x: 1, y: b, pos: [506, 446] }
+      - { id: p5, x: 0, y: b, pos: [294, 446] }
     buffer: []
-    null_steps: [p1, p2, p3]
+    null_steps: []
     trace: []
-    # NOTE: this scene currently falls back to the default canvas.
-    # A bespoke §4-protocol sketch (initial-clique digraph) would
-    # land better — see plan.md's optional sketch list.
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 20 — §4 · the clique. The agreement half: every process
+  # settles on the same unique initial clique, so all decide alike.
+  # ──────────────────────────────────────────────────────────────
+  - id: section_4_clique
+    head: { section: "§ 4", topic: "why they agree" }
+    cite: "paper §4"
+    quote: |
+      Each process makes a decision based on the initial values
+      of the processes in the initial clique using any
+      agreed-upon rule. Since all processes know the initial
+      values of all members of the initial clique, they all reach
+      the same decision.
+    note:
+      marker: "▸"
+      body: |
+        Each process gathered a different majority. Any two
+        majorities overlap, so everyone settles on the same
+        initial clique, and a fixed rule on its values gives the
+        same decision.
+
+    # §4's agreement half. The heard-from digraph's unique initial clique
+    # ({p1,p2,p3}) is the source everyone defers to; all five decide 0.
+    # Self-contained visual (Section4Clique).
+    visual: section4-clique
+    chrome: { stage: null, valency: univalent-0, faulty: null }
+    processes:
+      - { id: p1, x: 0, y: 0, pos: [400, 122] }
+      - { id: p2, x: 1, y: 0, pos: [569, 245] }
+      - { id: p3, x: 0, y: 0, pos: [231, 245] }
+      - { id: p4, x: 1, y: 0, pos: [505, 444] }
+      - { id: p5, x: 0, y: 0, pos: [295, 444] }
+    buffer: []
+    null_steps: []
+    trace: []
+
+  # ──────────────────────────────────────────────────────────────
+  # SCENE 21 — the blockchain closer. The deck's one step outside the
+  # paper: §4's honest-majority quorum, in practice. Named once, then done.
+  # ──────────────────────────────────────────────────────────────
+  - id: blockchain_closer
+    head: { section: "coda", topic: "blockchain" }
+    cite: "Roughgarden · 2021"
+    quote: |
+      Practical blockchain protocols tend to escape the FLP
+      impossibility theorem using timing assumptions rather than
+      randomization.
+
+    # The deck's one step outside the paper: §4's quorum overlap as the
+    # honest-majority idea blockchains run on. Three QR "blocks" (the FLP wall
+    # and its two escapes) chained with Dürer interlace. Self-contained visual.
+    visual: blockchain-chain
+    chrome: { stage: null, valency: univalent-0, faulty: null }
+    processes: []
+    buffer: []
+    null_steps: []
+    trace: []
 
 # ──────────────────────────────────────────────────────────────
 # Lemma 3 Case 2 (same-process case) is still a candidate extra

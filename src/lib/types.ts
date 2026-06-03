@@ -21,6 +21,9 @@ export type Visual =
   | 'lemma3-case1'
   | 'lemma3-case2'
   | 'construction'
+  | 'section4-knob'
+  | 'section4-clique'
+  | 'blockchain-chain'
   | 'config-stack'
   | 'config-stack-crash'
 

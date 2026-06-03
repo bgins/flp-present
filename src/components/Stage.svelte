@@ -11,6 +11,9 @@
   import Lemma3Case1 from '../visuals/Lemma3Case1.svelte'
   import Lemma3Case2 from '../visuals/Lemma3Case2.svelte'
   import ConfigStack from '../visuals/ConfigStack.svelte'
+  import Section4Knob from '../visuals/Section4Knob.svelte'
+  import Section4Clique from '../visuals/Section4Clique.svelte'
+  import BlockchainChain from '../visuals/BlockchainChain.svelte'
   import References from '../visuals/References.svelte'
 
   let { scene }: { scene: Scene } = $props()
@@ -51,6 +54,12 @@
     <Lemma3Case2 />
   {:else if visual === 'construction'}
     <MessageReceive {scene} construction />
+  {:else if visual === 'section4-knob'}
+    <Section4Knob />
+  {:else if visual === 'section4-clique'}
+    <Section4Clique />
+  {:else if visual === 'blockchain-chain'}
+    <BlockchainChain />
   {:else if visual === 'config-stack'}
     <ConfigStack />
   {:else if visual === 'config-stack-crash'}

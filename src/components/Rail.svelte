@@ -413,6 +413,84 @@
       > keeps every stage bivalent. An infinite admissible run that never decides.
       <span class="em">∴ Theorem 1.</span>
     </div>
+  {:else if visual === 'section4-knob'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the model</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">alive</span>
+        <span class="muted">— a strict majority</span>
+      </p>
+      <p>
+        <span class="term">crashes</span>
+        <span class="muted">— none during the run</span>
+      </p>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the rule</span>
+    </div>
+    <div class="rail-note">
+      Wait for a majority, <span class="em">L = ⌈(N+1)/2⌉</span> (here 3 of 5),
+      never for all.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>why it returns</span>
+    </div>
+    <div class="rail-note">
+      A majority is always alive and answers, so the wait never hangs on a
+      maybe-dead process. The slow-vs-dead trap is gone.
+    </div>
+  {:else if visual === 'section4-clique'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the algorithm</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">stage 1</span>
+        <span class="muted">— hear from L−1 others, build G</span>
+      </p>
+      <p>
+        <span class="term">stage 2</span>
+        <span class="muted">— exchange and close to G⁺</span>
+      </p>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the clique</span>
+    </div>
+    <div class="rail-note">
+      Any two majorities overlap, so the initial clique (a source with no
+      incoming edges) is <span class="em">unique</span>, the same for everyone.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>agreement</span>
+    </div>
+    <div class="rail-note">
+      A fixed rule on the clique's values gives every process the same decision.
+    </div>
+  {:else if visual === 'blockchain-chain'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the threshold</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">&gt;1/2</span><span class="v">honest · crash faults</span>
+    </div>
+    <div class="rail-kv">
+      <span class="k">&gt;2/3</span><span class="v">honest · Byzantine faults</span>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the escape</span>
+    </div>
+    <div class="rail-note">
+      FLP needs a deterministic protocol in an asynchronous network. Bitcoin
+      drops the determinism, with randomness. Tendermint drops the asynchrony,
+      with timeouts.
+    </div>
   {:else}
     <div class="rail-head">
       <span class="prefix">//</span><span>buffer</span>
