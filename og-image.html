@@ -1,0 +1,157 @@
+<!doctype html>
+<!--
+  Social-card generator for the GitHub Pages site (og:image / twitter:image).
+  Renders a 1200x630 card: the receding "infinite run" config-stack from scene
+  17 with the paper title in Geist Mono, in the deck's palette. NOT part of the
+  Vite build (a root-level html is ignored by the build and never published).
+
+  Regenerate public/og.png with headless Chrome:
+
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+      --headless --hide-scrollbars --force-device-scale-factor=2 \
+      --window-size=1200,630 --virtual-time-budget=3000 \
+      --screenshot="$PWD/public/og.png" "file://$PWD/og-image.html"
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6f3e9;
+        --bg-raised: #fefdf8;
+        --ink: #181818;
+        --ink-muted: #5a5550;
+        --ink-faint: #a8a39c;
+        --bivalent: #3030dd;
+        --accent: #a51818;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1200px; height: 630px; }
+      body {
+        background: var(--bg);
+        font-family: 'Geist Mono', monospace;
+        overflow: hidden;
+      }
+      .card { position: relative; width: 1200px; height: 630px; }
+      .viz { position: absolute; inset: 0; }
+      .text {
+        position: absolute;
+        left: 72px;
+        top: 96px;
+        width: 540px;
+      }
+      .brand {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        color: var(--ink);
+        margin-bottom: 40px;
+      }
+      h1 {
+        font-size: 46px;
+        font-weight: 600;
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+      .byline {
+        margin-top: 28px;
+        font-size: 21px;
+        color: var(--ink-muted);
+      }
+      .tag {
+        margin-top: 14px;
+        font-size: 19px;
+        font-style: italic;
+        color: var(--ink-faint);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <svg class="viz" viewBox="0 0 1200 630" id="viz"></svg>
+      <div class="text">
+        <div class="brand">:: FLP ::</div>
+        <h1>Impossibility of Distributed Consensus with One Faulty Process</h1>
+        <div class="byline">Fischer · Lynch · Paterson — 1985</div>
+        <div class="tag">a visual walkthrough</div>
+      </div>
+    </div>
+
+    <script>
+      // Port of ConfigStack.svelte (clean / scene-17 variant), tuned for the
+      // wide card: the infinite run as a receding stack of tilted configuration
+      // disks fading to the right edge.
+      const SVGNS = 'http://www.w3.org/2000/svg'
+      const viz = document.getElementById('viz')
+
+      const N = 22
+      const R0 = 188
+      const SHRINK = 0.9
+      const FADE = 0.82
+      let cx = 760
+      const cy = 332
+      const disks = []
+      for (let i = 0; i < N; i++) {
+        const r = R0 * Math.pow(SHRINK, i)
+        disks.push({ cx, cy, r, op: Math.max(0.05, Math.pow(FADE, i)), i })
+        cx += r * 0.47
+      }
+      const order = [...disks].reverse()
+
+      const seats = [
+        [-0.46, -0.3],
+        [0.46, -0.3],
+        [0, 0.48],
+      ]
+      const ROTA_R = 0.17
+      const walls = [30, 150, 270].map((d) => {
+        const a = (d * Math.PI) / 180
+        return [Math.cos(a) * ROTA_R, Math.sin(a) * ROTA_R]
+      })
+
+      const el = (name, attrs) => {
+        const e = document.createElementNS(SVGNS, name)
+        for (const k in attrs) e.setAttribute(k, attrs[k])
+        return e
+      }
+
+      for (const d of order) {
+        const g = el('g', {
+          transform: `translate(${d.cx} ${d.cy}) rotate(10)`,
+          opacity: d.op,
+        })
+        g.appendChild(
+          el('circle', { r: d.r, fill: 'var(--bg-raised)', stroke: 'var(--ink)', 'stroke-width': 1.2 })
+        )
+        const link = (a, b) =>
+          el('line', {
+            x1: seats[a][0] * d.r, y1: seats[a][1] * d.r,
+            x2: seats[b][0] * d.r, y2: seats[b][1] * d.r,
+            stroke: 'var(--ink)', 'stroke-width': 1, opacity: 0.4,
+          })
+        g.appendChild(link(0, 1))
+        g.appendChild(link(0, 2))
+        g.appendChild(link(1, 2))
+        g.appendChild(
+          el('circle', { r: ROTA_R * d.r, fill: 'none', stroke: 'var(--bivalent)', 'stroke-width': 1.6 })
+        )
+        for (const w of walls)
+          g.appendChild(
+            el('line', { x1: 0, y1: 0, x2: w[0] * d.r, y2: w[1] * d.r, stroke: 'var(--ink)', 'stroke-width': 0.7, opacity: 0.15 })
+          )
+        for (const s of seats)
+          g.appendChild(
+            el('circle', { cx: s[0] * d.r, cy: s[1] * d.r, r: 0.09 * d.r, fill: 'var(--bg-raised)', stroke: 'var(--ink)', 'stroke-width': 1.6 })
+          )
+        viz.appendChild(g)
+      }
+    </script>
+  </body>
+</html>
