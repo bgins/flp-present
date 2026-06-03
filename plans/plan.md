@@ -301,8 +301,7 @@ scenes:
 | `admissible`                 | `message-receive` (delivery to nonfaulty p₁) |
 | `partial`                    | `correctness` (off-timeline decided config + goalposts rail) |
 | `total`                      | `correctness` (off-timeline; adds termination) |
-| `valency_def`                | `valency-tree` |
-| `valency_intuition`          | `valency-tree` |
+| `valency`                    | `valency-tree` (+ Theorem-1 roadmap rail) |
 | `lemma2`                     | `lemma2-sxs` |
 | `lemma1_commutativity`       | `lemma1-commute` |
 | `lemma3`                     | `lemma3-set-D` |
@@ -417,11 +416,13 @@ change.
 - `result`, `process`, `slow_vs_dead` — currently crisp `stage 0`. Decide hide
   vs. keep crisp-0 (we kept crisp-0 for `configuration`; these are pre-run, lean
   hide).
-- `valency_def`, `valency_intuition` — gray the stage (`muted`, st 7) and set
-  `faulty: null` (the crash isn't what those scenes are about).
 - `lemma3` — gray the stage (`muted`, st 12) and `faulty: null`.
-- `lemma1_commutativity`, `lemma2` — currently crisp `stage 0`; hide
-  (`stage: null`) — abstract proof asides.
+- `lemma1_commutativity` — currently crisp `stage 0`; hide
+  (`stage: null`) — abstract proof aside.
+
+**Done** (this pass): `valency` (merged valency_def + valency_intuition; `stage:
+null` / `faulty: null`, badge `bivalent`, and a dedicated Theorem-1 roadmap rail
+so it no longer falls through to the run buffer); `lemma2` (`stage: null`).
 - `section_4_positive_result` — currently crisp `stage 0`; hide (separate model).
 
 ## Interaction model — narrated essay (locked)
@@ -465,7 +466,7 @@ trades flexibility for a tighter talk.
 
 ## Pedagogical arc — locked in `script.yaml`
 
-Eighteen scenes covering the punchline arc and the §4 contrast:
+Seventeen scenes covering the punchline arc and the §4 contrast:
 
 1.  **result** — §1 quote, now the front-matter QR opener (atlas: paper · a tour · notes · presentation)
 2.  **slow_vs_dead** — §1 indistinguishability
@@ -478,15 +479,15 @@ Eighteen scenes covering the punchline arc and the §4 contrast:
     (off-timeline; badge 1-valent)
 9.  **total** — §2 total correctness: + termination, the bar Theorem 1
     breaks (off-timeline)
-10. **valency_def** — §3 V definition (bivalent + univalent)
-11. **valency_intuition** — Robinson's "undecided yet"
-12. **lemma2** — §3 bivalent initial exists
-13. **lemma1_commutativity** — §2 disjoint schedules commute
-14. **lemma3** — §3 preservation (the hero stage-12 state)
-15. **construction** — §3 stage / queue rule
-16. **punchline** — §3 stage 99, still bivalent
-17. **window_of_vulnerability** — §1 the folklore vindicated
-18. **section_4_positive_result** — §4 same authors, immediate
+10. **valency** — §3 V definition + Robinson's "undecided yet" note
+    + a rail tie forward to Theorem 1 and its two moves (off-timeline)
+11. **lemma2** — §3 bivalent initial exists (move 1)
+12. **lemma1_commutativity** — §2 disjoint schedules commute
+13. **lemma3** — §3 preservation (the hero stage-12 state)
+14. **construction** — §3 stage / queue rule
+15. **punchline** — §3 stage 99, still bivalent
+16. **window_of_vulnerability** — §1 the folklore vindicated
+17. **section_4_positive_result** — §4 same authors, immediate
     contrast: weaken the fault model by one knob, consensus
     returns
 

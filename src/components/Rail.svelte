@@ -92,6 +92,41 @@
         <span class="leg-desc">a decision — written once, never changes</span>
       </div>
     </div>
+  {:else if visual === 'valency-tree'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>theorem 1</span>
+    </div>
+    <div class="rail-note">
+      No consensus protocol is totally correct in spite of one fault.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>valency</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">bivalent</span>
+        <span class="muted">— both 0 and 1 stay reachable</span>
+      </p>
+      <p>
+        <span class="term">univalent</span>
+        <span class="muted">— locked to one value, even while y<sub>p</sub> is blank</span>
+      </p>
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the proof</span>
+    </div>
+    <div class="rail-defs">
+      <p>
+        <span class="term">Lemma 2</span>
+        <span class="muted">— a bivalent initial exists</span>
+      </p>
+      <p>
+        <span class="term">Construction</span>
+        <span class="muted">— keep it bivalent forever</span>
+      </p>
+    </div>
   {:else if visual === 'correctness'}
     {#if scene.id === 'partial'}
       <div class="rail-head">
@@ -235,51 +270,45 @@
       <span class="prefix">//</span><span>setup</span>
     </div>
     <div class="rail-note">
-      assume every initial is univalent.&#160;<span class="em">⇒</span
-      >&#160;adjacent C₀ (0-valent) and C₁ (1-valent) exist, differing only in
-      <span class="em">p₃.x</span>.
+      Assume no bivalent initial. By partial correctness, C₀ is 0-valent and C₁
+      is 1-valent, differing only in <span class="em">p₃</span>.
     </div>
 
     <div class="rail-head">
-      <span class="prefix">//</span><span>config Δ</span>
+      <span class="prefix">//</span><span>inputs</span>
     </div>
     <div class="rail-kv">
-      <span class="k">p₁.x</span><span class="v">0 = 0</span>
+      <span class="k">p₁</span><span class="v">0 = 0</span>
     </div>
     <div class="rail-kv">
-      <span class="k">p₂.x</span><span class="v">0 = 0</span>
+      <span class="k">p₂</span><span class="v">1 = 1</span>
     </div>
     <div class="rail-kv">
-      <span class="k">p₃.x</span><span class="v"
+      <span class="k">p₃</span><span class="v"
         ><span class="v zero">0</span>&#160;≠&#160;<span class="v one">1</span
         ></span
       >
     </div>
 
     <div class="rail-head">
-      <span class="prefix">//</span><span>schedule σ</span>
+      <span class="prefix">//</span><span>schedule <span class="sig">σ</span></span>
     </div>
     <div class="rail-kv">
       <span class="k">faulty</span><span class="v">p₃</span>
     </div>
     <div class="rail-kv">
-      <span class="k">steps</span><span class="v">none from p₃</span>
+      <span class="k">steps</span><span class="v">same steps, none from p₃</span>
     </div>
     <div class="rail-kv">
-      <span class="k">decides</span><span class="v zero">0</span>
+      <span class="k">decides</span><span class="v">v</span>
     </div>
 
     <div class="rail-head">
       <span class="prefix">//</span><span>result</span>
     </div>
-    <div class="rail-kv">
-      <span class="k">C₀ →</span><span class="v zero">0 ✓</span>
-    </div>
-    <div class="rail-kv">
-      <span class="k">C₁ →</span><span class="v zero">0 ✗</span>
-    </div>
-    <div class="rail-kv">
-      <span class="k"></span><span class="v contra">∴ ⊥</span>
+    <div class="rail-note">
+      ∴ one of <span class="em">C₀</span>, <span class="em">C₁</span> is bivalent.
+      <span class="contra">⊥</span>
     </div>
   {:else if visual === 'lemma3-set-D'}
     <div class="rail-head">
@@ -413,6 +442,10 @@
     margin-left: auto;
     font-variant-numeric: tabular-nums;
   }
+  /* keep the paper's lowercase σ in an otherwise-uppercased head */
+  .rail-head .sig {
+    text-transform: none;
+  }
 
   .b-row {
     display: grid;
@@ -537,12 +570,6 @@
     color: var(--univalent-1);
     font-weight: 600;
   }
-  .rail-kv .v.contra {
-    color: var(--accent-decide);
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
   .rail-note {
     font-size: 14px;
     line-height: 1.55;
@@ -552,6 +579,10 @@
   .rail-note .em {
     color: var(--ink);
     font-weight: 600;
+  }
+  .rail-note .contra {
+    color: var(--accent-decide);
+    font-weight: 700;
   }
 
   /* references — clickable links list */

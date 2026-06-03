@@ -1,4 +1,4 @@
-<!-- valency-tree (scenes: valency_def, valency_intuition). V := the set of
+<!-- valency-tree (scene: valency). V := the set of
      decision values reachable from C, made visible: root C is bivalent, each
      child stays bivalent (the Lemma 3 hint), wedges elide the many stages, and
      the leaves show both 0 and 1 are reachable ⇒ |V| = 2. Bespoke geometry per

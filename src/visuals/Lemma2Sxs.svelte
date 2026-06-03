@@ -74,7 +74,7 @@
       <g class="l2-proc" transform="translate(270, 100)">
         <circle r="28" />
         <text class="l2-label" y="-10">p₂</text>
-        <text class="l2-reg" y="8"><tspan class="x">x</tspan>=0</text>
+        <text class="l2-reg" y="8"><tspan class="x">x</tspan>=1</text>
         <text class="l2-reg" y="20"
           ><tspan class="x">y</tspan>=<tspan class="blank">b</tspan></text
         >
@@ -133,22 +133,28 @@
 
       <path class="l2-arrow" d="M 200,468 L 200,492" />
 
-      <!-- Both columns reach the SAME decision (0) — the contradiction. -->
-      <g class="l2-decide zero" transform="translate(200, 522)">
+      <!-- Both columns reach the SAME decision v — the contradiction. The value
+           is left abstract (the paper's "if the value is 1 … otherwise …"): the
+           point is the sameness, not a tally. -->
+      <g class="l2-decide" transform="translate(200, 522)">
         <rect x="-78" y="-22" width="156" height="48" rx="2" />
         <text class="verb" y="-7">decide</text>
-        <text class="val" y="12">0</text>
+        <text class="val" y="12">v</text>
       </g>
     </g>
   {/each}
 
-  <!-- Contradiction band, spanning both columns -->
+  <!-- Contradiction band, spanning both columns. Paper's both-branches line:
+       the shared decision is some v; whichever it is, one config is bivalent. -->
   <line class="l2-contra-line" x1="200" y1="566" x2="600" y2="566" />
   <text class="l2-contra-label" x="400" y="580">CONTRADICTION</text>
-  <text class="l2-contra-sub" x="400" y="599"
-    >same <tspan class="em">σ</tspan>, same observable run, same decision
-    <tspan class="zero">0</tspan> — but C₁ was supposedly
-    <tspan class="one">1-valent</tspan></text
+  <text class="l2-contra-sub" x="400" y="596"
+    >same <tspan class="em">σ</tspan>, same observable run, the same decision
+    <tspan class="em">v</tspan></text
+  >
+  <text class="l2-contra-sub" x="400" y="612"
+    >if v = 1, <tspan class="em">C₀</tspan> is bivalent · if v = 0,
+    <tspan class="em">C₁</tspan> is bivalent</text
   >
 </svg>
 
@@ -265,6 +271,9 @@
   .l2-σ-label .em {
     fill: var(--ink);
     font-weight: 700;
+    /* keep the paper's lowercase σ — the label is otherwise uppercased,
+       which would render σ as Σ (summation) and misread. */
+    text-transform: none;
   }
   .l2-σ-trace {
     font-family: 'Geist Mono', monospace;
@@ -300,10 +309,8 @@
 
   .l2-decide rect {
     stroke-width: 2;
+    stroke: var(--ink);
     fill: var(--bg-raised);
-  }
-  .l2-decide.zero rect {
-    stroke: var(--univalent-0);
   }
   .l2-decide text {
     font-family: 'Geist Mono', monospace;
@@ -319,9 +326,7 @@
   .l2-decide .val {
     font-size: 24px;
     font-weight: 700;
-  }
-  .l2-decide.zero .val {
-    fill: var(--univalent-0);
+    fill: var(--ink);
   }
 
   .l2-contra-line {
@@ -355,14 +360,6 @@
   }
   .l2-contra-sub .em {
     fill: var(--ink);
-    font-weight: 700;
-  }
-  .l2-contra-sub .zero {
-    fill: var(--univalent-0);
-    font-weight: 700;
-  }
-  .l2-contra-sub .one {
-    fill: var(--univalent-1);
     font-weight: 700;
   }
 </style>
