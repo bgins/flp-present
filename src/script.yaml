@@ -76,7 +76,7 @@ scenes:
       running very slowly.
 
     visual: slow-vs-dead
-    chrome: { stage: 0, valency: bivalent, faulty: null }
+    chrome: { stage: null, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
@@ -106,7 +106,7 @@ scenes:
         flip is the decision this paper shows can be deferred
         forever.
 
-    chrome: { stage: 0, valency: bivalent, faulty: null }
+    chrome: { stage: null, valency: bivalent, faulty: null }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
