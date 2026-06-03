@@ -83,13 +83,13 @@
     <div class="rail-legend">
       <div class="leg-row">
         <span class="leg-sym blank">b</span>
-        <span class="leg-desc">blank — no decision written yet, every y starts here</span>
+        <span class="leg-desc">Blank — no decision written yet, every y starts here</span>
       </div>
       <div class="leg-row">
         <span class="leg-sym"
           ><span class="zero">0</span>&#160;/&#160;<span class="one">1</span></span
         >
-        <span class="leg-desc">a decision — written once, never changes</span>
+        <span class="leg-desc">A decision — written once, never changes</span>
       </div>
     </div>
   {:else if visual === 'valency-tree'}

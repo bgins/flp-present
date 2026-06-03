@@ -130,7 +130,7 @@
 
   <!-- Bottom banner -->
   <rect class="sd-banner-bg" x="40" y="548" width="720" height="46" rx="2" />
-  <text class="sd-banner-text" x="400" y="564">indistinguishable to p₁</text>
+  <text class="sd-banner-text" x="400" y="564">Indistinguishable to p₁</text>
   <text class="sd-banner-sub" x="400" y="587"
     >p₁ <tspan class="em">cannot wait</tspan> forever&#160;·&#160;real systems
     time out</text
