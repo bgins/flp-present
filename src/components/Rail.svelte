@@ -120,7 +120,7 @@
     <div class="rail-defs">
       <p>
         <span class="term">Lemma 2</span>
-        <span class="muted">— a bivalent initial exists</span>
+        <span class="muted">— a bivalent initial configuration exists</span>
       </p>
       <p>
         <span class="term">Construction</span>
@@ -277,45 +277,29 @@
       <span class="prefix">//</span><span>setup</span>
     </div>
     <div class="rail-note">
-      Assume no bivalent initial. By partial correctness, C₀ is 0-valent and C₁
-      is 1-valent, differing only in <span class="em">p₃</span>.
+      Assume every initial configuration is univalent. Some are 0-valent, some
+      1-valent, and changing one input at a time turns a 0-valent one into a
+      1-valent one. So the valency flips across some adjacent pair:
+      <span class="em">C₀</span> 0-valent, <span class="em">C₁</span> 1-valent,
+      differing only in <span class="em">p₃</span>.
     </div>
 
     <div class="rail-head">
-      <span class="prefix">//</span><span>inputs</span>
+      <span class="prefix">//</span><span>indistinguishable</span>
     </div>
-    <div class="rail-kv">
-      <span class="k">p₁</span><span class="v">0 = 0</span>
-    </div>
-    <div class="rail-kv">
-      <span class="k">p₂</span><span class="v">1 = 1</span>
-    </div>
-    <div class="rail-kv">
-      <span class="k">p₃</span><span class="v"
-        ><span class="v zero">0</span>&#160;≠&#160;<span class="v one">1</span
-        ></span
-      >
-    </div>
-
-    <div class="rail-head">
-      <span class="prefix">//</span><span>schedule <span class="sig">σ</span></span>
-    </div>
-    <div class="rail-kv">
-      <span class="k">faulty</span><span class="v">p₃</span>
-    </div>
-    <div class="rail-kv">
-      <span class="k">steps</span><span class="v">same steps, none from p₃</span>
-    </div>
-    <div class="rail-kv">
-      <span class="k">decides</span><span class="v">v</span>
+    <div class="rail-note">
+      With p₃ silent, p₁ and p₂ run identically in both, so
+      σ reaches the same decision
+      <span class="em">v</span> from C₀ and C₁.
     </div>
 
     <div class="rail-head">
       <span class="prefix">//</span><span>result</span>
     </div>
     <div class="rail-note">
-      ∴ one of <span class="em">C₀</span>, <span class="em">C₁</span> is bivalent.
-      <span class="contra">⊥</span>
+      C₀ reaches 0 and C₁ reaches 1, but σ reaches v from
+      both. If v = 1, <span class="em">C₀</span> reaches both, so it is bivalent.
+      If v = 0, <span class="em">C₁</span> is. <span class="contra">⊥</span>
     </div>
   {:else if visual === 'lemma3-set-D'}
     <div class="rail-head">
@@ -581,10 +565,6 @@
     margin-left: auto;
     font-variant-numeric: tabular-nums;
   }
-  /* keep the paper's lowercase σ in an otherwise-uppercased head */
-  .rail-head .sig {
-    text-transform: none;
-  }
 
   /* construction: the process queue, head highlighted */
   .rail-queue {
@@ -723,14 +703,6 @@
     text-transform: uppercase;
     letter-spacing: 0.14em;
     font-size: 14px;
-  }
-  .rail-kv .v.zero {
-    color: var(--univalent-0);
-    font-weight: 600;
-  }
-  .rail-kv .v.one {
-    color: var(--univalent-1);
-    font-weight: 600;
   }
   .rail-note {
     font-size: 14px;

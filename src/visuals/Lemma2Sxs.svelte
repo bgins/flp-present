@@ -144,6 +144,11 @@
     </g>
   {/each}
 
+  <!-- Adjacency: the two initials differ only in p₃'s input (the diff-rings). -->
+  <text class="l2-adj" x="400" y="205"
+    >adjacent&#160;&#160;·&#160;&#160;only p₃ differs</text
+  >
+
   <!-- Contradiction band, spanning both columns. Paper's both-branches line:
        the shared decision is some v; whichever it is, one config is bivalent. -->
   <line class="l2-contra-line" x1="200" y1="566" x2="600" y2="566" />
@@ -329,6 +334,19 @@
     fill: var(--ink);
   }
 
+  .l2-adj {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    fill: var(--ink-muted);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    paint-order: stroke fill;
+    stroke: var(--bg);
+    stroke-width: 4;
+  }
   .l2-contra-line {
     stroke: var(--accent-decide);
     stroke-width: 1.6;

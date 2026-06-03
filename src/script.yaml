@@ -400,15 +400,17 @@ scenes:
   # below still feeds the chrome bar.
   # ──────────────────────────────────────────────────────────────
   - id: lemma2
-    head: { section: "§ 3", topic: "lemma 2 · bivalent initial" }
+    head: { section: "§ 3", topic: "lemma 2 · bivalent initial configuration" }
     cite: "paper §3"
     quote: |
       P has a bivalent initial configuration.
     note:
       marker: "▸"
       body: |
-        That initial configuration is bivalent because our model
-        admits one faulty process.
+        Two initial configurations differing in just one process
+        are indistinguishable if that process stays silent. One
+        faulty process is enough to leave an initial configuration
+        bivalent.
 
     visual: lemma2-sxs
     chrome: { stage: null, valency: bivalent, faulty: null }
