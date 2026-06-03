@@ -1,6 +1,7 @@
 <script lang="ts">
   import { scenes } from './lib/script'
   import AppShell from './components/AppShell.svelte'
+  import MobileGate from './components/MobileGate.svelte'
 
   let activeIndex = $state(0)
   let zoomed = $state(false)
@@ -51,12 +52,36 @@
 
 <svelte:window onkeydown={onKey} onkeyup={onKeyUp} />
 
-<AppShell
-  {scenes}
-  {activeIndex}
-  {zoomed}
-  {forward}
-  {back}
-  {reset}
-  {toggleZoom}
-/>
+<!-- The wide three-column app, swapped for a desktop-only gate on viewports
+     too small to experience it (phones in either orientation). -->
+<div class="desktop-view">
+  <AppShell
+    {scenes}
+    {activeIndex}
+    {zoomed}
+    {forward}
+    {back}
+    {reset}
+    {toggleZoom}
+  />
+</div>
+<div class="mobile-view">
+  <MobileGate />
+</div>
+
+<style>
+  .desktop-view {
+    display: contents;
+  }
+  .mobile-view {
+    display: none;
+  }
+  @media (max-width: 820px), (max-height: 520px) {
+    .desktop-view {
+      display: none;
+    }
+    .mobile-view {
+      display: block;
+    }
+  }
+</style>
