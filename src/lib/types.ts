@@ -20,7 +20,7 @@ export type Visual =
   | 'lemma3-set-D'
   | 'lemma3-case1'
   | 'lemma3-case2'
-  | 'construction-q'
+  | 'construction'
   | 'config-stack'
   | 'config-stack-crash'
 

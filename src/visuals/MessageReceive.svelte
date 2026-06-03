@@ -14,7 +14,12 @@
   import type { Scene } from '../lib/types'
   import { sub } from '../lib/format'
 
-  let { scene }: { scene: Scene } = $props()
+  // `construction` overlays the §3 stage rule on the same receive rota: the
+  // round-robin head, its earliest pending message named, and the admissibility
+  // framing — so the construction reads as a fair schedule over the SAME
+  // multiset, not a new ordered buffer.
+  let { scene, construction = false }: { scene: Scene; construction?: boolean } =
+    $props()
 
   const C = { x: 400, y: 286 }
   const R = 95
@@ -145,6 +150,9 @@
       }
     })
   })
+
+  // ── Construction overlay ──────────────────────────────────────────────────
+  // Just the head badge; the process queue + proof anatomy live in the rail.
 </script>
 
 <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
@@ -215,12 +223,25 @@
     </g>
   {/each}
 
+  <!-- ── CONSTRUCTION OVERLAY ── the §3 stage rule, laid over the same rota.
+       The process queue + proof anatomy live in the rail. -->
+  {#if construction}
+    <!-- Head badge on the stepping (receiver) process. -->
+    {#if receiver}
+      <text class="mrc-headbadge" x={receiver.node.x} y={receiver.node.y - 54}
+        >head ▾</text
+      >
+    {/if}
+  {/if}
+
   <!-- Caption. -->
-  <text class="mr-cap" x={C.x} y="500">receive</text>
+  <text class="mr-cap" x={C.x} y="500">{construction ? 'the construction' : 'receive'}</text>
   <text class="mr-cap-sub" x={C.x} y="518"
-    >{isDelivery
-      ? 'delivered to a nonfaulty process'
-      : 'pull any pending message or ∅'}</text
+    >{construction
+      ? 'a fair, admissible run · still no decision'
+      : isDelivery
+        ? 'delivered to a nonfaulty process'
+        : 'pull any pending message or ∅'}</text
   >
 </svg>
 
@@ -327,6 +348,17 @@
     fill: var(--accent-decide);
   }
 
+  /* Construction overlay */
+  .mrc-headbadge {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    fill: var(--bivalent);
+    text-anchor: middle;
+    dominant-baseline: alphabetic;
+  }
   .mr-cap {
     font-family: 'Geist Mono', monospace;
     font-size: 13px;

@@ -10,7 +10,6 @@
   import Lemma3SetD from '../visuals/Lemma3SetD.svelte'
   import Lemma3Case1 from '../visuals/Lemma3Case1.svelte'
   import Lemma3Case2 from '../visuals/Lemma3Case2.svelte'
-  import ConstructionQueue from '../visuals/ConstructionQueue.svelte'
   import ConfigStack from '../visuals/ConfigStack.svelte'
   import References from '../visuals/References.svelte'
 
@@ -50,8 +49,8 @@
     <Lemma3Case1 />
   {:else if visual === 'lemma3-case2'}
     <Lemma3Case2 />
-  {:else if visual === 'construction-q'}
-    <ConstructionQueue />
+  {:else if visual === 'construction'}
+    <MessageReceive {scene} construction />
   {:else if visual === 'config-stack'}
     <ConfigStack />
   {:else if visual === 'config-stack-crash'}

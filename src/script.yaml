@@ -566,36 +566,35 @@ scenes:
     head: { section: "§ 3", topic: "the construction" }
     cite: "paper §3"
     quote: |
-      Each stage consists of one or more process steps. The
-      stage ends with the first process in the process queue
-      taking a step in which, if its message queue was not empty
-      at the start of the stage, its earliest message is
-      received. This process is then moved to the back of the
-      process queue.
+      Suppose then that configuration C is bivalent and that
+      process p heads the priority queue. Let m be the earliest
+      message to p in C's message buffer, if any, and ∅
+      otherwise. Let e = (p, m). By Lemma 3, there is a bivalent
+      configuration C′ reachable from C by a schedule in which e
+      is the last event applied.
     note:
       marker: "▸"
       body: |
-        the queue + earliest-message rule is what makes the
-        infinite run ADMISSIBLE — every nonfaulty process takes
-        infinitely many steps, every message eventually gets
-        delivered. The adversary's freedom is in WHICH stage
-        each delivery lands.
+        The buffer is still the same multiset, read in a fair
+        order so the run is admissible. Every nonfaulty process
+        steps and receives its messages, and still no one decides.
 
-    visual: construction-q
+    visual: construction
     chrome: { stage: 12, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
       - { id: p2, x: 1, y: b, pos: [600, 180] }
       - { id: p3, x: 0, y: b, pos: [400, 500], faulty: true }
-    # Same stage-12 snapshot as lemma3 (the per-recipient queues in the canvas
-    # are this buffer, organized + earliest-first). m2·m4·m6 stuck at faulty p3;
-    # m8 (to p1, p1's earliest — received this stage) and m9 (to p2) are live.
+    # The stage-12 receive rota with the construction overlay. p1 heads the
+    # queue and has two pending votes from p2 (m8 earliest, m10 newer) — the rule
+    # hands it m8. m2·m4·m6 are stuck at faulty p3 (exempt); m9 pends for p2.
     buffer:
       - { id: m2, from: p1, to: p3, payload: "vote 0" }
       - { id: m4, from: p2, to: p3, payload: "vote 1" }
       - { id: m6, from: p1, to: p3, payload: "vote 0" }
       - { id: m8, from: p2, to: p1, payload: "vote 1" }
       - { id: m9, from: p1, to: p2, payload: "vote 0" }
+      - { id: m10, from: p2, to: p1, payload: "vote 1" }
     null_steps: [p1, p2, p3]
     trace:
       - { stage: 8,  verb: deliver, target: "m5" }        # p2 receives p1's opening vote

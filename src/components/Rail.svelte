@@ -389,6 +389,30 @@
       σ keeps D₀ 0-valent at E₀ and D₁ 1-valent at E₁. By Lemma 1, A reaches
       both, so A is bivalent too. <span class="contra">⊥</span>
     </div>
+  {:else if visual === 'construction'}
+    <div class="rail-head">
+      <span class="prefix">//</span><span>process queue</span>
+    </div>
+    <div class="rail-queue">
+      <span class="qp head">p₁</span><span class="qsep">·</span><span class="qp"
+        >p₂</span
+      ><span class="qsep">·</span><span class="qp">p₃</span><span class="qrot"
+        >↻</span
+      >
+    </div>
+    <div class="rail-note">
+      The head takes a step, then rotates to the back.
+    </div>
+
+    <div class="rail-head">
+      <span class="prefix">//</span><span>the proof</span>
+    </div>
+    <div class="rail-note">
+      <span class="em">Lemma 2</span> starts bivalent, <span class="em"
+        >Lemma 3</span
+      > keeps every stage bivalent. An infinite admissible run that never decides.
+      <span class="em">∴ Theorem 1.</span>
+    </div>
   {:else}
     <div class="rail-head">
       <span class="prefix">//</span><span>buffer</span>
@@ -482,6 +506,29 @@
   /* keep the paper's lowercase σ in an otherwise-uppercased head */
   .rail-head .sig {
     text-transform: none;
+  }
+
+  /* construction: the process queue, head highlighted */
+  .rail-queue {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .rail-queue .qp {
+    color: var(--ink-muted);
+  }
+  .rail-queue .qp.head {
+    color: var(--bivalent);
+    font-weight: 700;
+  }
+  .rail-queue .qsep {
+    color: var(--ink-faint);
+  }
+  .rail-queue .qrot {
+    color: var(--ink-faint);
+    margin-left: 0.25rem;
   }
 
   .b-row {
