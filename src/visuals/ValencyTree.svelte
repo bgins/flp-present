@@ -19,13 +19,13 @@
   <path class="vt-edge" d="M 450,94 Q 550,135 640,184" />
 
   <text class="vt-edge-label" x="210" y="130" text-anchor="end"
-    ><tspan class="em">deliver</tspan>&#160;[m₄]</text
+    ><tspan class="em">(p₁, m₄)</tspan></text
   >
   <text class="vt-edge-label" x="416" y="138" text-anchor="start"
-    ><tspan class="em">step</tspan>&#160;(p₂, ∅)</text
+    ><tspan class="em">(p₂, ∅)</tspan></text
   >
   <text class="vt-edge-label" x="590" y="130" text-anchor="start"
-    ><tspan class="em">deliver</tspan>&#160;[m₅]</text
+    ><tspan class="em">(p₃, m₅)</tspan></text
   >
 
   <!-- L1 children — each still bivalent (the Lemma 3 hint) -->
