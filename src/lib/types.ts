@@ -21,6 +21,8 @@ export type Visual =
   | 'lemma3-case1'
   | 'lemma3-case2'
   | 'construction-q'
+  | 'config-stack'
+  | 'config-stack-crash'
 
 export type Verb = 'deliver' | 'delay' | 'step'
 

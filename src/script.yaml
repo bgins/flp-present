@@ -618,9 +618,10 @@ scenes:
       succeeds. The resulting run is admissible, and no decision
       is ever reached. It follows that P is not totally correct.
 
-    # SEND view: the pile that never drains — p1, p2 still broadcasting into the
-    # pool (p3 dead/dark), the buffer never empties, valency still bivalent.
-    visual: message-buffer
+    # The infinite run as a receding stack of configuration disks
+    # (config-stack), every stage bivalent, fading to infinity. The buffer rail
+    # still shows the pile that never drains.
+    visual: config-stack
     chrome: { stage: 99, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }
@@ -669,7 +670,7 @@ scenes:
         bug in any one protocol. Every asynchronous commit
         protocol — Paxos, Raft, two-phase commit — has a window.
 
-    visual: message-buffer
+    visual: config-stack-crash
     chrome: { stage: 99, valency: bivalent, faulty: p3 }
     processes:
       - { id: p1, x: 0, y: b, pos: [200, 180] }

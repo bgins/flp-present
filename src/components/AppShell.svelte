@@ -26,6 +26,12 @@
 
   const scene = $derived(scenes[activeIndex])
 
+  // Visuals that fill the canvas and carry no data rail — the canvas expands
+  // into the rail's column (the infinite-run config-stack scenes).
+  const railless = $derived(
+    scene.visual === 'config-stack' || scene.visual === 'config-stack-crash'
+  )
+
   const valencyColor: Record<Valency, string> = {
     bivalent: 'var(--bivalent)',
     'univalent-0': 'var(--univalent-0)',
@@ -62,12 +68,14 @@
     </span>
   </header>
 
-  <div class="stage">
+  <div class="stage" class:railless>
     {#if !zoomed}
       <Essay {scenes} {activeIndex} />
     {/if}
     <Stage {scene} />
-    <Rail {scene} />
+    {#if !railless}
+      <Rail {scene} />
+    {/if}
   </div>
 
   {#if !zoomed}
@@ -150,6 +158,9 @@
     min-height: 0;
     overflow: hidden;
   }
+  .stage.railless {
+    grid-template-columns: 33fr 67fr;
+  }
 
   /* Fullscreen-canvas mode (Option A): chrome hidden via CSS; essay and
      controls aren't rendered. Canvas fills left/top/bottom; rail stays. */
@@ -158,6 +169,9 @@
   }
   .shell.zoomed .stage {
     grid-template-columns: 1fr 18rem;
+  }
+  .shell.zoomed .stage.railless {
+    grid-template-columns: 1fr;
   }
   .zoom-badge {
     position: absolute;
