@@ -215,7 +215,7 @@
     fill: var(--ink);
   }
   .l2-proc .l2-reg .blank {
-    fill: var(--bivalent);
+    fill: var(--ink-faint);
     font-weight: 700;
   }
   .l2-proc .l2-reg .x0 {

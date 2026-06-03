@@ -336,7 +336,7 @@
     fill: var(--ink);
   }
   .mr-reg .rb {
-    fill: var(--bivalent);
+    fill: var(--ink-faint);
     font-weight: 700;
   }
   .mr-proc.faulty circle {

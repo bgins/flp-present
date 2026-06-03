@@ -144,7 +144,7 @@
     fill: var(--ink);
   }
   .process-reg .reg-blank {
-    fill: var(--bivalent);
+    fill: var(--ink-faint);
     font-weight: 700;
   }
 

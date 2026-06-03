@@ -61,9 +61,9 @@
     return { x: d.x * Math.cos(r) - d.y * Math.sin(r), y: d.x * Math.sin(r) + d.y * Math.cos(r) }
   }
   // A decided y takes its valency color (0 → 0-valent green, 1 → 1-valent
-  // orange), matching the badge; blank b keeps the open-config accent.
+  // orange), matching the badge; blank b is the soft undecided gray.
   const yColor = (y: 'b' | 0 | 1): string =>
-    y === 0 ? 'var(--univalent-0)' : y === 1 ? 'var(--univalent-1)' : 'var(--bivalent)'
+    y === 0 ? 'var(--univalent-0)' : y === 1 ? 'var(--univalent-1)' : 'var(--ink-faint)'
 
   const n = $derived(scene.processes.length)
 
