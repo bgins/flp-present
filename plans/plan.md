@@ -372,6 +372,16 @@ The channel `Canvas` is now **retired** — no scene uses the `canvas` visual.
   Does NOT contradict Theorem 1: FLP's adversary needs a *mid-run* crash to
   stall bivalent forever (Lemma 3's deferral); §4 assumes that lever away.
 
+  **Blockchain tie-in (in-deck, light touch).** §4's quorum overlap IS the
+  honest-majority idea every blockchain leans on, so the §4 arc is where
+  blockchain gets its single passing mention — the deck stays paper-first
+  (Papers We Love). Ride it on Scene B's "any two majorities overlap": one
+  line naming blockchain (the honest-majority quorum PoW/BFT rest on).
+  Fallback: a short standalone closing slide if §4 fills up. Background +
+  crisp Q&A answers (the draw is the impossibility not §4; >1/2 crash vs
+  >2/3 Byzantine; escape via synchrony-or-randomness) live in analysis.md
+  "FLP and blockchain — the §4 tie-in".
+
 Snapshot-per-scene (no deltas) trades verbosity for
 authorability: you can jump to any scene independently, and the
 renderer can diff between adjacent scenes if it needs to animate

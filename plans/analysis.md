@@ -513,6 +513,35 @@ for a slightly weaker fault model. The "during execution"
 weakening is exactly the FLP-blocking weakness — restoring
 "initially dead only" restores consensus.
 
+### FLP and blockchain — the §4 tie-in (light touch / Q&A)
+
+**[web search, 2026-06]** Why blockchain people treat FLP as a founding
+document, and how it connects to §4's strict majority. Carry it as a
+*light* touch riding §4 (or a short closing slide), and as Q&A ammunition
+— never a section. Brian's framing: "we don't fuck around when it comes to
+bringing the paper"; blockchain is named once, in passing.
+
+- **The draw is the impossibility, not §4.** Blockchains cite Theorem 1
+  (deterministic async crash-tolerant consensus is impossible) as the wall
+  that forces every design to relax something. Popular loose restatement:
+  "pick 2 of 3" — safety, liveness, fault-tolerance.
+- **How they escape it.** Timing assumptions (partial synchrony / timeouts:
+  PBFT, Tendermint, most PoS finality) **or** randomization (PoW terminates
+  with probability 1 — the "6 confirmations" non-finality).
+- **The thresholds.** §4's **>1/2** is the crash-fault majority (quorum
+  overlap → unique initial clique); ancestor of Nakamoto's honest-hashpower
+  majority (the "51% attack"). The headline blockchain number, **>2/3**
+  honest (PBFT/Tendermint, `n > 3f`), is *Byzantine* quorum overlap and
+  traces to Lamport's Byzantine Generals, **not** FLP §4 — a lying node is
+  worse than a dead one, so quorums must meet in an honest member.
+- **The honest §4 hook.** §4's "any two majorities intersect → one initial
+  clique" IS the quorum-overlap idea every blockchain leans on. That is the
+  paper-to-practice line; let the §4 visual carry it and name blockchain once.
+
+Sources: smadarasmi (FLP & Blockchain Consensus Protocols), Alibaba Cloud
+(Distributed Consensus → Blockchain), Roughgarden *Foundations of Blockchains*
+(FLP lecture), Cornell CS6432, Tendermint paper.
+
 ## Implications for our visualization
 
 **[synth]** Entire section is my interpretation, not from any
